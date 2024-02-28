@@ -1,17 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { Blog } from 'interfaces/blog.interface';
+import { CreateBlogDto } from './dto/create-blog.dto';
+import { PrismaService } from 'src/prisma.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class BlogsService {
-    private readonly blogs: Blog[] = []
+    constructor(private prisma: PrismaService) { }
 
-    create(blog: Blog): Blog {
-        this.blogs.push(blog);
-
-        return this.blogs.find(b => b.id == blog.id);
+    async create(data: Prisma.BlogCreateInput): Promise<Blog> {
+        return await this.prisma.blog.create({
+            data
+        });
     }
 
-    findAll(): Blog[] {
-        return this.blogs;
+    async findAll(): Promise<Blog[]> {
+        return this.prisma.blog.findMany();
     }
 }
