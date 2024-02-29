@@ -1,0 +1,14 @@
+version: '3.8'
+# services / containers
+services:
+  # express app
+  express-uda-portfolio:
+    image: nest-ecourse-rehab-hati:1.0.0
+    environment:
+      PORT: 5001
+      # for prisma
+      DATABASE_URL: mysql://root:t5bVP6wM2Nt2iv@db-ecourse-rehab-hati:3306/ecourse
+  # mysql database
+  mysql_uda_portfolio:
+    environment:
+      MYSQL_ROOT_PASSWORD: t5bVP6wM2Nt2iv
