@@ -45,9 +45,9 @@ export class ClientsController {
 
   @Delete(':id')
   @HttpCode(204)
-  async remove(@Param('id') id: string) {
+  remove(@Param('id') id: string) {
     try {
-      await this.clientsService.remove(id);
+      return this.clientsService.remove(id);
     } catch (error) {
       throw error
     }

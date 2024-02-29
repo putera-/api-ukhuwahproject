@@ -10,40 +10,40 @@ export class BlogsService {
     constructor(private prisma: PrismaService) { }
 
     async create(data: Prisma.BlogCreateInput): Promise<Blog> {
-        return await this.prisma.blog.create({
-            data
-        });
+
+        return await this.prisma.blog.create({ data });
     }
 
     async findAll(): Promise<Blog[]> {
-        return this.prisma.blog.findMany();
+        return this.prisma.blog.findMany({ where: { deleted: false } });
     }
 
     async findOne(id: string): Promise<Blog> {
-        return this.prisma.blog.findFirstOrThrow({
-            where: { id }
+        const blog = await this.prisma.blog.findUnique({
+            where: { id, deleted: false }
         });
+        if (!blog) throw new NotFoundException();
+
+        return blog;
     }
 
     async update(id: string, data: Prisma.BlogUpdateInput): Promise<Blog> {
+        await this.findOne(id);
+
         return this.prisma.blog.update({
-            where: { id },
+            where: { id, deleted: false },
             data
         });
     }
 
     async remove(id: string): Promise<void> {
+        await this.findOne(id);
 
-        const blog = await this.prisma.blog.findUnique({
-            where: { id }
+        await this.prisma.blog.update({
+            where: { id },
+            data: { deleted: true }
         });
 
-        // TODO handle exception
-        // if (!blog) throw new Error("Blog not found nyooo");
-        if (!blog) throw new NotFoundException();
-
-        await this.prisma.blog.delete({
-            where: { id }
-        });
+        return;
     }
 }
