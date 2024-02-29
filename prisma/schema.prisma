@@ -29,8 +29,8 @@ model User {
   name      String   @db.VarChar(100)
   password  String   @db.VarChar(100)
   auth      Auth[]
-  Client    Client   @relation(fields: [clientId], references: [id])
-  clientId  String
+  Client    Client?  @relation(fields: [clientId], references: [id])
+  clientId  String?
   blogs     Blog[]
   role      UserRole @default(MEMBER)
   deleted   Boolean  @default(false)
