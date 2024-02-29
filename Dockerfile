@@ -13,7 +13,6 @@ WORKDIR /app
 COPY package.json ./
 
 # Install dependencies
-RUN npm install -g @nestjs/cli
 RUN npm install
 
 # Copy the rest of the application code
@@ -22,4 +21,4 @@ COPY . .
 EXPOSE ${PORT}
 
 # Command to run your application
-CMD npx prisma generate && npm run migrate:deploy && npm run build
+CMD npx prisma generate && npm run migrate:deploy && npm run start

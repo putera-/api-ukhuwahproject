@@ -7,8 +7,8 @@ services:
     environment:
       PORT: 5001
       # for prisma
-      DATABASE_URL: mysql://root:t5bVP6wM2Nt2iv@db-ecourse-rehab-hati:3306/ecourse
+      DATABASE_URL: mysql://root:t5bVP6wM2Nt2iv@mysql-ecourse-rehab-hati:3306/ecourse
   # mysql database
-  db-ecourse-rehab-hati:
+  mysql-ecourse-rehab-hati:
     environment:
       MYSQL_ROOT_PASSWORD: t5bVP6wM2Nt2iv

@@ -10,19 +10,19 @@ services:
     image: nest-ecourse-rehab-hati:1.0.0
     restart: always
     ports:
-      - 5000:5000
+      - 5001:5001
     environment:
-      PORT: 5000
+      PORT: 5001
       # for prisma
-      DATABASE_URL: mysql://root:my-secret-pw@db-ecourse-rehab-hati:3306/ecourse
+      DATABASE_URL: mysql://root:my-secret-pw@mysql-ecourse-rehab-hati:3306/ecourse
     networks:
       - ecourse-rehab-hati
     depends_on:
-      - db-ecourse-rehab-hati
+      - mysql-ecourse-rehab-hati
 
   # mysql database
-  db-ecourse-rehab-hati:
-    container_name: db-ecourse-rehab-hati
+  mysql-ecourse-rehab-hati:
+    container_name: mysql-ecourse-rehab-hati
     image: mysql:8.3.0
     command: --default-authentication-plugin=mysql_native_password
     restart: always
@@ -30,14 +30,14 @@ services:
       MYSQL_ROOT_PASSWORD: my-secret-pw
       MYSQL_DATABASE: ecourse
     volumes:
-      - db-ecourse-rehab-hati:/var/lib/mysql
+      - db-ecourse-rehab-hati-v:/var/lib/mysql
     networks:
       - ecourse-rehab-hati
 
 # volumes
 volumes:
-  db-ecourse-rehab-hati:
-    name: db-ecourse-rehab-hati
+  db-ecourse-rehab-hati-v:
+    name: db-ecourse-rehab-hati-v
 
 # networks
 networks:
