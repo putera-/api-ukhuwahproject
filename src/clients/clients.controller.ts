@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, HttpCode } from '@nestjs/common';
 import { ClientsService } from './clients.service';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
@@ -12,7 +12,7 @@ export class ClientsController {
     try {
       return this.clientsService.create(createClientDto);
     } catch (error) {
-      console.log(error);
+      throw error
     }
   }
 
@@ -21,7 +21,7 @@ export class ClientsController {
     try {
       return this.clientsService.findAll();
     } catch (error) {
-      console.log(error);
+      throw error
     }
   }
 
@@ -30,7 +30,7 @@ export class ClientsController {
     try {
       return this.clientsService.findOne(id);
     } catch (error) {
-      console.log(error);
+      throw error
     }
   }
 
@@ -39,16 +39,17 @@ export class ClientsController {
     try {
       return this.clientsService.update(id, updateClientDto);
     } catch (error) {
-      console.log(error);
+      throw error
     }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  @HttpCode(204)
+  async remove(@Param('id') id: string) {
     try {
-      return this.clientsService.remove(id);
+      await this.clientsService.remove(id);
     } catch (error) {
-      console.log(error);
+      throw error
     }
   }
 }

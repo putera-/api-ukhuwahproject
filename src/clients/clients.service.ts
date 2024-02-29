@@ -1,6 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateClientDto } from './dto/create-client.dto';
-import { UpdateClientDto } from './dto/update-client.dto';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { Client } from 'interfaces/client.interface';
@@ -14,11 +12,13 @@ export class ClientsService {
   }
 
   async findAll(): Promise<Client[]> {
-    return this.prisma.client.findMany();
+    return this.prisma.client.findMany({
+      where: { deleted: false }
+    });
   }
 
   async findOne(id: string): Promise<Client> {
-    const client = await this.prisma.client.findUnique({ where: { id } });
+    const client = await this.prisma.client.findUnique({ where: { id, deleted: false } });
     if (!client) throw new NotFoundException();
 
     return client;
@@ -28,7 +28,7 @@ export class ClientsService {
     await this.findOne(id);
 
     return this.prisma.client.update({
-      where: { id },
+      where: { id, deleted: false },
       data
     });
   }
@@ -36,8 +36,9 @@ export class ClientsService {
   async remove(id: string): Promise<void> {
     await this.findOne(id);
 
-    await this.prisma.client.delete({
-      where: { id }
+    await this.prisma.client.update({
+      where: { id },
+      data: { deleted: true }
     });
 
     return
