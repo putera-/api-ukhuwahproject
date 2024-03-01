@@ -1,12 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, HttpCode, ConflictException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, HttpCode, ConflictException, ForbiddenException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateSuperUserDto } from './dto/create-superuser.dto';
+import { Public } from 'src/auth/auth.metadata';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
+  @Public()
   @Post()
   async create(@Body(new ValidationPipe()) data: CreateUserDto) {
     try {
@@ -20,6 +23,32 @@ export class UsersController {
       const checkUser = await this.usersService.findByEmail(data.email);
       if (checkUser) throw new ConflictException('Email is already taken!');
 
+      return this.usersService.create(data);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Public()
+  @Post('create-first-superuser')
+  async createFirstSuperAdmin(@Body(new ValidationPipe()) data: CreateSuperUserDto) {
+    try {
+      // check is super user already exist
+      const supers = await this.usersService.findSuperUser();
+      if (supers.length) throw new ForbiddenException();
+
+      // check is password
+      await this.usersService.checkPassword(data);
+
+      // email to lowercase
+      data.email = data.email.toLowerCase().trim();
+
+      // check is email taken?
+      const checkUser = await this.usersService.findByEmail(data.email);
+      if (checkUser) throw new ConflictException('Email is already taken!');
+
+      // set as superadmin
+      data.role = 'SUPERUSER';
       return this.usersService.create(data);
     } catch (error) {
       throw error;

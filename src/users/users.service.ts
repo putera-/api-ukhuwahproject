@@ -54,6 +54,14 @@ export class UsersService {
     return user;
   }
 
+  async findSuperUser(): Promise<User[]> {
+    const users = await this.prisma.user.findMany({
+      where: { role: 'SUPERUSER' },
+    });
+
+    return users;
+  }
+
   async update(id: string, data: Prisma.UserUpdateInput): Promise<User> {
     await this.findOne(id);
     return this.prisma.user.update({
