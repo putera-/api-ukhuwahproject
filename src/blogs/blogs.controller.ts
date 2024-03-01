@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, HttpCode, NotFoundException, Param, Patch, Post, Res, ValidationPipe } from '@nestjs/common';
 import { BlogsService } from './blogs.service';
-import { Blog } from 'interfaces/blog.interface';
+import { Blog } from 'src/blogs/blog.interface';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { Prisma } from '@prisma/client';
@@ -25,7 +25,7 @@ export class BlogsController {
 
             // TODO REMOVE, for testing
             data.clientId = 'dbffc57a-8018-4d70-a04e-cdb5ada5809d';
-            data.userId = '0081bb74-9279-4a8d-9744-109957c4b396';
+            data.authorId = '0081bb74-9279-4a8d-9744-109957c4b396';
 
             return this.blogService.create(data as Prisma.BlogCreateInput);
         } catch (error) {

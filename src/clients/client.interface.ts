@@ -1,5 +1,5 @@
 import { Blog } from "@prisma/client"
-import { User } from "./user.interface"
+import { User } from "../users/user.interface"
 
 export interface Client {
     id: string

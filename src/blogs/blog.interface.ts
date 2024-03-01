@@ -3,7 +3,7 @@ export interface Blog {
     title: string
     content: string
     clientId: string
-    userId: string
+    authorId: string
     deleted: boolean
     createdAt: Date
     updatedAt: Date

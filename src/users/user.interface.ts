@@ -1,6 +1,6 @@
 import { Blog } from "@prisma/client"
-import { Auth } from "./auth.interface"
-import { Client } from "./client.interface"
+import { Client } from "../clients/client.interface"
+import { Auth } from "src/auth/auth.interface"
 
 export interface User {
     id: string
@@ -11,7 +11,7 @@ export interface User {
     clientId?: string
     Client?: Client
     blogs?: Blog[]
-    role: 'SUPERADMIN' | 'CLIENT' | 'MEMBER'
+    role: 'SUPERUSER' | 'ADMIN' | 'MEMBER'
     deleted: boolean
     createdAt?: Date
     updatedAt?: Date

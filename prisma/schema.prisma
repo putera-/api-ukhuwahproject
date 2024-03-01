@@ -39,8 +39,8 @@ model User {
 }
 
 enum UserRole {
-  SUPERADMIN
-  CLIENT
+  SUPERUSER
+  ADMIN
   MEMBER
 }
 
@@ -59,8 +59,8 @@ model Blog {
   content   String   @db.Text
   Client    Client?  @relation(fields: [clientId], references: [id])
   clientId  String
-  User      User?    @relation(fields: [userId], references: [id])
-  userId    String
+  User      User?    @relation(fields: [authorId], references: [id])
+  authorId  String
   deleted   Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt

@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
-import { User } from 'interfaces/user.interface';
+import { User } from 'src/users/user.interface';
 import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 

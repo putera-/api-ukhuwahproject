@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Blog } from 'interfaces/blog.interface';
+import { Blog } from 'src/blogs/blog.interface';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { PrismaService } from 'src/prisma.service';
 import { Prisma } from '@prisma/client';
