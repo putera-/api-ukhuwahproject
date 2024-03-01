@@ -55,6 +55,52 @@ export class UsersController {
     }
   }
 
+
+  // TODO create superuser by super user
+  // TODO get superuser by superuser
+  @Get('superusers')
+  findAllSuperUsers() {
+    try {
+      return this.usersService.findAllByRole('SUPERUSER');
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
+  // TODO create admin by super user
+  // TODO get admin by superuser
+  @Get('admins')
+  findAllAdmins() {
+    try {
+      return this.usersService.findAllByRole('ADMIN');
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // TODO create staff by super user
+  // TODO get staff by admin
+  @Get('staffs')
+  findAllStaffs() {
+    try {
+      return this.usersService.findAllByRole('STAFF');
+    } catch (error) {
+      throw error;
+    }
+  }
+  // TODO get member by superuser / amin / staff
+  @Get('members')
+  findAllMembers() {
+    try {
+      return this.usersService.findAllByRole('MEMBER');
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
+  // TODO ONLY SUPERUSER
   @Get()
   findAll() {
     try {
@@ -67,6 +113,7 @@ export class UsersController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     try {
+      // TODO check by role
       return this.usersService.findOne(id);
     } catch (error) {
       throw error;
@@ -75,6 +122,8 @@ export class UsersController {
 
   @Patch(':id')
   async update(@Param('id') id: string, @Body() data: UpdateUserDto) {
+    // TODO check is belongs to auth user
+
     // handle change password
     if (data.password) await this.usersService.checkPassword(data);
 
