@@ -4,6 +4,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateSuperUserDto } from './dto/create-superuser.dto';
 import { Public } from 'src/auth/auth.metadata';
+import { Roles } from 'src/roles/roles.decorator';
+import { Role } from 'src/roles/role.enums';
 
 @Controller('users')
 export class UsersController {
@@ -57,7 +59,8 @@ export class UsersController {
 
 
   // TODO create superuser by super user
-  // TODO get superuser by superuser
+
+  @Roles(Role.Superuser)
   @Get('superusers')
   findAllSuperUsers() {
     try {
@@ -69,7 +72,8 @@ export class UsersController {
 
 
   // TODO create admin by super user
-  // TODO get admin by superuser
+
+  @Roles(Role.Superuser)
   @Get('admins')
   findAllAdmins() {
     try {
@@ -80,7 +84,8 @@ export class UsersController {
   }
 
   // TODO create staff by super user
-  // TODO get staff by admin
+
+  @Roles(Role.Superuser, Role.Admin)
   @Get('staffs')
   findAllStaffs() {
     try {
@@ -89,7 +94,8 @@ export class UsersController {
       throw error;
     }
   }
-  // TODO get member by superuser / amin / staff
+
+  @Roles(Role.Superuser, Role.Admin, Role.Staff)
   @Get('members')
   findAllMembers() {
     try {
@@ -100,7 +106,7 @@ export class UsersController {
   }
 
 
-  // TODO ONLY SUPERUSER
+  @Roles(Role.Superuser)
   @Get()
   findAll() {
     try {
