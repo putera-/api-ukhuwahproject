@@ -14,6 +14,7 @@ export class AuthService {
     async signIn(email: string, pass: string): Promise<any> {
         const user = await this.usersService.findByEmail(email);
 
+        // not found
         if (!user) throw new UnauthorizedException('Invalid Credentials!');
 
         // check email compare
@@ -21,6 +22,9 @@ export class AuthService {
         if (!isMatch) {
             throw new UnauthorizedException('Invalid Credentials!');
         }
+
+        // deleted
+        if (user.deleted) throw new UnauthorizedException('User is deleted!');
 
         // Generate a JWT and return it here
         // instead of the user object

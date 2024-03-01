@@ -11,7 +11,7 @@ export interface User {
     clientId?: string
     Client?: Client
     blogs?: Blog[]
-    role: 'SUPERUSER' | 'ADMIN' | 'MEMBER'
+    role: 'SUPERUSER' | 'ADMIN' | 'STAFF' | 'MEMBER'
     deleted: boolean
     createdAt?: Date
     updatedAt?: Date
