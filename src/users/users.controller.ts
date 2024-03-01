@@ -49,6 +49,9 @@ export class UsersController {
     // handle change password
     if (data.password) await this.usersService.checkPassword(data);
 
+    // prevent change email
+    if (data.email) delete data.email;
+
     try {
       return this.usersService.update(id, data);
     } catch (error) {
