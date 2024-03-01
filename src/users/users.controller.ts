@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, HttpCode, ConflictException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -12,6 +12,13 @@ export class UsersController {
     try {
       // check is password
       await this.usersService.checkPassword(data);
+
+      // email to lowercase
+      data.email = data.email.toLowerCase().trim();
+
+      // check is email taken?
+      const checkUser = await this.usersService.findByEmail(data.email);
+      if (checkUser) throw new ConflictException('Email is already taken!');
 
       return this.usersService.create(data);
     } catch (error) {

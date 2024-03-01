@@ -25,7 +25,7 @@ model Client {
 
 model User {
   id        String   @id @default(uuid())
-  email     String   @db.VarChar(100)
+  email     String   @unique @db.VarChar(100)
   name      String   @db.VarChar(100)
   password  String   @db.VarChar(100)
   auth      Auth[]
@@ -65,5 +65,6 @@ model Blog {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
+  @@index([title])
   @@map("blog")
 }
