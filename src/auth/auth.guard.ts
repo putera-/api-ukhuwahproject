@@ -39,6 +39,8 @@ export class AuthGuard implements CanActivate {
             // 💡 We're assigning the payload to the request object here
             // so that we can access it in our route handlers
             request['user'] = payload;
+
+            // TODO update token
         } catch {
             throw new UnauthorizedException();
         }
