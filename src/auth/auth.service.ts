@@ -9,12 +9,14 @@ import { User } from 'src/users/user.interface';
 
 @Injectable()
 export class AuthService {
-
     constructor(
         private usersService: UsersService,
         private jwtService: JwtService,
         private prisma: PrismaService
     ) { }
+
+    private blacklistedTokens: Set<string> = new Set();
+
 
     async signIn(email: string, pass: string): Promise<any> {
         const user: User = await this.usersService.findByEmail(email);
@@ -64,4 +66,13 @@ export class AuthService {
 
         await this.prisma.auth.create({ data });
     }
+
+    addBlackListToken(token: string) {
+        this.blacklistedTokens.add(token);
+    }
+
+    isTokenBlacklisted(token: string): boolean {
+        return this.blacklistedTokens.has(token);
+    }
+
 }

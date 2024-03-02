@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Request } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Post, Req, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from 'src/auth/auth.metadata';
 
@@ -14,6 +14,18 @@ export class AuthController {
         signInDto.email = signInDto.email.toLowerCase().trim();
 
         return this.authService.signIn(signInDto.email, signInDto.password);
+    }
+
+    @Delete('logout')
+    @HttpCode(204)
+    logOut(@Req() req) {
+        try {
+            const token = req.headers.authorization.split(' ')[1];
+
+            this.authService.addBlackListToken(token);
+        } catch (error) {
+            throw error;
+        }
     }
 
     @Get('profile')
