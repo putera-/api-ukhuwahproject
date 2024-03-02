@@ -30,7 +30,7 @@ export class UserStaffController {
   @Get()
   findAll() {
     try {
-      return this.usersService.findAllByRole('STAFF');
+      return this.usersService.findAll('STAFF');
     } catch (error) {
       throw error;
     }
@@ -39,7 +39,7 @@ export class UserStaffController {
   @Roles(Role.Admin)
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+    return this.usersService.findOne(id, 'STAFF');
   }
 
   @Roles(Role.Admin, Role.Staff)
@@ -54,7 +54,7 @@ export class UserStaffController {
     if (data.email) delete data.email;
 
     try {
-      return this.usersService.update(id, data);
+      return this.usersService.update(id, data, 'STAFF');
     } catch (error) {
       throw error;
     }
@@ -65,7 +65,7 @@ export class UserStaffController {
   @HttpCode(204)
   remove(@Param('id') id: string) {
     try {
-      return this.usersService.remove(id);
+      return this.usersService.remove(id, 'STAFF');
     } catch (error) {
       throw error;
     }

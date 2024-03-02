@@ -50,7 +50,7 @@ export class UserSuperadminController {
   @Get()
   findAll() {
     try {
-      return this.usersService.findAllByRole('SUPERUSER');
+      return this.usersService.findAll('SUPERUSER');
     } catch (error) {
       throw error;
     }
@@ -59,7 +59,7 @@ export class UserSuperadminController {
   @Roles(Role.Superuser)
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+    return this.usersService.findOne(id, 'SUPERUSER');
   }
 
   @Roles(Role.Superuser)
@@ -74,7 +74,7 @@ export class UserSuperadminController {
     if (data.email) delete data.email;
 
     try {
-      return this.usersService.update(id, data);
+      return this.usersService.update(id, data, 'SUPERUSER');
     } catch (error) {
       throw error;
     }
@@ -85,7 +85,7 @@ export class UserSuperadminController {
   @HttpCode(204)
   remove(@Param('id') id: string) {
     try {
-      return this.usersService.remove(id);
+      return this.usersService.remove(id, 'SUPERUSER');
     } catch (error) {
       throw error;
     }

@@ -6,6 +6,7 @@ import { Public } from 'src/auth/auth.metadata';
 import { Roles } from 'src/roles/roles.decorator';
 import { Role } from 'src/roles/role.enums';
 
+// THIS IS USER-MEMBER CONTROLLER
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
@@ -24,64 +25,22 @@ export class UsersController {
   }
 
 
-
-
-
-
-
-  // TODO create admin by super user
-
-  // get admin users
-  @Roles(Role.Superuser)
-  @Get('admins')
-  findAllAdmins() {
-    try {
-      return this.usersService.findAllByRole('ADMIN');
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  // TODO create staff by super user
-
-  // get user staffs
-  @Roles(Role.Superuser, Role.Admin)
-  @Get('staffs')
-  findAllStaffs() {
-    try {
-      return this.usersService.findAllByRole('STAFF');
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  // get user member
-  @Roles(Role.Superuser, Role.Admin, Role.Staff)
-  @Get('members')
-  findAllMembers() {
-    try {
-      return this.usersService.findAllByRole('MEMBER');
-    } catch (error) {
-      throw error;
-    }
-  }
-
-
-  @Roles(Role.Superuser)
+  @Roles(Role.Admin, Role.Staff)
   @Get()
   findAll() {
     try {
-      return this.usersService.findAll();
+      return this.usersService.findAll('MEMBER');
     } catch (error) {
       throw error;
     }
   }
 
+  @Roles(Role.Admin, Role.Staff)
   @Get(':id')
   findOne(@Param('id') id: string) {
     try {
       // TODO check by role
-      return this.usersService.findOne(id);
+      return this.usersService.findOne(id, 'MEMBER');
     } catch (error) {
       throw error;
     }
@@ -98,7 +57,7 @@ export class UsersController {
     if (data.email) delete data.email;
 
     try {
-      return this.usersService.update(id, data);
+      return this.usersService.update(id, data, 'MEMBER');
     } catch (error) {
       throw error;
     }
@@ -108,7 +67,7 @@ export class UsersController {
   @HttpCode(204)
   remove(@Param('id') id: string) {
     try {
-      return this.usersService.remove(id);
+      return this.usersService.remove(id, 'SUPERUSER');
     } catch (error) {
       throw error;
     }

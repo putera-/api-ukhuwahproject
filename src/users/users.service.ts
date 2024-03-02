@@ -28,16 +28,16 @@ export class UsersService {
     return user;
   }
 
-  async findAll(): Promise<User[]> {
+  async findAll(role: UserRole): Promise<User[]> {
     return this.prisma.user.findMany({
       where: { deleted: false },
       select: { ...select }
     });
   }
 
-  async findOne(id: string): Promise<User> {
+  async findOne(id: string, role: UserRole): Promise<User> {
     const user = await this.prisma.user.findUnique({
-      where: { id, deleted: false },
+      where: { id, role, deleted: false },
       select: { ...select }
     });
     if (!user) throw new NotFoundException();
@@ -53,15 +53,6 @@ export class UsersService {
     return user;
   }
 
-  async findAllByRole(role: UserRole): Promise<User[]> {
-    const users = await this.prisma.user.findMany({
-      where: { role, deleted: false },
-      select: { ...select }
-    });
-
-    return users;
-  }
-
   async findSuperUser(): Promise<User[]> {
     const users = await this.prisma.user.findMany({
       where: { role: 'SUPERUSER' },
@@ -70,19 +61,19 @@ export class UsersService {
     return users;
   }
 
-  async update(id: string, data: Prisma.UserUpdateInput): Promise<User> {
-    await this.findOne(id);
+  async update(id: string, data: Prisma.UserUpdateInput, role: UserRole): Promise<User> {
+    await this.findOne(id, role);
     return this.prisma.user.update({
-      where: { id, deleted: false },
+      where: { id, role, deleted: false },
       data,
       select: { ...select }
     });
   }
 
-  async remove(id: string): Promise<void> {
-    await this.findOne(id);
+  async remove(id: string, role: UserRole): Promise<void> {
+    await this.findOne(id, role);
     await this.prisma.user.update({
-      where: { id },
+      where: { id, role },
       data: { deleted: true }
     });
 
