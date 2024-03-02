@@ -11,7 +11,7 @@ import { Role } from 'src/roles/role.enums';
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
-  @Public()
+  @Public() // TODO check
   @Post()
   async create(@Body(new ValidationPipe()) data: CreateUserDto) {
     try {
@@ -31,48 +31,15 @@ export class UsersController {
     }
   }
 
-  @Public()
-  @Post('create-first-superuser')
-  async createFirstSuperAdmin(@Body(new ValidationPipe()) data: CreateSuperUserDto) {
-    try {
-      // check is super user already exist
-      const supers = await this.usersService.findSuperUser();
-      if (supers.length) throw new ForbiddenException();
-
-      // check is password
-      await this.usersService.checkPassword(data);
-
-      // email to lowercase
-      data.email = data.email.toLowerCase().trim();
-
-      // check is email taken?
-      const checkUser = await this.usersService.findByEmail(data.email);
-      if (checkUser) throw new ConflictException('Email is already taken!');
-
-      // set as superadmin
-      data.role = 'SUPERUSER';
-      return this.usersService.create(data);
-    } catch (error) {
-      throw error;
-    }
-  }
 
 
-  // TODO create superuser by super user
 
-  @Roles(Role.Superuser)
-  @Get('superusers')
-  findAllSuperUsers() {
-    try {
-      return this.usersService.findAllByRole('SUPERUSER');
-    } catch (error) {
-      throw error;
-    }
-  }
+
 
 
   // TODO create admin by super user
 
+  // get admin users
   @Roles(Role.Superuser)
   @Get('admins')
   findAllAdmins() {
@@ -85,6 +52,7 @@ export class UsersController {
 
   // TODO create staff by super user
 
+  // get user staffs
   @Roles(Role.Superuser, Role.Admin)
   @Get('staffs')
   findAllStaffs() {
@@ -95,6 +63,7 @@ export class UsersController {
     }
   }
 
+  // get user member
   @Roles(Role.Superuser, Role.Admin, Role.Staff)
   @Get('members')
   findAllMembers() {
@@ -127,7 +96,7 @@ export class UsersController {
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() data: UpdateUserDto) {
+  async update(@Param('id') id: string, @Body(new ValidationPipe()) data: UpdateUserDto) {
     // TODO check is belongs to auth user
 
     // handle change password

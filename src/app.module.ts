@@ -6,9 +6,17 @@ import { ClientsModule } from './clients/clients.module';
 import { UsersModule } from './users/users.module';
 import { BlogsModule } from './blogs/blogs.module';
 import { AuthModule } from './auth/auth.module';
+import { UserSuperadminModule } from './user-superadmin/user-superadmin.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), ClientsModule, UsersModule, AuthModule, BlogsModule],
+  imports: [
+    ConfigModule.forRoot(),
+    ClientsModule,
+    UserSuperadminModule,
+    UsersModule,
+    AuthModule,
+    BlogsModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
