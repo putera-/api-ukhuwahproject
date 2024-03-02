@@ -19,7 +19,7 @@ export class AuthController {
     @Get('extend-access-token')
     async extendAccessToken(@Req() req) {
         const user = req.user;
-        const { access_token, exp } = await this.authService.createToken(user.sub, user.username, user.role);
+        const { access_token, exp } = await this.authService.createToken(user.id, user.username, user.role);
 
         // black list old token
         const token = req.headers.authorization.split(' ')[1];
