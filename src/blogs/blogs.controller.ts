@@ -1,14 +1,18 @@
-import { Body, Controller, Delete, Get, HttpCode, NotFoundException, Param, Patch, Post, Res, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Req, Res, ValidationPipe } from '@nestjs/common';
 import { BlogsService } from './blogs.service';
 import { Blog } from 'src/blogs/blog.interface';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { Prisma } from '@prisma/client';
+import { Roles } from 'src/roles/roles.decorator';
+import { Role } from 'src/roles/role.enums';
+import { Public } from 'src/auth/auth.metadata';
 
 @Controller('blogs')
 export class BlogsController {
     constructor(private blogService: BlogsService) { }
 
+    @Public()
     @Get()
     async findAll(): Promise<Blog[]> {
         try {
@@ -18,14 +22,16 @@ export class BlogsController {
         }
     }
 
+    @Roles(Role.Admin, Role.Staff)
     @Post()
-    async create(@Body(new ValidationPipe()) createBlogDto: CreateBlogDto): Promise<Blog> {
+    async create(@Req() req, @Body(new ValidationPipe()) createBlogDto: CreateBlogDto): Promise<Blog> {
         try {
-            const data: Record<string, any> = { ...createBlogDto };
+            const data: Record<string, any> | Prisma.BlogCreateInput = { ...createBlogDto };
 
-            // TODO REMOVE, for testing
-            data.clientId = 'dbffc57a-8018-4d70-a04e-cdb5ada5809d';
-            data.authorId = '0081bb74-9279-4a8d-9744-109957c4b396';
+            // set author
+            data.author = {
+                connect: { id: req.user.id }
+            }
 
             return this.blogService.create(data as Prisma.BlogCreateInput);
         } catch (error) {
@@ -33,6 +39,7 @@ export class BlogsController {
         }
     }
 
+    @Public()
     @Get(':id')
     findOne(@Param('id') id: string) {
         try {
@@ -42,6 +49,7 @@ export class BlogsController {
         }
     }
 
+    @Roles(Role.Admin, Role.Staff)
     @Patch(':id')
     update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto) {
         try {
@@ -51,6 +59,7 @@ export class BlogsController {
         }
     }
 
+    @Roles(Role.Admin, Role.Staff)
     @Delete(':id')
     @HttpCode(204)
     remove(@Param('id') id: string) {
