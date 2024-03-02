@@ -1,6 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, ConflictException, HttpCode } from '@nestjs/common';
 import { CreateUserStaffDto } from './dto/create-user-staff.dto';
-import { UpdateUserStaffDto } from './dto/update-user-staff.dto';
 import { UsersService } from 'src/users/users.service';
 import { Roles } from 'src/roles/roles.decorator';
 import { Role } from 'src/roles/role.enums';
@@ -42,23 +41,8 @@ export class UserStaffController {
     return this.usersService.findOne(id, 'STAFF');
   }
 
-  @Roles(Role.Admin, Role.Staff)
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body(new ValidationPipe()) data: UpdateUserStaffDto) {
-    // TODO check is belongs to auth user
-
-    // handle change password
-    if (data.password) await this.usersService.checkPassword(data);
-
-    // prevent change email
-    if (data.email) delete data.email;
-
-    try {
-      return this.usersService.update(id, data, 'STAFF');
-    } catch (error) {
-      throw error;
-    }
-  }
+  // @Patch()
+  // use global self user upate
 
   @Roles(Role.Admin)
   @Delete(':id')

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, HttpCode, Req } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -46,9 +46,11 @@ export class UsersController {
     }
   }
 
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body(new ValidationPipe()) data: UpdateUserDto) {
-    // TODO check is belongs to auth user
+  // update selft superadmin, admin, staff, member
+  @Patch()
+  async update(@Req() req, @Body(new ValidationPipe()) data: UpdateUserDto) {
+    // only can update belongs to auth user
+    const { id } = req.user;
 
     // handle change password
     if (data.password) await this.usersService.checkPassword(data);
@@ -57,7 +59,7 @@ export class UsersController {
     if (data.email) delete data.email;
 
     try {
-      return this.usersService.update(id, data, 'MEMBER');
+      return this.usersService.update(id, data);
     } catch (error) {
       throw error;
     }

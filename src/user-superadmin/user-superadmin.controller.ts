@@ -1,6 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, ForbiddenException, HttpCode } from '@nestjs/common';
 import { CreateUserSuperadminDto } from './dto/create-user-superadmin.dto';
-import { UpdateUserSuperadminDto } from './dto/update-user-superadmin.dto';
 import { Public } from 'src/auth/auth.metadata';
 import { UsersService } from 'src/users/users.service';
 import { Roles } from 'src/roles/roles.decorator';
@@ -62,23 +61,8 @@ export class UserSuperadminController {
     return this.usersService.findOne(id, 'SUPERUSER');
   }
 
-  @Roles(Role.Superuser)
-  @Patch(':id')
-  async update(@Param('id') id: string, @Body(new ValidationPipe()) data: UpdateUserSuperadminDto) {
-    // TODO check is belongs to auth user
-
-    // handle change password
-    if (data.password) await this.usersService.checkPassword(data);
-
-    // prevent change email
-    if (data.email) delete data.email;
-
-    try {
-      return this.usersService.update(id, data, 'SUPERUSER');
-    } catch (error) {
-      throw error;
-    }
-  }
+  // @Patch()
+  // use global self user upate
 
   @Roles(Role.Superuser)
   @Delete(':id')

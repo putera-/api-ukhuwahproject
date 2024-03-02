@@ -61,10 +61,9 @@ export class UsersService {
     return users;
   }
 
-  async update(id: string, data: Prisma.UserUpdateInput, role: UserRole): Promise<User> {
-    await this.findOne(id, role);
+  async update(id: string, data: Prisma.UserUpdateInput): Promise<User> {
     return this.prisma.user.update({
-      where: { id, role, deleted: false },
+      where: { id, deleted: false },
       data,
       select: { ...select }
     });
