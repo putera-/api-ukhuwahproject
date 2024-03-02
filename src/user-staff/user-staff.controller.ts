@@ -1,18 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ConflictException, ValidationPipe, HttpCode } from '@nestjs/common';
-import { CreateUserAdminDto } from './dto/create-user-admin.dto';
-import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, ConflictException, HttpCode } from '@nestjs/common';
+import { CreateUserStaffDto } from './dto/create-user-staff.dto';
+import { UpdateUserStaffDto } from './dto/update-user-staff.dto';
 import { UsersService } from 'src/users/users.service';
 import { Roles } from 'src/roles/roles.decorator';
 import { Role } from 'src/roles/role.enums';
 
-@Controller('user-admin')
-export class UserAdminController {
+@Controller('user-staff')
+export class UserStaffController {
   constructor(private readonly usersService: UsersService) { }
 
-  // create admin by superuser
-  @Roles(Role.Superuser)
+  // create staff by admin
+  @Roles(Role.Admin)
   @Post()
-  async create(@Body(new ValidationPipe()) data: CreateUserAdminDto) {
+  async create(@Body(new ValidationPipe()) data: CreateUserStaffDto) {
     try {
       // check is password
       await this.usersService.checkPassword(data);
@@ -25,33 +25,33 @@ export class UserAdminController {
       if (checkUser) throw new ConflictException('Email is already taken!');
 
       // set as superadmin
-      data.role = 'ADMIN';
+      data.role = 'STAFF';
       return this.usersService.create(data);
     } catch (error) {
       throw error;
     }
   }
 
-  // get superuser by super user
-  @Roles(Role.Superuser)
+  // get staff by admin
+  @Roles(Role.Admin)
   @Get()
   findAll() {
     try {
-      return this.usersService.findAllByRole('ADMIN');
+      return this.usersService.findAllByRole('STAFF');
     } catch (error) {
       throw error;
     }
   }
 
-  @Roles(Role.Superuser)
+  @Roles(Role.Admin)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
 
-  @Roles(Role.Superuser, Role.Admin)
+  @Roles(Role.Admin, Role.Staff)
   @Patch(':id')
-  async update(@Param('id') id: string, @Body(new ValidationPipe()) data: UpdateUserAdminDto) {
+  async update(@Param('id') id: string, @Body(new ValidationPipe()) data: UpdateUserStaffDto) {
     // TODO check is belongs to auth user
 
     // handle change password
@@ -67,7 +67,7 @@ export class UserAdminController {
     }
   }
 
-  @Roles(Role.Superuser)
+  @Roles(Role.Admin)
   @Delete(':id')
   @HttpCode(204)
   remove(@Param('id') id: string) {

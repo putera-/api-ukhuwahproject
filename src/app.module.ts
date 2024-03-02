@@ -8,6 +8,7 @@ import { BlogsModule } from './blogs/blogs.module';
 import { AuthModule } from './auth/auth.module';
 import { UserSuperadminModule } from './user-superadmin/user-superadmin.module';
 import { UserAdminModule } from './user-admin/user-admin.module';
+import { UserStaffModule } from './user-staff/user-staff.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { UserAdminModule } from './user-admin/user-admin.module';
     ClientsModule,
     UserSuperadminModule,
     UserAdminModule,
+    UserStaffModule,
     UsersModule,
     AuthModule,
     BlogsModule,
