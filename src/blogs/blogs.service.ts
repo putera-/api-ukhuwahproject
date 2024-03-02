@@ -15,12 +15,20 @@ export class BlogsService {
     }
 
     async findAll(): Promise<Blog[]> {
-        return this.prisma.blog.findMany({ where: { deleted: false } });
+        return this.prisma.blog.findMany({
+            where: { deleted: false },
+            include: {
+                author: true
+            }
+        });
     }
 
     async findOne(id: string): Promise<Blog> {
         const blog = await this.prisma.blog.findUnique({
-            where: { id, deleted: false }
+            where: { id, deleted: false },
+            include: {
+                author: true
+            }
         });
         if (!blog) throw new NotFoundException();
 
