@@ -7,12 +7,14 @@ import { UsersModule } from './users/users.module';
 import { BlogsModule } from './blogs/blogs.module';
 import { AuthModule } from './auth/auth.module';
 import { UserSuperadminModule } from './user-superadmin/user-superadmin.module';
+import { UserAdminModule } from './user-admin/user-admin.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     ClientsModule,
     UserSuperadminModule,
+    UserAdminModule,
     UsersModule,
     AuthModule,
     BlogsModule,
