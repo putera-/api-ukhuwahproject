@@ -16,6 +16,18 @@ export class AuthController {
         return this.authService.signIn(signInDto.email, signInDto.password);
     }
 
+    @Get('extend-access-token')
+    async extendAccessToken(@Req() req) {
+        const user = req.user;
+        const { access_token, exp } = await this.authService.createToken(user.sub, user.username, user.role);
+
+        // black list old token
+        const token = req.headers.authorization.split(' ')[1];
+        this.authService.addBlackListToken(token);
+
+        return { access_token, exp };
+    }
+
     @Delete('logout')
     @HttpCode(204)
     logOut(@Req() req) {

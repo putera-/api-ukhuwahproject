@@ -35,17 +35,23 @@ export class AuthService {
 
         // Generate a JWT and return it here
         // instead of the user object
+        const { access_token, exp } = await this.createToken(user.id, user.email, user.role);
+
+        return { access_token, exp };
+    }
+
+    async createToken(userId: string, email: string, role: string): Promise<Record<string, any>> {
         const payload = {
-            sub: user.id,
-            username: user.email,
-            role: user.role
+            sub: userId,
+            username: email,
+            role: role
         };
 
-        const access_token: string = await this.jwtService.signAsync(payload) as string;
-        // expired date, add 1 day
+        const access_token = await this.jwtService.signAsync(payload) as string;
         const exp: number = Math.round(dayjs().add(1, 'd').valueOf());
 
-        await this.createAuth(user.id, access_token, exp);
+        // save to db
+        await this.createAuth(userId, access_token, exp);
 
         return { access_token, exp };
     }
