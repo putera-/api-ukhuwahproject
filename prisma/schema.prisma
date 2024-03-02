@@ -42,12 +42,13 @@ enum UserRole {
 }
 
 model Auth {
-  id        String   @id @default(uuid())
-  user      User?    @relation(fields: [userId], references: [id])
-  userId    String
-  token     String   @db.VarChar(200)
-  deleted   Boolean  @default(false)
-  createdAt DateTime @default(now())
+  id           String   @id @default(uuid())
+  user         User?    @relation(fields: [userId], references: [id])
+  userId       String
+  access_token String   @db.VarChar(300)
+  exp          BigInt   @db.BigInt
+  deleted      Boolean  @default(false)
+  createdAt    DateTime @default(now())
 }
 
 model Blog {
