@@ -8,7 +8,6 @@ const select = {
   id: true,
   email: true,
   name: true,
-  clientId: true,
   role: true,
   deleted: true,
   createdAt: true,
