@@ -19,7 +19,7 @@ export class UserSuperadminController {
       if (supers.length) throw new ForbiddenException();
 
       // validate new user
-      this.usersService.validateNewUser(data);
+      await this.usersService.validateNewUser(data);
 
       // set as superadmin
       data.role = 'SUPERUSER';
@@ -35,7 +35,7 @@ export class UserSuperadminController {
   async create(@Body(new ValidationPipe()) data: CreateUserSuperadminDto) {
     try {
       // validate new user
-      this.usersService.validateNewUser(data);
+      await this.usersService.validateNewUser(data);
 
       // set as superadmin
       data.role = 'SUPERUSER';

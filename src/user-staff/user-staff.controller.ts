@@ -15,7 +15,7 @@ export class UserStaffController {
   async create(@Body(new ValidationPipe()) data: CreateUserStaffDto) {
     try {
       // validate new user
-      this.usersService.validateNewUser(data);
+      await this.usersService.validateNewUser(data);
 
       // set as superadmin
       data.role = 'STAFF';

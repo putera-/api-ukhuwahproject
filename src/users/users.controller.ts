@@ -15,7 +15,7 @@ export class UsersController {
   async create(@Body(new ValidationPipe()) data: CreateUserDto) {
     try {
       // validate new user
-      this.usersService.validateNewUser(data);
+      await this.usersService.validateNewUser(data);
 
       return this.usersService.create(data);
     } catch (error) {
