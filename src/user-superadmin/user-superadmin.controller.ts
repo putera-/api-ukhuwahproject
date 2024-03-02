@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, ForbiddenException, ConflictException, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, ForbiddenException, HttpCode } from '@nestjs/common';
 import { CreateUserSuperadminDto } from './dto/create-user-superadmin.dto';
 import { UpdateUserSuperadminDto } from './dto/update-user-superadmin.dto';
 import { Public } from 'src/auth/auth.metadata';
@@ -8,7 +8,6 @@ import { Role } from 'src/roles/role.enums';
 
 @Controller('user-superadmin')
 export class UserSuperadminController {
-  // constructor(private readonly userSuperadminService: UserSuperadminService) {}
   constructor(private readonly usersService: UsersService) { }
 
   @Public()
@@ -19,15 +18,8 @@ export class UserSuperadminController {
       const supers = await this.usersService.findSuperUser();
       if (supers.length) throw new ForbiddenException();
 
-      // check is password
-      await this.usersService.checkPassword(data);
-
-      // email to lowercase
-      data.email = data.email.toLowerCase().trim();
-
-      // check is email taken?
-      const checkUser = await this.usersService.findByEmail(data.email);
-      if (checkUser) throw new ConflictException('Email is already taken!');
+      // validate new user
+      this.usersService.validateNewUser(data);
 
       // set as superadmin
       data.role = 'SUPERUSER';
@@ -42,15 +34,8 @@ export class UserSuperadminController {
   @Post()
   async create(@Body(new ValidationPipe()) data: CreateUserSuperadminDto) {
     try {
-      // check is password
-      await this.usersService.checkPassword(data);
-
-      // email to lowercase
-      data.email = data.email.toLowerCase().trim();
-
-      // check is email taken?
-      const checkUser = await this.usersService.findByEmail(data.email);
-      if (checkUser) throw new ConflictException('Email is already taken!');
+      // validate new user
+      this.usersService.validateNewUser(data);
 
       // set as superadmin
       data.role = 'SUPERUSER';

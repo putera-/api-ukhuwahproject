@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ConflictException, ValidationPipe, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, HttpCode } from '@nestjs/common';
 import { CreateUserAdminDto } from './dto/create-user-admin.dto';
 import { UpdateUserAdminDto } from './dto/update-user-admin.dto';
 import { UsersService } from 'src/users/users.service';
@@ -14,15 +14,8 @@ export class UserAdminController {
   @Post()
   async create(@Body(new ValidationPipe()) data: CreateUserAdminDto) {
     try {
-      // check is password
-      await this.usersService.checkPassword(data);
-
-      // email to lowercase
-      data.email = data.email.toLowerCase().trim();
-
-      // check is email taken?
-      const checkUser = await this.usersService.findByEmail(data.email);
-      if (checkUser) throw new ConflictException('Email is already taken!');
+      // validate new user
+      this.usersService.validateNewUser(data);
 
       // set as superadmin
       data.role = 'ADMIN';

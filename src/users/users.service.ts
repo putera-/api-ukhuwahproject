@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { User } from 'src/users/user.interface';
 import { Prisma, UserRole } from '@prisma/client';
@@ -88,6 +88,18 @@ export class UsersService {
     });
 
     return;
+  }
+
+  async validateNewUser(data: any) {
+    // check is password
+    await this.checkPassword(data);
+
+    // email to lowercase
+    data.email = data.email.toLowerCase().trim();
+
+    // check is email taken?
+    const checkUser = await this.findByEmail(data.email);
+    if (checkUser) throw new ConflictException('Email is already taken!');
   }
 
   async checkPassword(data) {

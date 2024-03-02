@@ -14,15 +14,8 @@ export class UserStaffController {
   @Post()
   async create(@Body(new ValidationPipe()) data: CreateUserStaffDto) {
     try {
-      // check is password
-      await this.usersService.checkPassword(data);
-
-      // email to lowercase
-      data.email = data.email.toLowerCase().trim();
-
-      // check is email taken?
-      const checkUser = await this.usersService.findByEmail(data.email);
-      if (checkUser) throw new ConflictException('Email is already taken!');
+      // validate new user
+      this.usersService.validateNewUser(data);
 
       // set as superadmin
       data.role = 'STAFF';

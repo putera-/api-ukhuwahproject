@@ -1,8 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, HttpCode, ConflictException, ForbiddenException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, HttpCode } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { CreateSuperUserDto } from './dto/create-superuser.dto';
 import { Public } from 'src/auth/auth.metadata';
 import { Roles } from 'src/roles/roles.decorator';
 import { Role } from 'src/roles/role.enums';
@@ -15,15 +14,8 @@ export class UsersController {
   @Post()
   async create(@Body(new ValidationPipe()) data: CreateUserDto) {
     try {
-      // check is password
-      await this.usersService.checkPassword(data);
-
-      // email to lowercase
-      data.email = data.email.toLowerCase().trim();
-
-      // check is email taken?
-      const checkUser = await this.usersService.findByEmail(data.email);
-      if (checkUser) throw new ConflictException('Email is already taken!');
+      // validate new user
+      this.usersService.validateNewUser(data);
 
       return this.usersService.create(data);
     } catch (error) {
