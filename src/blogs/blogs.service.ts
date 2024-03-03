@@ -13,12 +13,16 @@ export class BlogsService {
         private blogCategoryService: BlogCategoriesService,
     ) { }
 
-    async create(data: Prisma.BlogCreateInput): Promise<Blog> {
+    async create(data: Prisma.BlogCreateInput, photos: Prisma.PhotoCreateInput[]): Promise<Blog> {
         return await this.prisma.blog.create({
-            data,
+            data: {
+                ...data,
+                photos: { create: photos }
+            },
             include: {
                 author: true,
-                category: true
+                category: true,
+                photos: true
             }
         });
     }
@@ -28,7 +32,8 @@ export class BlogsService {
             where: { deleted: false },
             include: {
                 author: true,
-                category: true
+                category: true,
+                photos: true
             }
         });
     }
@@ -38,7 +43,8 @@ export class BlogsService {
             where: { id, deleted: false },
             include: {
                 author: true,
-                category: true
+                category: true,
+                photos: true
             }
         });
         if (!blog) throw new NotFoundException();
@@ -54,7 +60,8 @@ export class BlogsService {
             data,
             include: {
                 author: true,
-                category: true
+                category: true,
+                photos: true
             }
         });
     }

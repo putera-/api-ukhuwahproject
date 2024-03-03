@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Req, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Req, UploadedFiles, UseInterceptors, ValidationPipe } from '@nestjs/common';
 import { BlogsService } from './blogs.service';
 import { Blog } from 'src/blogs/blogs.interface';
 import { CreateBlogDto } from './dto/create-blog.dto';
@@ -7,10 +7,15 @@ import { Prisma } from '@prisma/client';
 import { Roles } from 'src/roles/roles.decorator';
 import { Role } from 'src/roles/role.enums';
 import { Public } from 'src/auth/auth.metadata';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { PhotosService } from 'src/photos/photos.service';
 
 @Controller('blogs')
 export class BlogsController {
-    constructor(private blogService: BlogsService) { }
+    constructor(
+        private blogService: BlogsService,
+        private photoService: PhotosService,
+    ) { }
 
     @Public()
     @Get()
@@ -24,8 +29,13 @@ export class BlogsController {
 
     @Roles(Role.Admin, Role.Staff)
     @Post()
-    async create(@Req() req, @Body(new ValidationPipe()) createBlogDto: CreateBlogDto): Promise<Blog> {
+    @UseInterceptors(FilesInterceptor('photos'))
+    async create(@Req() req, @Body(new ValidationPipe()) createBlogDto: CreateBlogDto, @UploadedFiles() files: Array<Express.Multer.File>): Promise<Blog> {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         try {
+            // save photos
+            const photos = await this.photoService.createMany(files, uniqueSuffix)
+
             // get category
             const category = await this.blogService.getCategory(createBlogDto.category);
 
@@ -40,8 +50,11 @@ export class BlogsController {
                 connect: { id: category.id }
             }
 
-            return this.blogService.create(data as Prisma.BlogCreateInput);
+            return this.blogService.create(data as Prisma.BlogCreateInput, photos);
         } catch (error) {
+            // remove photo
+            this.photoService.removeMany(files, uniqueSuffix);
+
             throw error;
         }
     }

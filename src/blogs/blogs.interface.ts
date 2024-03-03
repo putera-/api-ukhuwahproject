@@ -1,4 +1,5 @@
 import { BlogCategory } from "src/blog_categories/blog_categories.interface"
+import { Photo } from "src/photos/photos.interface"
 import { User } from "src/users/users.interface"
 
 export interface Blog {
@@ -8,6 +9,7 @@ export interface Blog {
     author?: User
     authorId: string
     category?: BlogCategory
+    photos?: Photo[]
     deleted: boolean
     createdAt: Date
     updatedAt: Date

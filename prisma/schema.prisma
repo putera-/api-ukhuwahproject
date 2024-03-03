@@ -57,6 +57,7 @@ model Blog {
   author         User         @relation(fields: [authorId], references: [id])
   authorId       String
   category       BlogCategory @relation(fields: [blogCategoryId], references: [id])
+  photos         Photo[]
   deleted        Boolean      @default(false)
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @default(now()) @updatedAt
@@ -69,9 +70,18 @@ model Blog {
 model BlogCategory {
   id        String   @id @default(uuid())
   title     String   @db.VarChar(50)
-  Blog      Blog[]
+  blogs     Blog[]
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
   @@map("blog_category")
+}
+
+model Photo {
+  id      String  @id @default(uuid())
+  path    String  @db.VarChar(255)
+  path_md String  @db.VarChar(255)
+  index   Int     @default(0) @db.Int
+  blog    Blog?   @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  blogId  String?
 }
