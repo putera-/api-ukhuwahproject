@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import { ClientsModule } from './clients/clients.module';
+import { ClientModule } from './client/client.module';
 import { UsersModule } from './users/users.module';
 import { BlogsModule } from './blogs/blogs.module';
 import { AuthModule } from './auth/auth.module';
@@ -16,7 +16,7 @@ import { RolesGuard } from './roles/roles.guard';
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    ClientsModule,
+    ClientModule,
     UserSuperadminModule,
     UserAdminModule,
     UserStaffModule,
