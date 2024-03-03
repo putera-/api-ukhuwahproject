@@ -26,11 +26,18 @@ export class BlogsController {
     @Post()
     async create(@Req() req, @Body(new ValidationPipe()) createBlogDto: CreateBlogDto): Promise<Blog> {
         try {
+            // get category
+            const category = await this.blogService.getCategory(createBlogDto.category);
+
             const data: Record<string, any> | Prisma.BlogCreateInput = { ...createBlogDto };
 
             // set author
             data.author = {
                 connect: { id: req.user.id }
+            }
+            // set category
+            data.category = {
+                connect: { id: category.id }
             }
 
             return this.blogService.create(data as Prisma.BlogCreateInput);
@@ -51,9 +58,19 @@ export class BlogsController {
 
     @Roles(Role.Admin, Role.Staff)
     @Patch(':id')
-    update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto) {
+    async update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto): Promise<Blog> {
         try {
-            return this.blogService.update(id, updateBlogDto);
+            // get category
+            const category = await this.blogService.getCategory(updateBlogDto.category);
+
+            const data: Record<string, any> | Prisma.BlogCreateInput = { ...updateBlogDto };
+
+            // set category
+            data.category = {
+                connect: { id: category.id }
+            }
+
+            return this.blogService.update(id, data as Prisma.BlogUpdateInput);
         } catch (error) {
             throw error;
         }

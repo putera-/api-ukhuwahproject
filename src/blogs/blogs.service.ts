@@ -2,23 +2,33 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Blog } from 'src/blogs/blogs.interface';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { PrismaService } from 'src/prisma.service';
-import { Prisma } from '@prisma/client';
+import { BlogCategory, Prisma } from '@prisma/client';
 import { UpdateBlogDto } from './dto/update-blog.dto';
+import { BlogCategoriesService } from 'src/blog_categories/blog_categories.service';
 
 @Injectable()
 export class BlogsService {
-    constructor(private prisma: PrismaService) { }
+    constructor(
+        private prisma: PrismaService,
+        private blogCategoryService: BlogCategoriesService,
+    ) { }
 
     async create(data: Prisma.BlogCreateInput): Promise<Blog> {
-
-        return await this.prisma.blog.create({ data });
+        return await this.prisma.blog.create({
+            data,
+            include: {
+                author: true,
+                category: true
+            }
+        });
     }
 
     async findAll(): Promise<Blog[]> {
         return this.prisma.blog.findMany({
             where: { deleted: false },
             include: {
-                author: true
+                author: true,
+                category: true
             }
         });
     }
@@ -27,7 +37,8 @@ export class BlogsService {
         const blog = await this.prisma.blog.findUnique({
             where: { id, deleted: false },
             include: {
-                author: true
+                author: true,
+                category: true
             }
         });
         if (!blog) throw new NotFoundException();
@@ -40,7 +51,11 @@ export class BlogsService {
 
         return this.prisma.blog.update({
             where: { id, deleted: false },
-            data
+            data,
+            include: {
+                author: true,
+                category: true
+            }
         });
     }
 
@@ -53,5 +68,16 @@ export class BlogsService {
         });
 
         return;
+    }
+
+    async getCategory(title: string): Promise<BlogCategory> {
+        // get category id
+        let category = await this.blogCategoryService.findOne(title);
+        if (!category) {
+            // create if null
+            category = await this.blogCategoryService.create(title);
+        }
+
+        return category;
     }
 }

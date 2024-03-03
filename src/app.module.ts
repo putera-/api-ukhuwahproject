@@ -12,6 +12,8 @@ import { UserStaffModule } from './user-staff/user-staff.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/auth.guard';
 import { RolesGuard } from './roles/roles.guard';
+// import { BlogCategoriesModule } from './blog_categories/blog_categories.module';
+import { BlogCategoriesModule } from './blog_categories/blog_categories.module';
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { RolesGuard } from './roles/roles.guard';
     UsersModule,
     AuthModule,
     BlogsModule,
+    BlogCategoriesModule,
+    // BlogCategoriesModule,
   ],
   controllers: [AppController],
   providers: [

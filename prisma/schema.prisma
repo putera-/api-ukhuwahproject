@@ -52,15 +52,27 @@ model Auth {
 }
 
 model Blog {
-  id        String   @id @default(uuid())
-  title     String   @db.VarChar(100)
-  content   String   @db.Text
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  String
-  deleted   Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  id             String       @id @default(uuid())
+  title          String       @db.VarChar(100)
+  content        String       @db.Text
+  author         User         @relation(fields: [authorId], references: [id])
+  authorId       String
+  category       BlogCategory @relation(fields: [blogCategoryId], references: [id])
+  deleted        Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @default(now()) @updatedAt
+  blogCategoryId String
 
   @@index([title])
   @@map("blog")
+}
+
+model BlogCategory {
+  id        String   @id @default(uuid())
+  title     String   @db.VarChar(50)
+  Blog      Blog[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@map("blog_category")
 }
