@@ -15,8 +15,14 @@ export class BlogCategoriesService {
     });
   }
 
-  findAll() {
-    return `This action returns all blogCategories`;
+  async findAll(): Promise<BlogCategory[]> {
+    return this.prisma.blogCategory.findMany({
+      where: {
+        Blog: {
+          some: { deleted: false }
+        }
+      }
+    });
   }
 
   async findOne(title: string): Promise<BlogCategory> {

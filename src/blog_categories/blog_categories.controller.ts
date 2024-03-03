@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { BlogCategoriesService } from './blog_categories.service';
 import { CreateBlogCategoryDto } from './dto/create-blog_category.dto';
 import { UpdateBlogCategoryDto } from './dto/update-blog_category.dto';
+import { Public } from 'src/auth/auth.metadata';
 
 @Controller('blog-categories')
 export class BlogCategoriesController {
@@ -12,10 +13,11 @@ export class BlogCategoriesController {
   //   return this.blogCategoriesService.create(createBlogCategoryDto);
   // }
 
-  // @Get()
-  // findAll() {
-  //   return this.blogCategoriesService.findAll();
-  // }
+  @Public()
+  @Get()
+  findAll() {
+    return this.blogCategoriesService.findAll();
+  }
 
   // @Get(':id')
   // findOne(@Param('id') id: string) {
