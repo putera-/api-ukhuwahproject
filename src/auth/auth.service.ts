@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import dayjs from 'dayjs';
 import { PrismaService } from 'src/prisma.service';
 import { Prisma } from '@prisma/client';
-import { User } from 'src/users/user.interface';
+import { User } from 'src/users/users.interface';
 
 @Injectable()
 export class AuthService {

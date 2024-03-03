@@ -1,5 +1,5 @@
-import { Blog } from "@prisma/client"
 import { Auth } from "src/auth/auth.interface"
+import { Blog } from "src/blogs/blogs.interface"
 
 export interface User {
     id: string

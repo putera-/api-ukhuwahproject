@@ -1,4 +1,4 @@
-import { User } from "src/users/user.interface"
+import { User } from "src/users/users.interface"
 
 export interface Auth {
     id: string

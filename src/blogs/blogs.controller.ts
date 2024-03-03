@@ -1,6 +1,6 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post, Req, Res, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post, Req, ValidationPipe } from '@nestjs/common';
 import { BlogsService } from './blogs.service';
-import { Blog } from 'src/blogs/blog.interface';
+import { Blog } from 'src/blogs/blogs.interface';
 import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { Prisma } from '@prisma/client';
