@@ -18,7 +18,7 @@ export class BlogCategoriesService {
   async findAll(): Promise<BlogCategory[]> {
     return this.prisma.blogCategory.findMany({
       where: {
-        Blog: {
+        blogs: {
           some: { deleted: false }
         }
       }
