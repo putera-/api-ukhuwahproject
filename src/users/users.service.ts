@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma.service';
 import { User } from 'src/users/users.interface';
 import { Prisma, UserRole } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { AppService } from 'src/app.service';
 
 const select = {
   id: true,
@@ -10,13 +11,18 @@ const select = {
   name: true,
   role: true,
   deleted: true,
+  avatar: true,
+  avatar_md: true,
   createdAt: true,
   updatedAt: true
 }
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) { }
+  constructor(
+    private prisma: PrismaService,
+    private appService: AppService
+  ) { }
 
 
   async create(data: Prisma.UserCreateInput): Promise<User> {
@@ -62,11 +68,23 @@ export class UsersService {
   }
 
   async update(id: string, data: Prisma.UserUpdateInput): Promise<User> {
-    return this.prisma.user.update({
+    const currentData = await this.prisma.user.findUnique({ where: { id } });
+
+
+    const updatedData = await this.prisma.user.update({
       where: { id, deleted: false },
       data,
       select: { ...select }
     });
+
+    if (currentData.avatar != updatedData.avatar) {
+      // photo has been change
+      // remove old photo
+      this.appService.removeFile(currentData.avatar);
+      this.appService.removeFile(currentData.avatar_md);
+    }
+
+    return updatedData;
   }
 
   async remove(id: string, role: UserRole): Promise<void> {

@@ -9,6 +9,8 @@ export interface User {
     auth?: Auth[]
     blogs?: Blog[]
     role: 'SUPERUSER' | 'ADMIN' | 'STAFF' | 'MEMBER'
+    avatar?: string
+    avatar_md?: string
     deleted: boolean
     createdAt?: Date
     updatedAt?: Date

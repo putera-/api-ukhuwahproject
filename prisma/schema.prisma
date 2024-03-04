@@ -28,6 +28,8 @@ model User {
   auth      Auth[]
   blogs     Blog[]
   role      UserRole @default(MEMBER)
+  avatar    String?  @db.VarChar(255)
+  avatar_md String?  @db.VarChar(255)
   deleted   Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
