@@ -14,4 +14,12 @@ export class AppService {
       await fs.mkdir(path);
     }
   }
+
+  async removeFile(file) {
+    try {
+      await fs.rm('.' + file);
+    } catch (error) {
+      throw (error);
+    }
+  };
 }

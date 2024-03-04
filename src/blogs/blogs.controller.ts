@@ -29,12 +29,12 @@ export class BlogsController {
 
     @Roles(Role.Admin, Role.Staff)
     @Post()
-    @UseInterceptors(FilesInterceptor('photos'))
+    @UseInterceptors(FilesInterceptor('photos', 10)) // key=photo. max = 10
     async create(@Req() req, @Body(new ValidationPipe()) createBlogDto: CreateBlogDto, @UploadedFiles() files: Array<Express.Multer.File>): Promise<Blog> {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         try {
             // save photos
-            const photos = await this.photoService.createMany(files, uniqueSuffix)
+            const photos = await this.photoService.createMany(files, uniqueSuffix);
 
             // get category
             const category = await this.blogService.getCategory(createBlogDto.category);
@@ -71,8 +71,13 @@ export class BlogsController {
 
     @Roles(Role.Admin, Role.Staff)
     @Patch(':id')
-    async update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto): Promise<Blog> {
+    @UseInterceptors(FilesInterceptor('new_photos', 10)) // key=new_photos. max = 10
+    async update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto, @UploadedFiles() files: Array<Express.Multer.File>): Promise<Blog> {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         try {
+            // save photos
+            const new_photos = await this.photoService.createMany(files, uniqueSuffix);
+
             // get category
             const category = await this.blogService.getCategory(updateBlogDto.category);
 
@@ -83,8 +88,11 @@ export class BlogsController {
                 connect: { id: category.id }
             }
 
-            return this.blogService.update(id, data as Prisma.BlogUpdateInput);
+            return this.blogService.update(id, data as Prisma.BlogUpdateInput, new_photos);
         } catch (error) {
+            // remove photo
+            this.photoService.removeMany(files, uniqueSuffix);
+
             throw error;
         }
     }
