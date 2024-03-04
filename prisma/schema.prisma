@@ -59,13 +59,13 @@ model Blog {
   author         User         @relation(fields: [authorId], references: [id])
   authorId       String
   category       BlogCategory @relation(fields: [blogCategoryId], references: [id])
+  blogCategoryId String
   photos         Photo[]
   status         BlogStatus   @default(DRAFT)
   deleted        Boolean      @default(false)
   publishAt      DateTime     @default(now())
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @default(now()) @updatedAt
-  blogCategoryId String
 
   @@index([title])
 }
@@ -92,4 +92,33 @@ model Photo {
   index   Int     @default(0) @db.Int
   blog    Blog?   @relation(fields: [blogId], references: [id], onDelete: Cascade)
   blogId  String?
+}
+
+model Course {
+  id               String         @id @default(uuid())
+  title            String         @db.VarChar(100)
+  price            Int            @db.Int
+  category         CourseCategory @relation(fields: [courseCategoryId], references: [id])
+  courseCategoryId String
+  status           CourseStatus   @default(DRAFT)
+  thumbnail        String?        @db.VarChar(255)
+  thumbnail_md     String?        @db.VarChar(255)
+  publishAt        DateTime       @default(now())
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @default(now()) @updatedAt
+
+  @@index([title])
+}
+
+model CourseCategory {
+  id        String   @id @default(uuid())
+  title     String   @db.VarChar(50)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  Course    Course[]
+}
+
+enum CourseStatus {
+  DRAFT
+  PUBLISH
 }
