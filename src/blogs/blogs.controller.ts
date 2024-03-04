@@ -92,7 +92,7 @@ export class BlogsController {
     @Roles(Role.Admin, Role.Staff)
     @Patch(':id')
     @UseInterceptors(FilesInterceptor('new_photos', 10)) // key=new_photos. max = 10
-    async update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto, @UploadedFiles() files: Array<Express.Multer.File>): Promise<Blog> {
+    async update(@Param('id') id: string, @Body(new ValidationPipe()) updateBlogDto: UpdateBlogDto, @UploadedFiles() files: Array<Express.Multer.File>): Promise<Blog> {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         try {
             // save photos
