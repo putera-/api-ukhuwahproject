@@ -17,11 +17,31 @@ export class BlogsController {
         private photoService: PhotosService,
     ) { }
 
-    @Public()
+    @Roles(Role.Admin, Role.Staff)
     @Get()
     async findAll(): Promise<Blog[]> {
         try {
             return this.blogService.findAll();
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    @Public()
+    @Get('publish')
+    async findAllPublic(): Promise<Blog[]> {
+        try {
+            return this.blogService.findAllPublic();
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    @Roles(Role.Admin, Role.Staff)
+    @Get('draft')
+    async findAllDraft(): Promise<Blog[]> {
+        try {
+            return this.blogService.findAllDraft();
         } catch (error) {
             throw error;
         }

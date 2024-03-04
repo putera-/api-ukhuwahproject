@@ -10,7 +10,9 @@ export interface Blog {
     authorId: string
     category?: BlogCategory
     photos?: Photo[]
+    status: 'DRAFT' | 'PUBLISH'
     deleted: boolean
+    publishAt: Date
     createdAt: Date
     updatedAt: Date
 }

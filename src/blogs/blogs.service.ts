@@ -16,7 +16,7 @@ export class BlogsService {
     ) { }
 
     async create(data: Prisma.BlogCreateInput, photos: Prisma.PhotoCreateInput[]): Promise<Blog> {
-        return await this.prisma.blog.create({
+        return this.prisma.blog.create({
             data: {
                 ...data,
                 photos: { create: photos }
@@ -31,7 +31,49 @@ export class BlogsService {
 
     async findAll(): Promise<Blog[]> {
         return this.prisma.blog.findMany({
-            where: { deleted: false },
+            where: {
+                deleted: false
+            },
+            orderBy: {
+                publishAt: 'desc'
+            },
+            include: {
+                author: true,
+                category: true,
+                photos: true
+            }
+        });
+    }
+
+    async findAllPublic(): Promise<Blog[]> {
+        return this.prisma.blog.findMany({
+            where: {
+                deleted: false,
+                status: "PUBLISH",
+                publishAt: {
+                    lt: new Date()
+                }
+            },
+            orderBy: {
+                publishAt: 'desc'
+            },
+            include: {
+                author: true,
+                category: true,
+                photos: true
+            }
+        });
+    }
+
+    async findAllDraft(): Promise<Blog[]> {
+        return this.prisma.blog.findMany({
+            where: {
+                deleted: false,
+                status: "DRAFT"
+            },
+            orderBy: {
+                publishAt: 'desc'
+            },
             include: {
                 author: true,
                 category: true,

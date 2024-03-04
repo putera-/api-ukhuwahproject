@@ -60,13 +60,19 @@ model Blog {
   authorId       String
   category       BlogCategory @relation(fields: [blogCategoryId], references: [id])
   photos         Photo[]
+  status         BlogStatus   @default(DRAFT)
   deleted        Boolean      @default(false)
+  publishAt      DateTime     @default(now())
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @default(now()) @updatedAt
   blogCategoryId String
 
   @@index([title])
-  @@map("blog")
+}
+
+enum BlogStatus {
+  DRAFT
+  PUBLISH
 }
 
 model BlogCategory {
