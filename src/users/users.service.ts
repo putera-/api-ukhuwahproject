@@ -69,7 +69,7 @@ export class UsersService {
 
   async update(id: string, data: Prisma.UserUpdateInput): Promise<User> {
     const currentData = await this.prisma.user.findUnique({ where: { id } });
-
+    if (!currentData) throw new NotFoundException();
 
     const updatedData = await this.prisma.user.update({
       where: { id, deleted: false },

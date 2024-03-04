@@ -29,9 +29,9 @@ export class BlogsController {
 
     @Public()
     @Get('publish')
-    async findAllPublic(): Promise<Blog[]> {
+    async findAllPublish(): Promise<Blog[]> {
         try {
-            return this.blogService.findAllPublic();
+            return this.blogService.findAllPublish();
         } catch (error) {
             throw error;
         }
@@ -84,6 +84,16 @@ export class BlogsController {
     findOne(@Param('id') id: string) {
         try {
             return this.blogService.findOne(id);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    @Roles(Role.Admin, Role.Staff)
+    @Get('draft/:id')
+    findOneDraft(@Param('id') id: string) {
+        try {
+            return this.blogService.findOneDraft(id);
         } catch (error) {
             throw error;
         }

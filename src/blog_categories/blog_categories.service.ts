@@ -31,11 +31,11 @@ export class BlogCategoriesService {
     });
   }
 
-  update(id: number, updateBlogCategoryDto: UpdateBlogCategoryDto) {
-    return `This action updates a #${id} blogCategory`;
-  }
+  // update(id: number, updateBlogCategoryDto: UpdateBlogCategoryDto) {
+  //   return `This action updates a #${id} blogCategory`;
+  // }
 
-  remove(id: number) {
-    return `This action removes a #${id} blogCategory`;
-  }
+  // remove(id: number) {
+  //   return `This action removes a #${id} blogCategory`;
+  // }
 }

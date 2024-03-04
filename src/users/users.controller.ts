@@ -59,7 +59,6 @@ export class UsersController {
     // for avatar
     const ext = file ? file.originalname.split('.').pop() : '';
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    // throw new Error('test');
 
     // only can update belongs to auth user
     const { id } = req.user;
@@ -92,7 +91,7 @@ export class UsersController {
 
       return this.usersService.update(id, data);
     } catch (error) {
-      // remove photo
+      // remove avatar
       if (file) {
         this.photoService.removeFile(`/uploads/photos/${uniqueSuffix}_lg.${ext}`)
         this.photoService.removeFile(`/uploads/photos/${uniqueSuffix}_md.${ext}`)

@@ -1,4 +1,4 @@
-import { IsDate, IsISO8601, IsString, Length, MinLength } from "class-validator";
+import { IsDate, IsISO8601, IsOptional, IsString, Length, MinLength } from "class-validator";
 
 export class CreateBlogDto {
     @IsString()
@@ -14,9 +14,10 @@ export class CreateBlogDto {
     category: string;
 
     @IsString()
-    @Length(1, 50)
-    status: string;
+    @IsOptional()
+    status?: 'DRAFT' | 'PUBLISH';
 
     @IsISO8601()
-    publishAt: Date;
+    @IsOptional()
+    publishAt?: Date;
 }

@@ -16,7 +16,11 @@ export class BlogCategoriesController {
   @Public()
   @Get()
   findAll() {
-    return this.blogCategoriesService.findAll();
+    try {
+      return this.blogCategoriesService.findAll();
+    } catch (error) {
+      throw error;
+    }
   }
 
   // @Get(':id')

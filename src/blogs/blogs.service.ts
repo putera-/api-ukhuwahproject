@@ -45,7 +45,7 @@ export class BlogsService {
         });
     }
 
-    async findAllPublic(): Promise<Blog[]> {
+    async findAllPublish(): Promise<Blog[]> {
         return this.prisma.blog.findMany({
             where: {
                 deleted: false,
@@ -84,7 +84,30 @@ export class BlogsService {
 
     async findOne(id: string): Promise<Blog> {
         const blog = await this.prisma.blog.findUnique({
-            where: { id, deleted: false },
+            where: {
+                id,
+                deleted: false,
+                status: 'PUBLISH',
+                publishAt: { lt: new Date() }
+            },
+            include: {
+                author: true,
+                category: true,
+                photos: true
+            }
+        });
+        if (!blog) throw new NotFoundException();
+
+        return blog;
+    }
+
+    async findOneDraft(id: string): Promise<Blog> {
+        const blog = await this.prisma.blog.findUnique({
+            where: {
+                id,
+                deleted: false,
+                status: 'DRAFT'
+            },
             include: {
                 author: true,
                 category: true,
@@ -97,7 +120,11 @@ export class BlogsService {
     }
 
     async update(id: string, data: any, new_photos: Prisma.PhotoCreateInput[]): Promise<Blog> {
-        const current_blog = await this.findOne(id);
+        const current_blog = await this.prisma.blog.findUnique({
+            where: { id },
+            include: { photos: true }
+        });
+        if (!current_blog) throw new NotFoundException();
 
         // if no photo from req data
         const keptPhotos: Record<string, any> = data.photos ? data.photos : [];
@@ -155,7 +182,8 @@ export class BlogsService {
     }
 
     async remove(id: string): Promise<void> {
-        await this.findOne(id);
+        const blog = await this.prisma.blog.findUnique({ where: { id } });
+        if (!blog) throw new NotFoundException();
 
         await this.prisma.blog.update({
             where: { id },
