@@ -116,7 +116,7 @@ model CourseCategory {
   title     String   @db.VarChar(50)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
-  Course    Course[]
+  courses   Course[]
 }
 
 enum CourseStatus {

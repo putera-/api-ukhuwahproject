@@ -18,7 +18,7 @@ export class CourseCategoriesService {
   async findAll(): Promise<CourseCategory[]> {
     return this.prisma.courseCategory.findMany({
       where: {
-        course: {
+        courses: {
           some: { deleted: false }
         }
       }
