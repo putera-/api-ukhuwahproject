@@ -90,7 +90,7 @@ export class UsersService {
     await this.findOne(id, role);
     await this.prisma.user.update({
       where: { id, role },
-      data: { active: true }
+      data: { active: false }
     });
 
     return;
