@@ -1,10 +1,14 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Post, Req, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Public } from 'src/auth/auth.metadata';
+import { UsersService } from 'src/users/users.service';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private authService: AuthService) { }
+    constructor(
+        private authService: AuthService,
+        private userService: UsersService
+    ) { }
 
     @Public()
     @HttpCode(HttpStatus.OK)
@@ -42,7 +46,13 @@ export class AuthController {
 
     @Get('profile')
     getProfile(@Request() req) {
-        return req.user;
+        try {
+            const user = req.user;
+            return this.userService.findOne(user.id, user.role);
+        } catch (error) {
+            throw error;
+        }
+
     }
 
 }
