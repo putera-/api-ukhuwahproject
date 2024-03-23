@@ -16,6 +16,15 @@ datasource db {
 model Client {
   id        String   @id @default(uuid())
   name      String   @db.VarChar(100)
+  nick      String   @db.VarChar(20)
+  slogan    String?  @db.VarChar(255)
+  address   String?  @db.Text
+  phone     String?  @db.VarChar(20)
+  logo      String?  @db.VarChar(100)
+  youtube   String?  @db.VarChar(100)
+  instagram String?  @db.VarChar(100)
+  facebook  String?  @db.VarChar(100)
+  twitter   String?  @db.VarChar(100)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
@@ -30,7 +39,7 @@ model User {
   role      UserRole @default(MEMBER)
   avatar    String?  @db.VarChar(255)
   avatar_md String?  @db.VarChar(255)
-  deleted   Boolean  @default(false)
+  active    Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
@@ -43,13 +52,15 @@ enum UserRole {
 }
 
 model Auth {
-  id           String   @id @default(uuid())
-  user         User?    @relation(fields: [userId], references: [id])
-  userId       String
-  access_token String   @db.VarChar(300)
-  exp          BigInt   @db.BigInt
-  deleted      Boolean  @default(false)
-  createdAt    DateTime @default(now())
+  id        String   @id @default(uuid())
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String
+  token     String   @db.VarChar(300)
+  expiredAt DateTime @db.Timestamp()
+  path      String   @db.VarChar(255)
+  method    String   @db.VarChar(10)
+  deleted   Boolean  @default(false)
+  createdAt DateTime @default(now())
 }
 
 model Blog {

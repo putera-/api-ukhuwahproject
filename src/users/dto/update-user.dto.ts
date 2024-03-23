@@ -5,7 +5,7 @@ import { IsBoolean, IsOptional, IsString } from 'class-validator';
 export class UpdateUserDto extends PartialType(CreateUserDto) {
     @IsBoolean()
     @IsOptional()
-    deleted: boolean
+    active: boolean
 
     @IsString()
     @IsOptional()

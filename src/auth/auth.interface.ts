@@ -5,6 +5,8 @@ export interface Auth {
     user: User
     userId: string
     token: string
-    deleted: boolean
+    expiredAt: Date
+    path: string
+    method: string
     createdAt: Date
 }

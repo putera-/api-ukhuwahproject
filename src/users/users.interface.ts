@@ -11,7 +11,7 @@ export interface User {
     role: 'SUPERUSER' | 'ADMIN' | 'STAFF' | 'MEMBER'
     avatar?: string
     avatar_md?: string
-    deleted: boolean
+    active?: boolean
     createdAt?: Date
     updatedAt?: Date
 }

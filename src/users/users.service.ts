@@ -10,7 +10,6 @@ const select = {
   email: true,
   name: true,
   role: true,
-  deleted: true,
   avatar: true,
   avatar_md: true,
   createdAt: true,
@@ -36,14 +35,14 @@ export class UsersService {
 
   async findAll(role: UserRole): Promise<User[]> {
     return this.prisma.user.findMany({
-      where: { deleted: false },
+      where: { active: true },
       select: { ...select }
     });
   }
 
   async findOne(id: string, role: UserRole): Promise<User> {
     const user = await this.prisma.user.findUnique({
-      where: { id, role, deleted: false },
+      where: { id, role, active: true },
       select: { ...select }
     });
     if (!user) throw new NotFoundException();
@@ -72,7 +71,7 @@ export class UsersService {
     if (!currentData) throw new NotFoundException();
 
     const updatedData = await this.prisma.user.update({
-      where: { id, deleted: false },
+      where: { id, active: true },
       data,
       select: { ...select }
     });
@@ -91,7 +90,7 @@ export class UsersService {
     await this.findOne(id, role);
     await this.prisma.user.update({
       where: { id, role },
-      data: { deleted: true }
+      data: { active: true }
     });
 
     return;

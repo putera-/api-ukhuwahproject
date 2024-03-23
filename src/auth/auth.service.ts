@@ -30,8 +30,8 @@ export class AuthService {
             throw new UnauthorizedException('Invalid Credentials!');
         }
 
-        // deleted
-        if (user.deleted) throw new UnauthorizedException('User is deleted!');
+        // not active
+        if (!user.active) throw new UnauthorizedException('User is deactivated!');
 
         // Generate a JWT and return it here
         // instead of the user object
@@ -48,26 +48,25 @@ export class AuthService {
         };
 
         const access_token = await this.jwtService.signAsync(payload) as string;
-        const exp: number = Math.round(dayjs().add(1, 'd').valueOf());
+        const exp: number = Math.round(dayjs().add(7, 'd').valueOf());
+        const expiredAt = new Date(exp);
 
         // save to db
-        await this.createAuth(userId, access_token, exp);
+        await this.createAuth(userId, access_token, expiredAt);
 
         return { access_token, exp };
     }
 
-    async createAuth(userId: string, access_token: string, exp?: number): Promise<void> {
-        if (!exp) {
-            // expired date, add 1 day
-            exp = Math.round(dayjs().add(1, 'd').valueOf());
-        }
+    async createAuth(userId: string, token: string, expiredAt: Date, path = '/auth/login', method = 'POST'): Promise<void> {
 
         const data: Prisma.AuthCreateInput = {
             user: {
                 connect: { id: userId }
             },
-            access_token,
-            exp,
+            token,
+            method,
+            path,
+            expiredAt,
         };
 
         await this.prisma.auth.create({ data });

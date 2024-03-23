@@ -15,7 +15,10 @@ export class ClientService {
     const client = await this.prisma.client.findFirst();
     if (!client) {
       // data dummy
-      const data: Prisma.ClientCreateInput = { name: '-' }
+      const data: Prisma.ClientCreateInput = {
+        name: '-',
+        nick: '-'
+      }
       return this.create(data);
     }
 
