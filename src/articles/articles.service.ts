@@ -1,108 +1,127 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Blog } from 'src/blogs/blogs.interface';
-import { CreateBlogDto } from './dto/create-blog.dto';
+import { Article } from 'src/articles/articles.interface';
+import { CreateArticleDto } from './dto/create-article.dto';
 import { PrismaService } from 'src/prisma.service';
-import { BlogCategory, Prisma } from '@prisma/client';
-import { UpdateBlogDto } from './dto/update-blog.dto';
-import { BlogCategoriesService } from 'src/blog_categories/blog_categories.service';
 import { AppService } from 'src/app.service';
+import { Prisma } from '@prisma/client';
+import { contains } from 'class-validator';
 
 @Injectable()
-export class BlogsService {
+export class ArticlesService {
     constructor(
         private prisma: PrismaService,
-        private blogCategoryService: BlogCategoriesService,
         private appService: AppService
     ) { }
 
-    async create(data: Prisma.BlogCreateInput, photos: Prisma.PhotoCreateInput[]): Promise<Blog> {
-        return this.prisma.blog.create({
+    async create(data: Prisma.ArticleCreateInput, photos: Prisma.PhotoCreateInput[]): Promise<Article> {
+        return this.prisma.article.create({
             data: {
                 ...data,
                 photos: { create: photos }
             },
             include: {
                 author: true,
-                category: true,
                 photos: true
             }
         });
     }
 
-    async findAll(): Promise<Blog[]> {
-        return this.prisma.blog.findMany({
-            where: {
-                deleted: false
-            },
-            orderBy: {
-                publishAt: 'desc'
-            },
-            include: {
-                author: true,
-                category: true,
-                photos: true
-            }
-        });
+    async findAll(search = '', page = '1', limit = '10') {
+        const skip = (Number(page) - 1) * Number(limit);
+
+        const [total, data] = await Promise.all([
+            this.prisma.article.count({
+                where: {
+                    deleted: false,
+                    title: {
+                        contains: search
+                    }
+                }
+            }),
+            this.prisma.article.findMany({
+                where: {
+                    deleted: false,
+                    title: {
+                        contains: search
+                    }
+                },
+                orderBy: {
+                    publishedAt: 'desc'
+                },
+                include: {
+                    author: true,
+                    photos: true
+                },
+                skip,
+                take: Number(limit)
+            })
+        ]);
+
+
+        return {
+            data,
+            total,
+            page: Number(page),
+            limit: Number(limit),
+            maxPage: Math.ceil(total / Number(limit))
+        }
     }
 
-    async findAllPublish(): Promise<Blog[]> {
-        return this.prisma.blog.findMany({
+    async findAllPublish(): Promise<Article[]> {
+        return this.prisma.article.findMany({
             where: {
                 deleted: false,
                 status: "PUBLISH",
-                publishAt: {
+                publishedAt: {
                     lt: new Date()
                 }
             },
             orderBy: {
-                publishAt: 'desc'
+                publishedAt: 'desc'
             },
             include: {
                 author: true,
-                category: true,
                 photos: true
             }
         });
     }
 
-    async findAllDraft(): Promise<Blog[]> {
-        return this.prisma.blog.findMany({
+    async findAllDraft(): Promise<Article[]> {
+        return this.prisma.article.findMany({
             where: {
                 deleted: false,
                 status: "DRAFT"
             },
             orderBy: {
-                publishAt: 'desc'
+                publishedAt: 'desc'
             },
             include: {
                 author: true,
-                category: true,
                 photos: true
             }
         });
     }
 
-    async findOne(id: string): Promise<Blog> {
-        const blog = await this.prisma.blog.findUnique({
+    async findOne(id: string): Promise<Article> {
+        const article = await this.prisma.article.findUnique({
             where: {
                 id,
                 deleted: false,
                 status: 'PUBLISH',
-                publishAt: { lt: new Date() }
+                publishedAt: { lt: new Date() }
             },
             include: {
                 author: true,
-                category: true,
                 photos: true
             }
         });
-        if (!blog) throw new NotFoundException();
+        if (!article) throw new NotFoundException();
 
-        return blog;
+        return article;
     }
 
-    async findOneDraft(id: string): Promise<Blog> {
-        const blog = await this.prisma.blog.findUnique({
+    async findOneDraft(id: string): Promise<Article> {
+        const article = await this.prisma.article.findUnique({
             where: {
                 id,
                 deleted: false,
@@ -110,21 +129,20 @@ export class BlogsService {
             },
             include: {
                 author: true,
-                category: true,
                 photos: true
             }
         });
-        if (!blog) throw new NotFoundException();
+        if (!article) throw new NotFoundException();
 
-        return blog;
+        return article;
     }
 
-    async update(id: string, data: any, new_photos: Prisma.PhotoCreateInput[]): Promise<Blog> {
-        const current_blog = await this.prisma.blog.findUnique({
+    async update(id: string, data: any, new_photos: Prisma.PhotoCreateInput[]): Promise<Article> {
+        const current_article = await this.prisma.article.findUnique({
             where: { id },
             include: { photos: true }
         });
-        if (!current_blog) throw new NotFoundException();
+        if (!current_article) throw new NotFoundException();
 
         // if no photo from req data
         const keptPhotos: Record<string, any> = data.photos ? data.photos : [];
@@ -152,7 +170,7 @@ export class BlogsService {
         // remove photos from req.data
         if (data.photos) delete data.photos;
 
-        const updatedBlog = await this.prisma.blog.update({
+        const updatedArticle = await this.prisma.article.update({
             where: { id, deleted: false },
             data: {
                 ...data,
@@ -168,42 +186,29 @@ export class BlogsService {
             },
             include: {
                 author: true,
-                category: true,
                 photos: true
             }
         });
 
         // collect unused photo
-        const photo_to_delete = current_blog.photos.filter(p => !keepedIds.includes(p.id));
+        const photo_to_delete = current_article.photos.filter(p => !keepedIds.includes(p.id));
         // deleted unused photo files
         this.removePhotos(photo_to_delete);
 
-        return updatedBlog;
+        return updatedArticle;
     }
 
     async remove(id: string): Promise<void> {
-        const blog = await this.prisma.blog.findUnique({ where: { id } });
-        if (!blog) throw new NotFoundException();
+        const article = await this.prisma.article.findUnique({ where: { id } });
+        if (!article) throw new NotFoundException();
 
-        await this.prisma.blog.update({
+        await this.prisma.article.update({
             where: { id },
             data: { deleted: true }
         });
 
         return;
     }
-
-    async getCategory(title: string): Promise<BlogCategory> {
-        // get category id
-        let category = await this.blogCategoryService.findOne(title);
-        if (!category) {
-            // create if null
-            category = await this.blogCategoryService.create(title);
-        }
-
-        return category;
-    }
-
     removePhotos(photos) {
         for (const photo of photos) {
             this.appService.removeFile(photo.path);

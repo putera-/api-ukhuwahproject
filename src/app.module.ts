@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { ClientModule } from './client/client.module';
 import { UsersModule } from './users/users.module';
-import { BlogsModule } from './blogs/blogs.module';
+import { ArticlesModule } from './articles/articles.module';
 import { AuthModule } from './auth/auth.module';
 import { UserSuperadminModule } from './user-superadmin/user-superadmin.module';
 import { UserAdminModule } from './user-admin/user-admin.module';
@@ -24,7 +24,7 @@ import { CourseCategoriesModule } from './course_categories/course_categories.mo
     UserStaffModule,
     UsersModule,
     AuthModule,
-    BlogsModule,
+    ArticlesModule,
     CoursesModule,
     CourseCategoriesModule,
   ],

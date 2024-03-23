@@ -20,7 +20,7 @@ export class PhotosService {
         sizes.map(async (s) => {
           const { key, size } = s;
           const filename = `${uniqueSuffix}${i}_${key}.${ext}`;
-          const filepath = path.join('./uploads/photos/' + filename);
+          const filepath = path.join('./public/photos/' + filename);
 
           await this.resize(size, buffer, filepath);
         })
@@ -28,8 +28,8 @@ export class PhotosService {
 
       photos.push({
         index: i,
-        path: `/uploads/photos/${uniqueSuffix}${i}_lg.${ext}`,
-        path_md: `/uploads/photos/${uniqueSuffix}${i}_md.${ext}`,
+        path: `/photos/${uniqueSuffix}${i}_lg.${ext}`,
+        path_md: `/photos/${uniqueSuffix}${i}_md.${ext}`,
       });
     }
 
@@ -70,8 +70,8 @@ export class PhotosService {
       const file = files[i];
       const ext = file.originalname.split('.').pop();
 
-      this.removeFile(`/uploads/photos/${uniqueSuffix}${i}_lg.${ext}`);
-      this.removeFile(`/uploads/photos/${uniqueSuffix}${i}_md.${ext}`);
+      this.removeFile(`/public/photos/${uniqueSuffix}${i}_lg.${ext}`);
+      this.removeFile(`/public/photos/${uniqueSuffix}${i}_md.${ext}`);
     }
   }
 

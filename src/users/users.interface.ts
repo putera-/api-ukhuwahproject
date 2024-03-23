@@ -1,5 +1,5 @@
 import { Auth } from "src/auth/auth.interface"
-import { Blog } from "src/blogs/blogs.interface"
+import { Article } from "src/articles/articles.interface"
 
 export interface User {
     id: string
@@ -7,7 +7,7 @@ export interface User {
     email: string
     password?: string
     auth?: Auth[]
-    blogs?: Blog[]
+    articles?: Article[]
     role: 'SUPERUSER' | 'ADMIN' | 'STAFF' | 'MEMBER'
     avatar?: string
     avatar_md?: string

@@ -1,10 +1,10 @@
-import { Blog } from "src/blogs/blogs.interface"
+import { Article } from "src/articles/articles.interface"
 
 export interface Photo {
     id: string
     path: string
     path_md: string
     index: number
-    blog?: Blog
-    blogId: string
+    article?: Article
+    articleId: string
 }
