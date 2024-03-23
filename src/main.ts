@@ -12,9 +12,11 @@ async function bootstrap() {
   }));
 
   const appSerivce = app.get(AppService);
-  await appSerivce.createPath('./uploads')
-  await appSerivce.createPath('./uploads/photos')
+  await appSerivce.createPath('./public')
+  await appSerivce.createPath('./public/photos')
 
-  await app.listen(process.env.PORT);
+  const port = process.env.PORT;
+  await app.listen(port);
+  console.log(`App is listening at http://localhost:${port}`);
 }
 bootstrap();
