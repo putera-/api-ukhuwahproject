@@ -100,22 +100,22 @@ export class AuthController {
                     sizes.map(async (s) => {
                         const { key, size } = s;
                         const filename = `${uniqueSuffix}_${key}.${ext}`;
-                        const filepath = path.join('./uploads/photos/' + filename);
+                        const filepath = path.join('./public/avatar/' + filename);
 
                         await this.photoService.resize(size, avatarBuffer, filepath);
                     })
                 );
 
-                data.avatar = `/uploads/photos/${uniqueSuffix}_lg.${ext}`;
-                data.avatar_md = `/uploads/photos/${uniqueSuffix}_md.${ext}`;
+                data.avatar = `/avatar/${uniqueSuffix}_lg.${ext}`;
+                data.avatar_md = `/avatar/${uniqueSuffix}_md.${ext}`;
             }
 
             return this.usersService.update(id, data);
         } catch (error) {
             // remove avatar
             if (file) {
-                this.photoService.removeFile(`/uploads/photos/${uniqueSuffix}_lg.${ext}`)
-                this.photoService.removeFile(`/uploads/photos/${uniqueSuffix}_md.${ext}`)
+                this.photoService.removeFile(`/public/avatar/${uniqueSuffix}_lg.${ext}`)
+                this.photoService.removeFile(`/public/avatar/${uniqueSuffix}_md.${ext}`)
             }
             throw error;
         }

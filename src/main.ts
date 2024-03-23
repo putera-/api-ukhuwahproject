@@ -14,6 +14,7 @@ async function bootstrap() {
   const appSerivce = app.get(AppService);
   await appSerivce.createPath('./public')
   await appSerivce.createPath('./public/photos')
+  await appSerivce.createPath('./public/avatar')
 
   const port = process.env.PORT;
   await app.listen(port);
