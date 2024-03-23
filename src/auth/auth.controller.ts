@@ -6,6 +6,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateUserDto } from 'src/users/dto/update-user.dto';
 import { PhotosService } from 'src/photos/photos.service';
 import path from 'path';
+import { CreateUserDto } from 'src/users/dto/create-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -14,6 +15,19 @@ export class AuthController {
         private usersService: UsersService,
         private photoService: PhotosService
     ) { }
+
+    @Public()
+    @Post('register')
+    async create(@Body(new ValidationPipe()) data: CreateUserDto) {
+        try {
+            // validate new user
+            await this.usersService.validateNewUser(data);
+
+            return this.usersService.create(data);
+        } catch (error) {
+            throw error;
+        }
+    }
 
     @Public()
     @HttpCode(HttpStatus.OK)

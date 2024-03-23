@@ -1,8 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, HttpCode, Req, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { Public } from 'src/auth/auth.metadata';
 import { Roles } from 'src/roles/roles.decorator';
 import { Role } from 'src/roles/role.enums';
 
@@ -12,20 +9,6 @@ export class UsersController {
   constructor(
     private readonly usersService: UsersService,
   ) { }
-
-  @Public() // TODO check
-  @Post()
-  async create(@Body(new ValidationPipe()) data: CreateUserDto) {
-    try {
-      // validate new user
-      await this.usersService.validateNewUser(data);
-
-      return this.usersService.create(data);
-    } catch (error) {
-      throw error;
-    }
-  }
-
 
   @Roles(Role.Admin, Role.Staff)
   @Get()
