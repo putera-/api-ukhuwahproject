@@ -34,7 +34,9 @@ export class ItikafsService {
     }
 
     async findAll(): Promise<Itikaf[]> {
-        return this.prisma.itikaf.findMany();
+        return this.prisma.itikaf.findMany({
+            include: { photos: true }
+        });
     }
 
     async findOne(hijri_year: string): Promise<Itikaf> {
@@ -48,8 +50,8 @@ export class ItikafsService {
         return itikaf;
     }
 
-    async update(id: string, data: Prisma.ItikafUpdateInput, new_photos: Prisma.PhotoCreateInput[]) {
-        const current_data = await this.findOne(id);
+    async update(hijri_year: string, data: Prisma.ItikafUpdateInput, new_photos: Prisma.PhotoCreateInput[]) {
+        const current_data = await this.findOne(hijri_year);
 
         // if no photo from req data
         const keptPhotos: Record<string, any> = data.photos ? data.photos : [];
@@ -78,7 +80,7 @@ export class ItikafsService {
         if (data.photos) delete data.photos;
 
         const updatedItikaf = await this.prisma.itikaf.update({
-            where: { id },
+            where: { hijri_year },
             data: {
                 ...data,
                 photos: {
@@ -105,21 +107,23 @@ export class ItikafsService {
         return updatedItikaf;
     }
 
-    remove(id: string) {
-        this.findOne(id);
-        return `This action removes a #${id} itikaf`;
-    }
+    // remove(id: string) {
+    //     this.findOne(id);
+    //     return `This action removes a #${id} itikaf`;
+    // }
 
     removePhotos(photos) {
         for (const photo of photos) {
-            this.appService.removeFile(photo.path);
-            this.appService.removeFile(photo.path_md);
+            this.appService.removeFile('/public' + photo.path);
+            this.appService.removeFile('/public' + photo.path_md);
         }
     };
 
-    async updateActive(id: string, active: boolean): Promise<void> {
+    async updateActive(hijri_year: string, active: boolean): Promise<void> {
+        await this.findOne(hijri_year);
+
         await this.prisma.itikaf.update({
-            where: { id },
+            where: { hijri_year },
             data: { active }
         })
     }

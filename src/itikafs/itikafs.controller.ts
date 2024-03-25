@@ -64,17 +64,16 @@ export class ItikafsController {
   }
 
   @Roles(Role.Admin, Role.Staff)
-  @Patch(':id')
+  @Patch(':hijri_year')
   @UseInterceptors(FilesInterceptor('new_photos', 10)) // key=new_photos. max = 10
-  async update(@Param('id') id: string, @Body(new ValidationPipe()) updateItikafDto: UpdateItikafDto, @UploadedFiles() files: Array<Express.Multer.File>): Promise<Itikaf> {
+  async update(@Param('hijri_year') hijri_year: string, @Body(new ValidationPipe()) updateItikafDto: UpdateItikafDto, @UploadedFiles() files: Array<Express.Multer.File>): Promise<Itikaf> {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     try {
       // save photos
       let new_photos = [];
       if (files) new_photos = await this.photoService.createMany(files, uniqueSuffix);
 
-      return this.itikafsService.update(id, updateItikafDto as Prisma.ItikafUpdateInput, new_photos);
-
+      return this.itikafsService.update(hijri_year, updateItikafDto as Prisma.ItikafUpdateInput, new_photos);
     } catch (error) {
       // remove photo
       if (files) this.photoService.removeMany(files, uniqueSuffix);
@@ -84,22 +83,22 @@ export class ItikafsController {
   }
 
   @Roles(Role.Admin, Role.Staff)
-  @Patch('activate/:id')
+  @Patch('activate/:hijri_year')
   @HttpCode(204)
-  activate(@Param('id') id: string) {
+  activate(@Param('hijri_year') hijri_year: string) {
     try {
-      return this.itikafsService.updateActive(id, true);
+      return this.itikafsService.updateActive(hijri_year, true);
     } catch (error) {
       throw error;
     }
   }
 
   @Roles(Role.Admin, Role.Staff)
-  @Patch('deactivate/:id')
+  @Patch('deactivate/:hijri_year')
   @HttpCode(204)
-  deactivate(@Param('id') id: string) {
+  deactivate(@Param('hijri_year') hijri_year: string) {
     try {
-      return this.itikafsService.updateActive(id, false);
+      return this.itikafsService.updateActive(hijri_year, false);
     } catch (error) {
       throw error;
     }
