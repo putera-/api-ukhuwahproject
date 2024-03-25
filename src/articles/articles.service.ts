@@ -67,7 +67,7 @@ export class ArticlesService {
         }
     }
 
-    async findAllPublish(): Promise<Article[]> {
+    async findAllPublished(): Promise<Article[]> {
         return this.prisma.article.findMany({
             where: {
                 deleted: false,

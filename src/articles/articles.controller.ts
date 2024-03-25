@@ -28,10 +28,10 @@ export class ArticlesController {
     }
 
     @Public()
-    @Get('publish')
+    @Get('published')
     async findAllPublish(): Promise<Article[]> {
         try {
-            return this.articleService.findAllPublish();
+            return this.articleService.findAllPublished();
         } catch (error) {
             throw error;
         }
