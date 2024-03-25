@@ -118,10 +118,13 @@ model ItikafSchedule {
   id          String   @id @default(uuid())
   itikaf      Itikaf   @relation(fields: [itikafId], references: [id])
   itikafId    String
-  date        DateTime @db.Date
+  date        String   @db.VarChar(10)
   day_index   Int      @db.TinyInt
   description String   @db.Text
   photos      Photo[]
+  deleted     Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now()) @updatedAt
 }
+
+// TODO relation with asatidz, imama magribh, imam isya, tausiyah, imam qiyamul lail

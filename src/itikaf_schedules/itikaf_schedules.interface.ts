@@ -4,10 +4,11 @@ export interface ItikafSchedule {
     id: string
     itikaf?: Itikaf
     itikafId: string
-    date: Date
+    date: string
     day_index: number
     description: string
-    photos: Photo[]
+    photos?: Photo[]
+    deleted: boolean
     createdAt: Date
     updatedAt: Date
 }
