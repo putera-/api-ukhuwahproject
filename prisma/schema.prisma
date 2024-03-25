@@ -42,6 +42,7 @@ model User {
   active    Boolean   @default(true)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @default(now()) @updatedAt
+  Itikaf    Itikaf[]
 }
 
 enum UserRole {
@@ -85,10 +86,41 @@ enum ArticleStatus {
 }
 
 model Photo {
-  id        String   @id @default(uuid())
-  path      String   @db.VarChar(255)
-  path_md   String   @db.VarChar(255)
-  index     Int      @default(0) @db.Int
-  article   Article? @relation(fields: [articleId], references: [id], onDelete: Cascade)
-  articleId String?
+  id               String          @id @default(uuid())
+  path             String          @db.VarChar(255)
+  path_md          String          @db.VarChar(255)
+  index            Int             @default(0) @db.Int
+  article          Article?        @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  articleId        String?
+  Itikaf           Itikaf?         @relation(fields: [itikafId], references: [id], onDelete: Cascade)
+  itikafId         String?
+  ItikafSchedule   ItikafSchedule? @relation(fields: [itikafScheduleId], references: [id], onDelete: Cascade)
+  itikafScheduleId String?
+}
+
+model Itikaf {
+  id                   String           @id @default(uuid())
+  year                 String           @unique() @db.VarChar(4)
+  hijri_year           String           @unique() @db.VarChar(4)
+  description          String           @db.Text
+  photos               Photo[]
+  contact_person_name  String?          @db.VarChar(100)
+  contact_person_phone String?          @db.VarChar(20)
+  createdBy            User             @relation(fields: [userId], references: [id])
+  userId               String
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @default(now()) @updatedAt
+  ItikafSchedule       ItikafSchedule[]
+}
+
+model ItikafSchedule {
+  id          String   @id @default(uuid())
+  itikaf      Itikaf   @relation(fields: [itikafId], references: [id])
+  itikafId    String
+  date        DateTime @db.Date
+  day_index   Int      @db.TinyInt
+  description String   @db.Text
+  photos      Photo[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
 }
