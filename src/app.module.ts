@@ -12,6 +12,8 @@ import { UserStaffModule } from './user-staff/user-staff.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/auth.guard';
 import { RolesGuard } from './roles/roles.guard';
+import { ItikafsModule } from './itikafs/itikafs.module';
+import { ItikafSchedulesModule } from './itikaf_schedules/itikaf_schedules.module';
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { RolesGuard } from './roles/roles.guard';
     UsersModule,
     AuthModule,
     ArticlesModule,
+    ItikafsModule,
+    ItikafSchedulesModule,
   ],
   controllers: [AppController],
   providers: [
