@@ -11,6 +11,7 @@ export interface Itikaf {
     contact_person_phone?: string
     createdBy?: User
     userId: string
+    active: boolean
     createdAt: Date
     updatedAt: Date
     ItikafSchedule?: ItikafSchedule[]

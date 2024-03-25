@@ -139,7 +139,7 @@ export class ArticlesService {
 
     async update(id: string, data: any, new_photos: Prisma.PhotoCreateInput[]): Promise<Article> {
         const current_article = await this.prisma.article.findUnique({
-            where: { id },
+            where: { id, deleted: false },
             include: { photos: true }
         });
         if (!current_article) throw new NotFoundException();
@@ -209,6 +209,7 @@ export class ArticlesService {
 
         return;
     }
+
     removePhotos(photos) {
         for (const photo of photos) {
             this.appService.removeFile(photo.path);

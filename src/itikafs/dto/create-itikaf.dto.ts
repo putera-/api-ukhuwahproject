@@ -1,4 +1,4 @@
-import { IsOptional, IsPhoneNumber, IsString, MinLength } from "class-validator";
+import { IsBoolean, IsOptional, IsPhoneNumber, IsString, MinLength } from "class-validator";
 
 export class CreateItikafDto {
     @IsString()
@@ -18,4 +18,8 @@ export class CreateItikafDto {
     @IsPhoneNumber()
     @IsOptional()
     contact_person_phone: string
+
+    @IsBoolean()
+    @IsOptional()
+    active: boolean
 }

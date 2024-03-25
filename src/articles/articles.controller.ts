@@ -52,9 +52,11 @@ export class ArticlesController {
     @UseInterceptors(FilesInterceptor('photos', 10)) // key=photo. max = 10
     async create(@Req() req, @Body(new ValidationPipe()) createArticleDto: CreateArticleDto, @UploadedFiles() files: Array<Express.Multer.File>): Promise<Article> {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+
         try {
             // save photos
-            const photos = await this.photoService.createMany(files, uniqueSuffix);
+            let photos = [];
+            if (files) photos = await this.photoService.createMany(files, uniqueSuffix);
 
             const data: Record<string, any> | Prisma.ArticleCreateInput = { ...createArticleDto };
 
@@ -65,9 +67,8 @@ export class ArticlesController {
 
             return this.articleService.create(data as Prisma.ArticleCreateInput, photos);
         } catch (error) {
-            console.log(error)
             // remove photo
-            this.photoService.removeMany(files, uniqueSuffix);
+            if (files) this.photoService.removeMany(files, uniqueSuffix);
 
             throw error;
         }
@@ -100,14 +101,15 @@ export class ArticlesController {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         try {
             // save photos
-            const new_photos = await this.photoService.createMany(files, uniqueSuffix);
+            let new_photos = [];
+            if (files) new_photos = await this.photoService.createMany(files, uniqueSuffix);
 
             const data: Record<string, any> | Prisma.ArticleUpdateInput = { ...updateArticleDto };
 
             return this.articleService.update(id, data as Prisma.ArticleUpdateInput, new_photos);
         } catch (error) {
             // remove photo
-            this.photoService.removeMany(files, uniqueSuffix);
+            if (files) this.photoService.removeMany(files, uniqueSuffix);
 
             throw error;
         }

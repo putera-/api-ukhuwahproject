@@ -10,7 +10,6 @@ export class AppController {
   @Public()
   @Get('avatar/:file')
   async getAvatar(@Param('file') file: string, @Res() res) {
-    console.log('masuk ambil avatar')
     try {
       await fs.access(`./public/avatar/${file}`);
       res.sendFile(file, { root: './public/avatar' })
