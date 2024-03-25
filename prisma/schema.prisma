@@ -92,33 +92,3 @@ model Photo {
   article   Article? @relation(fields: [articleId], references: [id], onDelete: Cascade)
   articleId String?
 }
-
-model Course {
-  id               String         @id @default(uuid())
-  title            String         @db.VarChar(100)
-  price            Int            @db.Int
-  category         CourseCategory @relation(fields: [courseCategoryId], references: [id])
-  courseCategoryId String
-  status           CourseStatus   @default(DRAFT)
-  thumbnail        String?        @db.VarChar(255)
-  thumbnail_md     String?        @db.VarChar(255)
-  deleted          Boolean        @default(false)
-  publishAt        DateTime       @default(now())
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @default(now()) @updatedAt
-
-  @@index([title])
-}
-
-model CourseCategory {
-  id        String   @id @default(uuid())
-  title     String   @db.VarChar(50)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-  courses   Course[]
-}
-
-enum CourseStatus {
-  DRAFT
-  PUBLISH
-}
