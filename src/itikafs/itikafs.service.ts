@@ -37,9 +37,9 @@ export class ItikafsService {
         return this.prisma.itikaf.findMany();
     }
 
-    async findOne(id: string): Promise<Itikaf> {
+    async findOne(hijri_year: string): Promise<Itikaf> {
         const itikaf = await this.prisma.itikaf.findUnique({
-            where: { id },
+            where: { hijri_year },
             include: { photos: true, createdBy: true }
         });
 

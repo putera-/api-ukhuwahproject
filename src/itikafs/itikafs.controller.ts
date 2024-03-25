@@ -54,10 +54,10 @@ export class ItikafsController {
   }
 
   @Public()
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Get(':hijri_year')
+  findOne(@Param('hijri_year') hijri_year: string) {
     try {
-      return this.itikafsService.findOne(id);
+      return this.itikafsService.findOne(hijri_year);
     } catch (error) {
       throw error;
     }
