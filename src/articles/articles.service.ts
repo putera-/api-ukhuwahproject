@@ -212,8 +212,8 @@ export class ArticlesService {
 
     removePhotos(photos) {
         for (const photo of photos) {
-            this.appService.removeFile(photo.path);
-            this.appService.removeFile(photo.path_md);
+            this.appService.removeFile('/public' + photo.path);
+            this.appService.removeFile('/public' + photo.path_md);
         }
     };
 }
