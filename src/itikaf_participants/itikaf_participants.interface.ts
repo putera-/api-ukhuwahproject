@@ -10,7 +10,6 @@ export interface ItikafParticipant {
     total_member: number
     man: number
     woman: number
-    kid: number
     vehicle?: Vehicle
     vehicleId?: string
     createdAt?: Date

@@ -107,7 +107,6 @@ export class ItikafSchedulesController {
       total_member: (dataParticipant.man + dataParticipant.woman + dataParticipant.kid),
       man: dataParticipant.man,
       woman: dataParticipant.woman,
-      kid: dataParticipant.kid,
       user: { connect: { id: user.id } },
       schedule: { connect: { id: schedule.id } }
     }
