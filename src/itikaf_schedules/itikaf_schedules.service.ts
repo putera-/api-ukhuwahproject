@@ -27,7 +27,12 @@ export class ItikafSchedulesService {
           ...data,
           photos: { create: photos }
         },
-        include: { photos: true }
+        include: {
+          photos: true,
+          imam_tarawih: true,
+          imam_qiyamul_lail: true,
+          ustadz_kajian: true
+        }
       });
     } else {
       const updatedData = await this.prisma.itikafSchedule.update({
@@ -39,7 +44,12 @@ export class ItikafSchedulesService {
             create: photos
           }
         },
-        include: { photos: true }
+        include: {
+          photos: true,
+          imam_tarawih: true,
+          imam_qiyamul_lail: true,
+          ustadz_kajian: true
+        }
       });
 
       this.removePhotos(currentDataDate.photos);
@@ -52,7 +62,10 @@ export class ItikafSchedulesService {
     return this.prisma.itikafSchedule.findMany({
       where: { deleted: false },
       include: {
-        photos: true
+        photos: true,
+        imam_tarawih: true,
+        imam_qiyamul_lail: true,
+        ustadz_kajian: true
       }
     });
   }
@@ -62,6 +75,9 @@ export class ItikafSchedulesService {
       where: { id, deleted: false },
       include: {
         photos: true,
+        imam_tarawih: true,
+        imam_qiyamul_lail: true,
+        ustadz_kajian: true,
         participants: {
           include: {
             user: {
@@ -84,7 +100,7 @@ export class ItikafSchedulesService {
     return schedule;
   }
 
-  async update(id: string, data: Prisma.ItikafScheduleUpdateInput, new_photos: Prisma.PhotoCreateInput[]): Promise<ItikafSchedule> {
+  async update(id: string, data: Record<string, any>, new_photos: Prisma.PhotoCreateInput[]): Promise<ItikafSchedule> {
     const current_data = await this.findOne(id);
 
     // if no photo from req data
@@ -127,7 +143,12 @@ export class ItikafSchedulesService {
           create: new_photos
         }
       },
-      include: { photos: true }
+      include: {
+        photos: true,
+        imam_tarawih: true,
+        imam_qiyamul_lail: true,
+        ustadz_kajian: true
+      }
     });
 
     // collect unused photo

@@ -25,7 +25,7 @@ export class ItikafSchedulesController {
   @Roles(Role.Admin, Role.Staff)
   @Post()
   @UseInterceptors(FilesInterceptor('photos', 10)) // key=photo. max = 10
-  async create(@Body(new ValidationPipe) createItikafScheduleDto: CreateItikafScheduleDto, @UploadedFiles() files: Array<Express.Multer.File>): Promise<ItikafSchedule> {
+  async create(@Body(new ValidationPipe) createItikafScheduleDto: CreateItikafScheduleDto, @UploadedFiles() files: Array<Express.Multer.File>) {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
 
     try {
@@ -42,6 +42,24 @@ export class ItikafSchedulesController {
 
       // remove itikaf id
       delete data.itikafId;
+
+      // connect imam tarawih
+      if (data.imam_tarawih_id) {
+        data.imam_tarawih = { connect: { id: data.imam_tarawih_id } };
+        delete data.imam_tarawih_id
+      }
+
+      // connect imam qiyamul lail
+      if (data.imam_qiamul_lail_id) {
+        data.imam_qiamul_lail = { connect: { id: data.imam_qiamul_lail_id } };
+        delete data.imam_qiamul_lail_id
+      }
+
+      // connect imam qiyamul lail
+      if (data.ustadz_kajian_id) {
+        data.ustadz_kajian = { connect: { id: data.ustadz_kajian_id } };
+        delete data.ustadz_kajian_id
+      }
 
       return this.itikafSchedulesService.create(data as Prisma.ItikafScheduleCreateInput, photos);
     } catch (error) {
@@ -75,12 +93,30 @@ export class ItikafSchedulesController {
   @Roles(Role.Admin, Role.Staff)
   @Patch(':id')
   @UseInterceptors(FilesInterceptor('new_photos', 10)) // key=new_photos. max = 10
-  async update(@Param('id') id: string, @Body(new ValidationPipe()) data: UpdateItikafScheduleDto, @UploadedFiles() files: Array<Express.Multer.File>): Promise<ItikafSchedule> {
+  async update(@Param('id') id: string, @Body(new ValidationPipe()) dataUpdate: UpdateItikafScheduleDto, @UploadedFiles() files: Array<Express.Multer.File>): Promise<ItikafSchedule> {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     try {
+      const { imam_tarawih_id, imam_qiyamul_lail_id, ustadz_kajian_id, ...dataCleanUpdate } = dataUpdate;
+      const data: Record<string, any> = dataCleanUpdate;
+
       // save photos
       let new_photos = [];
       if (files) new_photos = await this.photoService.createMany(files, uniqueSuffix);
+
+      // connect imam tarawih
+      if (dataUpdate.imam_tarawih_id) {
+        data.imam_tarawih = { connect: { id: imam_tarawih_id } };
+      }
+
+      // connect imam qiyamul lail
+      if (dataUpdate.imam_qiyamul_lail_id) {
+        data.imam_qiyamul_lail = { connect: { id: imam_qiyamul_lail_id } };
+      }
+
+      // connect imam qiyamul lail
+      if (dataUpdate.ustadz_kajian_id) {
+        data.ustadz_kajian = { connect: { id: ustadz_kajian_id } };
+      }
 
       return this.itikafSchedulesService.update(id, data as Prisma.ItikafScheduleUpdateInput, new_photos);
     } catch (error) {

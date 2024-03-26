@@ -1,6 +1,7 @@
 import { Photo } from "src/photos/photos.interface"
 import { Itikaf } from "src/itikafs/itikafs.interface"
 import { ItikafParticipant } from "src/itikaf_participants/itikaf_participants.interface"
+import { Asaatidz } from "src/asaatidzs/asaatidzs.interface"
 
 export interface ItikafSchedule {
     id: string
@@ -14,4 +15,10 @@ export interface ItikafSchedule {
     createdAt: Date
     updatedAt: Date
     participants?: ItikafParticipant[]
+    imam_tarawih?: Asaatidz
+    imam_tarawih_id?: String
+    imam_qiyamul_lail?: Asaatidz
+    imam_qiyamul_lail_id?: String
+    ustadz_kajian?: Asaatidz
+    ustadz_kajian_id?: String
 }

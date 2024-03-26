@@ -1,5 +1,5 @@
 import { Type } from "class-transformer"
-import { IsDateString, IsInt, IsString, Min, MinLength } from "class-validator"
+import { IsDateString, IsInt, IsOptional, IsString, Min, MinLength } from "class-validator"
 
 export class CreateItikafScheduleDto {
     @IsString()
@@ -16,4 +16,16 @@ export class CreateItikafScheduleDto {
     @IsString()
     @MinLength(1)
     description: string
+
+    @IsString()
+    @IsOptional()
+    imam_tarawih_id: string
+
+    @IsString()
+    @IsOptional()
+    imam_qiyamul_lail_id: string
+
+    @IsString()
+    @IsOptional()
+    ustadz_kajian_id: string
 }

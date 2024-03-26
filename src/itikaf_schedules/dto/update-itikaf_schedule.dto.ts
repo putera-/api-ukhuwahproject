@@ -4,6 +4,7 @@ import { IsArray, IsBoolean, IsOptional } from 'class-validator';
 
 export class UpdateItikafScheduleDto extends PartialType(CreateItikafScheduleDto) {
     @IsArray()
+    @IsOptional()
     photos: {
         id: string,
         index: number

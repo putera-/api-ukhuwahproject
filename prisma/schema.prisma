@@ -117,17 +117,23 @@ model Itikaf {
 }
 
 model ItikafSchedule {
-  id           String              @id @default(uuid())
-  itikaf       Itikaf              @relation(fields: [itikafId], references: [id])
-  itikafId     String
-  date         String              @db.VarChar(10)
-  day_index    Int                 @db.TinyInt
-  description  String              @db.Text
-  photos       Photo[]
-  deleted      Boolean             @default(false)
-  createdAt    DateTime            @default(now())
-  updatedAt    DateTime            @default(now()) @updatedAt
-  participants ItikafParticipant[]
+  id                   String              @id @default(uuid())
+  itikaf               Itikaf              @relation(fields: [itikafId], references: [id])
+  itikafId             String
+  date                 String              @db.VarChar(10)
+  day_index            Int                 @db.TinyInt
+  description          String              @db.Text
+  photos               Photo[]
+  deleted              Boolean             @default(false)
+  participants         ItikafParticipant[]
+  imam_tarawih         Asaatidz?           @relation(name: "imam_tarawih", fields: [imam_tarawih_id], references: [id])
+  imam_tarawih_id      String?
+  imam_qiyamul_lail    Asaatidz?           @relation(name: "imam_qiyamul_lail", fields: [imam_qiyamul_lail_id], references: [id])
+  imam_qiyamul_lail_id String?
+  ustadz_kajian        Asaatidz?           @relation(name: "ustadz_kajian", fields: [ustadz_kajian_id], references: [id])
+  ustadz_kajian_id     String?
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @default(now()) @updatedAt
 }
 
 // TODO relation with asatidz, imama magribh, imam isya, tausiyah, imam qiyamul lail
@@ -166,12 +172,15 @@ enum VehicleType {
 }
 
 model Asaatidz {
-  id        String   @id @default(uuid())
-  name      String   @db.VarChar(100)
-  profile   String   @db.Text
-  avatar    String?  @db.VarChar(255)
-  avatar_md String?  @db.VarChar(255)
-  deleted   Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  id                                String           @id @default(uuid())
+  name                              String           @db.VarChar(100)
+  profile                           String           @db.Text
+  avatar                            String?          @db.VarChar(255)
+  avatar_md                         String?          @db.VarChar(255)
+  deleted                           Boolean          @default(false)
+  createdAt                         DateTime         @default(now())
+  updatedAt                         DateTime         @default(now()) @updatedAt
+  itikaf_schedule_imam_tarawih      ItikafSchedule[] @relation("imam_tarawih")
+  itikaf_schedule_imam_qiyamul_lail ItikafSchedule[] @relation("imam_qiyamul_lail")
+  itikaf_schedule_ustadz_kajian     ItikafSchedule[] @relation("ustadz_kajian")
 }
