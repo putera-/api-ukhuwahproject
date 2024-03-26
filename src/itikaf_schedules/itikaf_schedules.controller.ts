@@ -55,13 +55,21 @@ export class ItikafSchedulesController {
   @Public()
   @Get()
   findAll() {
-    return this.itikafSchedulesService.findAll();
+    try {
+      return this.itikafSchedulesService.findAll();
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Public()
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.itikafSchedulesService.findOne(id);
+    try {
+      return this.itikafSchedulesService.findOne(id);
+    } catch (error) {
+      throw error;
+    }
   }
 
   @Roles(Role.Admin, Role.Staff)
@@ -93,41 +101,47 @@ export class ItikafSchedulesController {
     }
   }
 
-
-
   // USER PARTICIPATE
   // All Roles
   @Post('participate/:scheduleId')
   async participate(@Req() req, @Param('scheduleId') scheduleId: string, @Body() dataParticipant: CreateItikafParticipantDto) {
-    const user = req.user;
-    const schedule = await this.itikafSchedulesService.findOne(scheduleId);
+    try {
+      const user = req.user;
+      const schedule = await this.itikafSchedulesService.findOne(scheduleId);
 
-    const data: Prisma.ItikafParticipantCreateInput = {
-      total_member: (dataParticipant.man + dataParticipant.woman + dataParticipant.kid),
-      man: dataParticipant.man,
-      woman: dataParticipant.woman,
-      user: { connect: { id: user.id } },
-      schedule: { connect: { id: schedule.id } }
+      const data: Prisma.ItikafParticipantCreateInput = {
+        total_member: dataParticipant.man + dataParticipant.woman,
+        man: dataParticipant.man,
+        woman: dataParticipant.woman,
+        user: { connect: { id: user.id } },
+        schedule: { connect: { id: schedule.id } }
+      }
+
+      if (dataParticipant.vehicle_no) {
+        const vehicle: Vehicle = await this.itikafParticipantsService.getVehicle(dataParticipant.vehicle_no, dataParticipant.vehicle_type, user.id);
+
+        data.vehicle = { connect: { id: vehicle.id } };
+      }
+
+      return this.itikafParticipantsService.create(data, scheduleId, user.id);
+    } catch (error) {
+      throw error;
     }
-
-    if (dataParticipant.vehicle_no) {
-      const vehicle: Vehicle = await this.itikafParticipantsService.getVehicle(dataParticipant.vehicle_no, dataParticipant.vehicle_type, user.id);
-
-      data.vehicle = { connect: { id: vehicle.id } };
-    }
-
-    return this.itikafParticipantsService.create(data, scheduleId, user.id);
   }
 
   @Patch('unparticipate/:scheduleId')
   async unparticipate(@Req() req, @Param('scheduleId') scheduleId: string, @Body() dataUpdate: UpdateItikafParticipantDto) {
-    const user = req.user;
+    try {
+      const user = req.user;
 
-    const data: Prisma.ItikafParticipantUpdateInput = {
-      unparticipate_reason: dataUpdate.unparticipate_reason,
-      participate: false
+      const data: Prisma.ItikafParticipantUpdateInput = {
+        unparticipate_reason: dataUpdate.unparticipate_reason,
+        participate: false
+      }
+
+      return this.itikafParticipantsService.update(data, scheduleId, user.id);
+    } catch (error) {
+      throw error;
     }
-
-    return this.itikafParticipantsService.update(data, scheduleId, user.id);
   }
 }

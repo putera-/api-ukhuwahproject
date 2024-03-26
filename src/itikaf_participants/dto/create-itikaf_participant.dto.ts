@@ -13,10 +13,6 @@ export class CreateItikafParticipantDto {
     @Min(0)
     woman: number
 
-    @IsInt()
-    @Min(0)
-    kid: number
-
     @IsString()
     @IsOptional()
     vehicle_no: string
