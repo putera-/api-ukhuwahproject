@@ -7,6 +7,7 @@ import { UpdateUserDto } from 'src/users/dto/update-user.dto';
 import { PhotosService } from 'src/photos/photos.service';
 import path from 'path';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { Prisma } from '@prisma/client';
 
 @Controller('auth')
 export class AuthController {
@@ -76,7 +77,7 @@ export class AuthController {
     // update selft superadmin, admin, staff, member
     @Patch('profile')
     @UseInterceptors(FileInterceptor('avatar'))
-    async update(@Req() req, @Body(new ValidationPipe()) data: UpdateUserDto, @UploadedFile() file: Express.Multer.File) {
+    async update(@Req() req, @Body(new ValidationPipe()) dataUpdate: UpdateUserDto, @UploadedFile() file: Express.Multer.File) {
         // for avatar
         const ext = file ? file.originalname.split('.').pop() : '';
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -85,12 +86,13 @@ export class AuthController {
         const { id } = req.user;
 
         // handle change password
-        if (data.password) await this.usersService.checkPassword(data);
+        if (dataUpdate.password) await this.usersService.checkPassword(dataUpdate);
 
         // prevent change email
-        if (data.email) delete data.email;
+        if (dataUpdate.email) delete dataUpdate.email;
 
         try {
+            const data: Prisma.UserUpdateInput = { ...dataUpdate };
             if (file) {
                 const avatarBuffer = file.buffer;
 
