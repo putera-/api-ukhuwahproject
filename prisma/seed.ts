@@ -1,8 +1,10 @@
 import { PrismaClient } from '@prisma/client';
 import { userSeed } from './seed/user';
-// import { itikafSeed } from './seed/itikaf';
 import { clientSeed } from './seed/client';
 import { articleSeed } from './seed/article';
+import { itikafSeed } from './seed/itikaf';
+import { slideSeed } from './seed/slide';
+import { asaatidzSeed } from './seed/asaatidz';
 const prisma = new PrismaClient();
 
 async function main() {
@@ -10,7 +12,9 @@ async function main() {
     await clientSeed(prisma, clientid);
     await userSeed(prisma);
     await articleSeed(prisma);
-    // await itikafSeed(prisma);
+    await slideSeed(prisma);
+    await asaatidzSeed(prisma);
+    await itikafSeed(prisma);
 }
 
 main()
