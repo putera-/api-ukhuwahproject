@@ -133,18 +133,20 @@ model ItikafSchedule {
 // TODO relation with asatidz, imama magribh, imam isya, tausiyah, imam qiyamul lail
 
 model ItikafParticipant {
-  id           String         @id @default(uuid())
-  user         User           @relation(fields: [userId], references: [id])
-  userId       String
-  schedule     ItikafSchedule @relation(fields: [scheduleId], references: [id])
-  scheduleId   String
-  total_member Int            @db.TinyInt
-  man          Int            @db.TinyInt
-  woman        Int            @db.TinyInt
-  vehicle      Vehicle?       @relation(fields: [vehicleId], references: [id])
-  vehicleId    String?
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @default(now()) @updatedAt
+  id                   String         @id @default(uuid())
+  user                 User           @relation(fields: [userId], references: [id])
+  userId               String
+  schedule             ItikafSchedule @relation(fields: [scheduleId], references: [id])
+  scheduleId           String
+  total_member         Int            @db.TinyInt
+  man                  Int            @db.TinyInt
+  woman                Int            @db.TinyInt
+  vehicle              Vehicle?       @relation(fields: [vehicleId], references: [id])
+  vehicleId            String?
+  participate          Boolean        @default(true)
+  unparticipate_reason String?        @db.Text
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @default(now()) @updatedAt
 }
 
 model Vehicle {

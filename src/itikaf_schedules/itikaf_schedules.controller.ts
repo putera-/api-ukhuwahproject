@@ -12,7 +12,7 @@ import { Prisma } from '@prisma/client';
 import { CreateItikafParticipantDto } from 'src/itikaf_participants/dto/create-itikaf_participant.dto';
 import { ItikafParticipantsService } from 'src/itikaf_participants/itikaf_participants.service';
 import { Vehicle } from 'src/itikaf_participants/itikaf_participants.interface';
-import { connect } from 'http2';
+import { UpdateItikafParticipantDto } from 'src/itikaf_participants/dto/update-itikaf_participant.dto';
 
 @Controller('itikaf-schedules')
 export class ItikafSchedulesController {
@@ -96,8 +96,7 @@ export class ItikafSchedulesController {
 
 
   // USER PARTICIPATE
-
-  @Roles(Role.Member)
+  // All Roles
   @Post('participate/:scheduleId')
   async participate(@Req() req, @Param('scheduleId') scheduleId: string, @Body() dataParticipant: CreateItikafParticipantDto) {
     const user = req.user;
@@ -118,5 +117,17 @@ export class ItikafSchedulesController {
     }
 
     return this.itikafParticipantsService.create(data, scheduleId, user.id);
+  }
+
+  @Patch('unparticipate/:scheduleId')
+  async unparticipate(@Req() req, @Param('scheduleId') scheduleId: string, @Body() dataUpdate: UpdateItikafParticipantDto) {
+    const user = req.user;
+
+    const data: Prisma.ItikafParticipantUpdateInput = {
+      unparticipate_reason: dataUpdate.unparticipate_reason,
+      participate: false
+    }
+
+    return this.itikafParticipantsService.update(data, scheduleId, user.id);
   }
 }

@@ -57,9 +57,30 @@ export class ItikafParticipantsService {
   //   });
   // }
 
-  // update(id: number, updateItikafParticipantDto: UpdateItikafParticipantDto) {
-  //   return `This action updates a #${id} itikafParticipant`;
-  // }
+  async update(update: Prisma.ItikafParticipantUpdateInput, scheduleId: string, userId: string): Promise<ItikafParticipant> {
+    const userParticipantData = await this.prisma.itikafParticipant.findFirst({
+      where: { scheduleId, userId }
+    })
+
+    return this.prisma.itikafParticipant.update({
+      where: { id: userParticipantData.id },
+      data: update,
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            avatar: true,
+            avatar_md: true,
+            role: true
+          }
+        }
+      }
+    });
+
+    // return `This action updates a #${id} itikafParticipant`;
+  }
 
   // remove(id: number) {
   //   return `This action removes a #${id} itikafParticipant`;

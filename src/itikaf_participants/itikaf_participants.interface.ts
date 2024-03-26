@@ -12,6 +12,8 @@ export interface ItikafParticipant {
     woman: number
     vehicle?: Vehicle
     vehicleId?: string
+    participate: boolean
+    unparticipate_reason?: string
     createdAt?: Date
     updatedAt?: Date
 }
