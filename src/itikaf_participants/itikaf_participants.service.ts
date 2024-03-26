@@ -12,7 +12,6 @@ export class ItikafParticipantsService {
   ) { }
 
   async create(data: Prisma.ItikafParticipantCreateInput, scheduleId: string, userId: string): Promise<ItikafParticipant> {
-    console.log(data);
     const participated = await this.prisma.itikafParticipant.findFirst({
       where: { scheduleId, userId }
     });
