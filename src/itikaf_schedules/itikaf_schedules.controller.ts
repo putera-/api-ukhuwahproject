@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ValidationPipe, UploadedFiles, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ValidationPipe, UploadedFiles, HttpCode, Req } from '@nestjs/common';
 import { ItikafSchedulesService } from './itikaf_schedules.service';
 import { CreateItikafScheduleDto } from './dto/create-itikaf_schedule.dto';
 import { UpdateItikafScheduleDto } from './dto/update-itikaf_schedule.dto';
@@ -9,11 +9,16 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { ItikafSchedule } from './itikaf_schedules.interface';
 import { PhotosService } from 'src/photos/photos.service';
 import { Prisma } from '@prisma/client';
+import { CreateItikafParticipantDto } from 'src/itikaf_participants/dto/create-itikaf_participant.dto';
+import { ItikafParticipantsService } from 'src/itikaf_participants/itikaf_participants.service';
+import { Vehicle } from 'src/itikaf_participants/itikaf_participants.interface';
+import { connect } from 'http2';
 
 @Controller('itikaf-schedules')
 export class ItikafSchedulesController {
   constructor(
     private readonly itikafSchedulesService: ItikafSchedulesService,
+    private readonly itikafParticipantsService: ItikafParticipantsService,
     private photoService: PhotosService
   ) { }
 
@@ -86,5 +91,33 @@ export class ItikafSchedulesController {
     } catch (error) {
       throw error;
     }
+  }
+
+
+
+  // USER PARTICIPATE
+
+  @Roles(Role.Member)
+  @Post('participate/:scheduleId')
+  async participate(@Req() req, @Param('scheduleId') scheduleId: string, @Body() dataParticipant: CreateItikafParticipantDto) {
+    const user = req.user;
+    const schedule = await this.itikafSchedulesService.findOne(scheduleId);
+
+    const data: Prisma.ItikafParticipantCreateInput = {
+      total_member: (dataParticipant.man + dataParticipant.woman + dataParticipant.kid),
+      man: dataParticipant.man,
+      woman: dataParticipant.woman,
+      kid: dataParticipant.kid,
+      user: { connect: { id: user.id } },
+      schedule: { connect: { id: schedule.id } }
+    }
+
+    if (dataParticipant.vehicle_no) {
+      const vehicle: Vehicle = await this.itikafParticipantsService.getVehicle(dataParticipant.vehicle_no, dataParticipant.vehicle_type, user.id);
+
+      data.vehicle = { connect: { id: vehicle.id } };
+    }
+
+    return this.itikafParticipantsService.create(data, scheduleId, user.id);
   }
 }

@@ -14,5 +14,5 @@ export interface Itikaf {
     active: boolean
     createdAt: Date
     updatedAt: Date
-    ItikafSchedule?: ItikafSchedule[]
+    schedules?: ItikafSchedule[]
 }

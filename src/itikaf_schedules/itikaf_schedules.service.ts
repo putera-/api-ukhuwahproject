@@ -51,12 +51,33 @@ export class ItikafSchedulesService {
   async findAll(): Promise<ItikafSchedule[]> {
     return this.prisma.itikafSchedule.findMany({
       where: { deleted: false },
-      include: { photos: true }
+      include: {
+        photos: true
+      }
     });
   }
 
   async findOne(id: string): Promise<ItikafSchedule> {
-    const schedule = await this.prisma.itikafSchedule.findUnique({ where: { id, deleted: false }, include: { photos: true } });
+    const schedule = await this.prisma.itikafSchedule.findUnique({
+      where: { id, deleted: false },
+      include: {
+        photos: true,
+        participants: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                avatar: true,
+                avatar_md: true,
+                role: true
+              }
+            }
+          }
+        }
+      }
+    });
 
     if (!schedule) throw new NotFoundException();
 

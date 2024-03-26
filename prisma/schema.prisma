@@ -30,19 +30,21 @@ model Client {
 }
 
 model User {
-  id        String    @id @default(uuid())
-  email     String    @unique @db.VarChar(100)
-  name      String    @db.VarChar(100)
-  password  String    @db.VarChar(100)
-  auth      Auth[]
-  articles  Article[]
-  role      UserRole  @default(MEMBER)
-  avatar    String?   @db.VarChar(255)
-  avatar_md String?   @db.VarChar(255)
-  active    Boolean   @default(true)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @default(now()) @updatedAt
-  Itikaf    Itikaf[]
+  id                String              @id @default(uuid())
+  email             String              @unique @db.VarChar(100)
+  name              String              @db.VarChar(100)
+  password          String              @db.VarChar(100)
+  auth              Auth[]
+  articles          Article[]
+  role              UserRole            @default(MEMBER)
+  avatar            String?             @db.VarChar(255)
+  avatar_md         String?             @db.VarChar(255)
+  active            Boolean             @default(true)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @default(now()) @updatedAt
+  Itikaf            Itikaf[]
+  ItikafParticipant ItikafParticipant[]
+  Vehicle           Vehicle[]
 }
 
 enum UserRole {
@@ -111,20 +113,53 @@ model Itikaf {
   active               Boolean          @default(false)
   createdAt            DateTime         @default(now())
   updatedAt            DateTime         @default(now()) @updatedAt
-  ItikafSchedule       ItikafSchedule[]
+  schedules            ItikafSchedule[]
 }
 
 model ItikafSchedule {
-  id          String   @id @default(uuid())
-  itikaf      Itikaf   @relation(fields: [itikafId], references: [id])
-  itikafId    String
-  date        String   @db.VarChar(10)
-  day_index   Int      @db.TinyInt
-  description String   @db.Text
-  photos      Photo[]
-  deleted     Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now()) @updatedAt
+  id           String              @id @default(uuid())
+  itikaf       Itikaf              @relation(fields: [itikafId], references: [id])
+  itikafId     String
+  date         String              @db.VarChar(10)
+  day_index    Int                 @db.TinyInt
+  description  String              @db.Text
+  photos       Photo[]
+  deleted      Boolean             @default(false)
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @default(now()) @updatedAt
+  participants ItikafParticipant[]
 }
 
 // TODO relation with asatidz, imama magribh, imam isya, tausiyah, imam qiyamul lail
+
+model ItikafParticipant {
+  id           String         @id @default(uuid())
+  user         User           @relation(fields: [userId], references: [id])
+  userId       String
+  schedule     ItikafSchedule @relation(fields: [scheduleId], references: [id])
+  scheduleId   String
+  total_member Int            @db.TinyInt
+  man          Int            @db.TinyInt
+  woman        Int            @db.TinyInt
+  kid          Int            @db.TinyInt
+  vehicle      Vehicle?       @relation(fields: [vehicleId], references: [id])
+  vehicleId    String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @default(now()) @updatedAt
+}
+
+model Vehicle {
+  id                String              @id @default(uuid())
+  user              User                @relation(fields: [userId], references: [id])
+  userId            String
+  vehicle_type      VehicleType?
+  vehicle_no        String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @default(now()) @updatedAt
+  ItikafParticipant ItikafParticipant[]
+}
+
+enum VehicleType {
+  Motor
+  Mobil
+}

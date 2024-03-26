@@ -14,6 +14,7 @@ import { AuthGuard } from './auth/auth.guard';
 import { RolesGuard } from './roles/roles.guard';
 import { ItikafsModule } from './itikafs/itikafs.module';
 import { ItikafSchedulesModule } from './itikaf_schedules/itikaf_schedules.module';
+import { ItikafParticipantsModule } from './itikaf_participants/itikaf_participants.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ItikafSchedulesModule } from './itikaf_schedules/itikaf_schedules.modul
     ArticlesModule,
     ItikafsModule,
     ItikafSchedulesModule,
+    ItikafParticipantsModule,
   ],
   controllers: [AppController],
   providers: [
