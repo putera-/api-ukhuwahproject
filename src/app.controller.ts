@@ -17,4 +17,15 @@ export class AppController {
       throw new NotFoundException('File not found');
     }
   }
+
+  @Public()
+  @Get('photos/:file')
+  async getPhotos(@Param('file') file: string, @Res() res) {
+    try {
+      await fs.access(`./public/photos/${file}`);
+      res.sendFile(file, { root: './public/photos' })
+    } catch (error) {
+      throw new NotFoundException('File not found');
+    }
+  }
 }
