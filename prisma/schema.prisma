@@ -157,6 +157,7 @@ model ItikafParticipant {
   vehicleId            String?
   participate          Boolean        @default(true)
   unparticipate_reason String?        @db.Text
+  attendance_check     Boolean        @default(false)
   createdAt            DateTime       @default(now())
   updatedAt            DateTime       @default(now()) @updatedAt
 }

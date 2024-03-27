@@ -13,6 +13,7 @@ import { CreateItikafParticipantDto } from 'src/itikaf_participants/dto/create-i
 import { ItikafParticipantsService } from 'src/itikaf_participants/itikaf_participants.service';
 import { Vehicle } from 'src/itikaf_participants/itikaf_participants.interface';
 import { UpdateItikafParticipantDto } from 'src/itikaf_participants/dto/update-itikaf_participant.dto';
+import { AttendanceItikafParticipantDto } from './dto/attendance.dto';
 
 @Controller('itikaf-schedules')
 export class ItikafSchedulesController {
@@ -166,7 +167,7 @@ export class ItikafSchedulesController {
   }
 
   @Patch('unparticipate/:scheduleId')
-  async unparticipate(@Req() req, @Param('scheduleId') scheduleId: string, @Body() dataUpdate: UpdateItikafParticipantDto) {
+  async unparticipate(@Req() req, @Param('scheduleId') scheduleId: string, @Body(new ValidationPipe) dataUpdate: UpdateItikafParticipantDto) {
     try {
       const user = req.user;
 
@@ -176,6 +177,23 @@ export class ItikafSchedulesController {
       }
 
       return this.itikafParticipantsService.update(data, scheduleId, user.id);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
+  // ATTENDANCE
+  @Roles(Role.Admin, Role.Staff)
+  @Patch('attendance/:scheduleId/:participantId')
+  async attendance(@Param('scheduleId') scheduleId: string, @Param('participantId') participantId: string, @Body(new ValidationPipe) dataAttendance: AttendanceItikafParticipantDto) {
+    try {
+      const data: Prisma.ItikafParticipantUpdateInput = {
+        ...dataAttendance,
+        attendance_check: true
+      }
+
+      return this.itikafParticipantsService.update(data, scheduleId, participantId);
     } catch (error) {
       throw error;
     }
