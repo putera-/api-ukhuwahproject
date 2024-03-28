@@ -8,6 +8,7 @@ import { PhotosService } from 'src/photos/photos.service';
 import path from 'path';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { Prisma } from '@prisma/client';
+import { ChangePasswordDto } from 'src/users/dto/change-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -123,6 +124,19 @@ export class AuthController {
                 this.photoService.removeFile(`/public/avatar/${uniqueSuffix}_lg.${ext}`)
                 this.photoService.removeFile(`/public/avatar/${uniqueSuffix}_md.${ext}`)
             }
+            throw error;
+        }
+    }
+
+    @Patch('change_password')
+    @HttpCode(204)
+    async updatePassword(
+        @Request() req: any,
+        @Body(new ValidationPipe()) data: ChangePasswordDto,
+    ) {
+        try {
+            return await this.usersService.updatePassword(req.user.id, data);
+        } catch (error) {
             throw error;
         }
     }

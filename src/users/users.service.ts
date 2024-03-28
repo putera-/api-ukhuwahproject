@@ -120,4 +120,28 @@ export class UsersService {
     // hash password
     data.password = await bcrypt.hash(data.password, 10);
   }
+
+  async updatePassword(id: string, data: any): Promise<void> {
+    const user = await this.prisma.user.findFirst({ where: { id } });
+    if (!user) throw new NotFoundException();
+
+    if (data.password != data.confirm_password)
+      throw new BadRequestException('Konfirmasi password tidak sesuai');
+
+    const checkPassword = await bcrypt.compare(
+      data.old_password,
+      user.password,
+    );
+    if (!checkPassword) throw new BadRequestException('Password Lama Salah');
+
+    delete data.confirm_password;
+    delete data.old_password;
+
+    data.password = await bcrypt.hash(data.password, 10);
+
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { password: data.password },
+    });
+  }
 }
