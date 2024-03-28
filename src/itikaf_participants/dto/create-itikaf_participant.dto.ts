@@ -3,10 +3,6 @@ import { IsIn, IsInt, IsOptional, IsString, Min } from "class-validator"
 export class CreateItikafParticipantDto {
     @IsInt()
     @Min(0)
-    total_member: number
-
-    @IsInt()
-    @Min(0)
     man: number
 
     @IsInt()
