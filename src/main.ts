@@ -16,6 +16,12 @@ async function bootstrap() {
   await appSerivce.createPath('./public/photos')
   await appSerivce.createPath('./public/avatar')
 
+  // CORS
+  app.enableCors({
+    origin: ['http://localhost:3000', 'http://localhost:3001'],
+    credentials: true
+  });
+
   const port = process.env.PORT;
   await app.listen(port);
   console.log(`App is listening at http://localhost:${port}`);

@@ -9,8 +9,8 @@ export async function asaatidzSeed(prisma: PrismaClient) {
             data: {
                 name: 'Ustadz ' + faker.person.fullName() + ', Lc. MA.',
                 profile: faker.person.bio(),
-                avatar: faker.image.urlPicsumPhotos(),
-                avatar_md: faker.image.urlPicsumPhotos(),
+                avatar: faker.image.avatar(),
+                avatar_md: faker.image.avatar(),
             }
         });
     }

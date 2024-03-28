@@ -37,7 +37,8 @@ export class AuthService {
         // instead of the user object
         const { access_token, exp } = await this.createToken(user.id, user.email, user.role);
 
-        return { access_token, exp };
+        delete user.password;
+        return { access_token, exp, user };
     }
 
     async createToken(userId: string, email: string, role: string): Promise<Record<string, any>> {

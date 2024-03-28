@@ -61,6 +61,7 @@ export class ItikafSchedulesService {
   async findAll(): Promise<ItikafSchedule[]> {
     return this.prisma.itikafSchedule.findMany({
       where: { deleted: false },
+      orderBy: { day_index: 'asc' },
       include: {
         photos: true,
         imam_tarawih: true,
@@ -85,6 +86,7 @@ export class ItikafSchedulesService {
                 id: true,
                 name: true,
                 email: true,
+                phone: true,
                 avatar: true,
                 avatar_md: true,
                 role: true

@@ -12,6 +12,7 @@ export async function userSeed(prisma: PrismaClient) {
         const superadmin: Prisma.UserCreateInput = {
             email,
             name: 'So Super',
+            phone: '+62 812-1111-1111',
             password,
             role: 'SUPERUSER'
         };
@@ -31,6 +32,7 @@ export async function userSeed(prisma: PrismaClient) {
         const admin: Prisma.UserCreateInput = {
             email,
             name: 'So Admin',
+            phone: '+62 812-1111-1111',
             password,
             role: 'ADMIN'
         };

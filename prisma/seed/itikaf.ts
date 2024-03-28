@@ -9,6 +9,7 @@ export async function itikafSeed(prisma: PrismaClient) {
     const adminData: Prisma.UserCreateInput = {
         email,
         name: 'So Admin',
+        phone: '+62 812-1111-1111',
         password,
         role: 'ADMIN'
     };
@@ -27,9 +28,29 @@ export async function itikafSeed(prisma: PrismaClient) {
             hijri_year: '1445',
             description: faker.lorem.paragraphs(),
             photos: {
-                create: {
-                    path: faker.image.urlPicsumPhotos(),
-                    path_md: faker.image.urlPicsumPhotos()
+                createMany: {
+                    data: [
+                        {
+                            path: faker.image.urlPicsumPhotos(),
+                            path_md: faker.image.urlPicsumPhotos()
+                        },
+                        {
+                            path: faker.image.urlPicsumPhotos(),
+                            path_md: faker.image.urlPicsumPhotos()
+                        },
+                        {
+                            path: faker.image.urlPicsumPhotos(),
+                            path_md: faker.image.urlPicsumPhotos()
+                        },
+                        {
+                            path: faker.image.urlPicsumPhotos(),
+                            path_md: faker.image.urlPicsumPhotos()
+                        },
+                        {
+                            path: faker.image.urlPicsumPhotos(),
+                            path_md: faker.image.urlPicsumPhotos()
+                        },
+                    ]
                 }
             },
             createdBy: {
@@ -46,6 +67,8 @@ export async function itikafSeed(prisma: PrismaClient) {
     for (let i = 0; i < 10; i++) {
         const day = (i + 1).toString().padStart(2, '0');
         const random = Math.floor(Math.random() * 10);
+        const random1 = Math.floor(Math.random() * 10);
+        const random2 = Math.floor(Math.random() * 10);
 
 
         await prisma.itikafSchedule.create({
@@ -56,18 +79,18 @@ export async function itikafSeed(prisma: PrismaClient) {
                 description: faker.lorem.paragraphs(),
                 photos: {
                     create: {
-                        path: faker.image.urlPicsumPhotos(),
-                        path_md: faker.image.urlPicsumPhotos()
+                        path: faker.image.urlLoremFlickr(),
+                        path_md: faker.image.urlLoremFlickr()
                     }
                 },
                 imam_tarawih: {
                     connect: { id: asaatidzs[random].id }
                 },
                 imam_qiyamul_lail: {
-                    connect: { id: asaatidzs[random].id }
+                    connect: { id: asaatidzs[random1].id }
                 },
                 ustadz_kajian: {
-                    connect: { id: asaatidzs[random].id }
+                    connect: { id: asaatidzs[random2].id }
                 },
             }
         })

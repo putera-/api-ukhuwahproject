@@ -9,6 +9,7 @@ export async function articleSeed(prisma: PrismaClient) {
         const admin: Prisma.UserCreateInput = {
             email: `admin${i}@gmail.com`,
             name: 'So Admin',
+            phone: '+62 812-1111-1111',
             password,
             role: 'ADMIN'
         };

@@ -7,8 +7,9 @@ import { AppService } from 'src/app.service';
 
 const select = {
   id: true,
-  email: true,
   name: true,
+  email: true,
+  phone: true,
   role: true,
   avatar: true,
   avatar_md: true,

@@ -40,6 +40,7 @@ export class ItikafParticipantsService {
           select: {
             id: true,
             name: true,
+            phone: true,
             email: true,
             avatar: true,
             avatar_md: true,
@@ -70,6 +71,7 @@ export class ItikafParticipantsService {
             id: true,
             name: true,
             email: true,
+            phone: true,
             avatar: true,
             avatar_md: true,
             role: true
