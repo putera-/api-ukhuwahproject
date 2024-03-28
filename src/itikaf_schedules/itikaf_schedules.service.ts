@@ -58,17 +58,34 @@ export class ItikafSchedulesService {
     }
   }
 
-  async findAll(): Promise<ItikafSchedule[]> {
-    return this.prisma.itikafSchedule.findMany({
+  async findAll(authUserId?: string): Promise<ItikafSchedule[]> {
+    const data: ItikafSchedule[] = await this.prisma.itikafSchedule.findMany({
       where: { deleted: false },
       orderBy: { day_index: 'asc' },
       include: {
         photos: true,
         imam_tarawih: true,
         imam_qiyamul_lail: true,
-        ustadz_kajian: true
-      }
+        ustadz_kajian: true,
+        participants: {
+          where: {
+            participate: true
+          }
+        }
+      },
     });
+
+    for (const schedule of data) {
+      schedule.total_member = schedule.participants.reduce((acc, p) => acc + p.total_member, 0);
+      schedule.total_man = schedule.participants.reduce((acc, p) => acc + p.man, 0);
+      schedule.total_woman = schedule.participants.reduce((acc, p) => acc + p.woman, 0);
+
+      if (authUserId) {
+        schedule.auth_participant = schedule.participants.some(p => p.userId == authUserId);
+      }
+    }
+
+    return data;
   }
 
   async findOne(id: string): Promise<ItikafSchedule> {

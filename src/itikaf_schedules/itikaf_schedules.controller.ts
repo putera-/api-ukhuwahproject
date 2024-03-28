@@ -81,6 +81,15 @@ export class ItikafSchedulesController {
     }
   }
 
+  @Get('me')
+  findAllAuth(@Req() req) {
+    try {
+      return this.itikafSchedulesService.findAll(req.user.id);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   @Public()
   @Get(':id')
   findOne(@Param('id') id: string) {
