@@ -21,10 +21,14 @@ export class AuthController {
     @Post('register')
     async create(@Body(new ValidationPipe()) data: CreateUserDto) {
         try {
+            const email = data.email;
+            const password = data.password;
             // validate new user
             await this.usersService.validateNewUser(data);
 
-            return this.usersService.create(data);
+            await this.usersService.create(data);
+
+            return this.authService.signIn(email, password);
         } catch (error) {
             throw error;
         }
