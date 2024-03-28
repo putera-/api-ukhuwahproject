@@ -4,10 +4,8 @@ import { faker } from '@faker-js/faker';
 
 export async function articleSeed(prisma: PrismaClient) {
     const password = await bcrypt.hash('rahasia', 10);
-    const email = `admin@gmail.com`;
+
     for (let i = 0; i < 20; i++) {
-
-
         const admin: Prisma.UserCreateInput = {
             email: `admin${i}@gmail.com`,
             name: 'So Admin',
@@ -20,7 +18,7 @@ export async function articleSeed(prisma: PrismaClient) {
                 ...admin,
                 articles: {
                     create: {
-                        title: faker.lorem.sentence(),
+                        title: faker.lorem.words({ max: 10, min: 4 }),
                         content: faker.lorem.paragraphs(),
                         status: 'PUBLISH',
                         photos: {
