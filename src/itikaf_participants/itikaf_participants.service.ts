@@ -21,11 +21,17 @@ export class ItikafParticipantsService {
     if (participated) {
       dataParticipant = await this.prisma.itikafParticipant.update({
         where: { id: participated.id },
-        data
+        data: {
+          ...data,
+          participate: true
+        }
       });
     } else {
       dataParticipant = await this.prisma.itikafParticipant.create({
-        data
+        data: {
+          ...data,
+          participate: true
+        }
       });
     }
 
