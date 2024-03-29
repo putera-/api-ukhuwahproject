@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, HttpCode } from '@nestjs/common';
 import { ItikafParticipantsService } from './itikaf_participants.service';
 import { CreateItikafParticipantDto } from './dto/create-itikaf_participant.dto';
 import { UpdateItikafParticipantDto } from './dto/update-itikaf_participant.dto';
@@ -36,6 +36,17 @@ export class ItikafParticipantsController {
     try {
       const user = req.user;
       return this.itikafParticipantsService.findMySchedule(user.id, scheduleId);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Roles(Role.Admin, Role.Staff)
+  @HttpCode(204)
+  @Patch('coupon_taken/:id')
+  setCouponTaken(@Req() req, @Param('id') id: string) {
+    try {
+      return this.itikafParticipantsService.setCouponTaken(id);
     } catch (error) {
       throw error;
     }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { ItikafParticipant, Vehicle } from './itikaf_participants.interface';
 import { Prisma } from '@prisma/client';
@@ -119,5 +119,20 @@ export class ItikafParticipantsService {
       })
     }
     return vehicle;
+  }
+
+  async setCouponTaken(id: string): Promise<void> {
+    const participant = await this.prisma.itikafParticipant.findUnique({ where: { id } });
+
+    if (!participant) throw new NotFoundException();
+
+    await this.prisma.itikafParticipant.update({
+      where: { id },
+      data: {
+        coupon_taken: true
+      }
+    });
+
+    return;
   }
 }

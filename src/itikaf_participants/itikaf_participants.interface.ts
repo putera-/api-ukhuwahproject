@@ -14,6 +14,7 @@ export interface ItikafParticipant {
     vehicleId?: string
     participate: boolean
     unparticipate_reason?: string
+    coupon_taken: boolean
     createdAt?: Date
     updatedAt?: Date
 }
