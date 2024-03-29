@@ -40,11 +40,6 @@ export class ItikafSchedulesController {
         data.photo = await this.photoService.create(file, uniqueSuffix, ext);
       }
 
-      // save photos
-      // let photos = [];
-      // if (files) photos = await this.photoService.createMany(files, uniqueSuffix);
-
-
       // connect itikaf id
       data.itikaf = {
         connect: { id: data.itikafId }
@@ -60,9 +55,9 @@ export class ItikafSchedulesController {
       }
 
       // connect imam qiyamul lail
-      if (data.imam_qiamul_lail_id) {
-        data.imam_qiamul_lail = { connect: { id: data.imam_qiamul_lail_id } };
-        delete data.imam_qiamul_lail_id
+      if (data.imam_qiyamul_lail_id) {
+        data.imam_qiyamul_lail = { connect: { id: data.imam_qiyamul_lail_id } };
+        delete data.imam_qiyamul_lail_id
       }
 
       // connect imam qiyamul lail
