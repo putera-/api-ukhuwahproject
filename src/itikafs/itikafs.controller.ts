@@ -20,14 +20,16 @@ export class ItikafsController {
   ) { }
 
   @Roles(Role.Admin, Role.Staff)
-  @Post()
+  @Post(':hijri_year')
   @UseInterceptors(FileInterceptor('photo'))
-  async create(@Req() req, @Body(new ValidationPipe) createItikafDto: CreateItikafDto, @UploadedFile() file: Express.Multer.File): Promise<Itikaf> {
+  async create(@Param('hijri_year') hijri_year: string, @Req() req, @Body(new ValidationPipe) createItikafDto: CreateItikafDto, @UploadedFile() file: Express.Multer.File): Promise<Itikaf> {
     const ext = file ? file.originalname.split('.').pop() : '';
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
 
     try {
       const data: Record<string, any> | Prisma.ItikafCreateInput = { ...createItikafDto };
+      data.year = String(new Date().getFullYear());
+      data.hijri_year = hijri_year;
 
       if (file) {
         data.photo = await this.photoService.create(file, uniqueSuffix, ext);

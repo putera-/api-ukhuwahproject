@@ -81,19 +81,19 @@ export class ItikafSchedulesController {
   }
 
   @Public()
-  @Get()
-  findAll() {
+  @Get(':year')
+  findAll(@Param('year') year: string) {
     try {
-      return this.itikafSchedulesService.findAll();
+      return this.itikafSchedulesService.findAll(year);
     } catch (error) {
       throw error;
     }
   }
 
-  @Get('me')
-  findAllAuth(@Req() req) {
+  @Get('me/:year')
+  findAllAuth(@Req() req, @Param('year') year: string) {
     try {
-      return this.itikafSchedulesService.findAll(req.user.id);
+      return this.itikafSchedulesService.findAll(year, req.user.id);
     } catch (error) {
       throw error;
     }

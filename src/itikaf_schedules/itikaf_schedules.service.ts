@@ -52,9 +52,13 @@ export class ItikafSchedulesService {
     }
   }
 
-  async findAll(authUserId?: string): Promise<ItikafSchedule[]> {
+  async findAll(hijri_year: string, authUserId?: string): Promise<ItikafSchedule[]> {
+    const itikaf = await this.prisma.itikaf.findFirst({ where: { hijri_year } });
+
+    if (!itikaf) return [];
+
     const data: ItikafSchedule[] = await this.prisma.itikafSchedule.findMany({
-      where: { deleted: false },
+      where: { itikafId: itikaf.id, deleted: false },
       orderBy: { day_index: 'asc' },
       include: {
         imam_tarawih: true,
