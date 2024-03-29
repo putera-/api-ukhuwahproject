@@ -5,6 +5,19 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class PhotosService {
+  async create(file: Express.Multer.File, uniqueSuffix: string, ext: string) {
+    const fileBuffer = file.buffer;
+
+    const size = 1200;
+    const filename = `${uniqueSuffix}.${ext}`;
+    const filepath = path.join('./public/photos/' + filename);
+
+    await this.resize(size, fileBuffer, filepath);
+
+
+    return `/photos/${uniqueSuffix}.${ext}`;
+  }
+
   async createMany(files: Array<Express.Multer.File>, uniqueSuffix: string) {
     // const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     const photos = [];

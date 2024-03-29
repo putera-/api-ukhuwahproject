@@ -13,8 +13,24 @@ export class ItikafsService {
         private appService: AppService
     ) { }
 
-    async create(data: Prisma.ItikafCreateInput, photos: Prisma.PhotoCreateInput[])
+    async create(data: Prisma.ItikafCreateInput)
         : Promise<Itikaf> {
+
+        const checkData = await this.prisma.itikaf.findFirst({
+            where: { hijri_year: data.hijri_year }
+        });
+
+
+        // if data is exist
+        if (checkData) {
+            // remove if photo if exist
+            if (checkData.photo) {
+                this.appService.removeFile('/public' + checkData.photo);
+            }
+        }
+
+        if (!data.photo) data.photo = null;
+
         return this.prisma.itikaf.upsert({
             where: { hijri_year: data.hijri_year },
             create: data,
@@ -22,8 +38,8 @@ export class ItikafsService {
             include: {
                 createdBy: true
             }
-
         });
+
     }
 
     async findAll(): Promise<Itikaf[]> {
@@ -41,61 +57,25 @@ export class ItikafsService {
         return itikaf;
     }
 
-    async update(hijri_year: string, data: Prisma.ItikafUpdateInput, new_photos: Prisma.PhotoCreateInput[]) {
-        const current_data = await this.findOne(hijri_year);
+    async update(hijri_year: string, data: Prisma.ItikafUpdateInput) {
+        const current_data: Itikaf = await this.findOne(hijri_year);
 
-        // if no photo from req data
-        // const keptPhotos: Record<string, any> = data.photos ? data.photos : [];
-        // collect data photos to update
-        // const photosUpdate = keptPhotos.map(p => ({
-        //     where: { id: p.id },
-        //     data: { index: parseInt(p.index) }
-        // }));
-
-        // const keepedIds = keptPhotos.map(p => p.id);
-        // const keepedIndexes = keptPhotos.map(p => p.index);
-
-        // // get taken index
-        // const indexes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-        // // get available index
-        // const availableIndexes = indexes.filter(i => !keepedIndexes.includes(i));
-
-        // // update new photo indexes
-        // new_photos = new_photos.map(p => {
-        //     p.index = availableIndexes[0];
-        //     availableIndexes.shift();
-        //     return p;
-        // });
-
-        // // remove photos from req.data
-        // if (data.photos) delete data.photos;
+        console.log('current_data');
+        console.log(current_data);
 
         const updatedItikaf = await this.prisma.itikaf.update({
             where: { hijri_year },
             data,
             include: { createdBy: true }
         });
-
-        // FIXME remove single photo
-        // // collect unused photo
-        // const photo_to_delete = current_data.photos.filter(p => !keepedIds.includes(p.id));
-        // // deleted unused photo files
-        // this.removePhotos(photo_to_delete);
+        if (current_data.photo != updatedItikaf.photo) {
+            console.log('hapus photo lama')
+            console.log(current_data.photo);
+            this.appService.removeFile('/public' + current_data.photo);
+        }
 
         return updatedItikaf;
     }
-
-    // remove(id: string) {
-    //     this.findOne(id);
-    //     return `This action removes a #${id} itikaf`;
-    // }
-
-    removePhotos(photos) {
-        for (const photo of photos) {
-            this.appService.removeFile('/public' + photo.path);
-            this.appService.removeFile('/public' + photo.path_md);
-        }
-    };
 
     async updateActive(hijri_year: string, active: boolean): Promise<void> {
         await this.findOne(hijri_year);

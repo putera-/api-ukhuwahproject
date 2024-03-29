@@ -6,7 +6,7 @@ export interface Itikaf {
     year: string
     hijri_year: string
     description: string
-    photos?: string
+    photo?: string
     contact_person_name?: string
     contact_person_phone?: string
     createdBy?: User
