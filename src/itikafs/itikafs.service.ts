@@ -47,18 +47,16 @@ export class ItikafsService {
     }
 
     async findOne(hijri_year: string): Promise<Itikaf> {
-        const itikaf = await this.prisma.itikaf.findUnique({
+        return this.prisma.itikaf.findUnique({
             where: { hijri_year },
             include: { createdBy: true }
         });
-
-        if (!itikaf) throw new NotFoundException();
-
-        return itikaf;
     }
 
     async update(hijri_year: string, data: Prisma.ItikafUpdateInput) {
         const current_data: Itikaf = await this.findOne(hijri_year);
+
+        if (!current_data) throw new NotFoundException();
 
         const updatedItikaf = await this.prisma.itikaf.update({
             where: { hijri_year },
@@ -73,7 +71,10 @@ export class ItikafsService {
     }
 
     async updateActive(hijri_year: string, active: boolean): Promise<void> {
-        await this.findOne(hijri_year);
+        const current_data = await this.findOne(hijri_year);
+
+        if (!current_data) throw new NotFoundException();
+
 
         await this.prisma.itikaf.update({
             where: { hijri_year },

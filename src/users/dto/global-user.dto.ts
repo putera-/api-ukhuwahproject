@@ -13,7 +13,6 @@ export class GlobalUserDto {
     password: string
 
     @IsPhoneNumber()
-    @Length(1, 20)
     phone: string;
 
     @IsString()
