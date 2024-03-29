@@ -38,6 +38,7 @@ export class ItikafSchedulesController {
 
       if (file) {
         data.photo = await this.photoService.create(file, uniqueSuffix, ext);
+        data.photo_sm = await this.photoService.create(file, `${uniqueSuffix}_sm`, ext, 600);
       }
 
       // connect itikaf id
@@ -69,7 +70,10 @@ export class ItikafSchedulesController {
       return this.itikafSchedulesService.create(data as Prisma.ItikafScheduleCreateInput);
     } catch (error) {
       // remove photo
-      if (file) this.appService.removeFile(`/public/photos/${uniqueSuffix}.${ext}`)
+      if (file) {
+        this.appService.removeFile(`/public/photos/${uniqueSuffix}.${ext}`);
+        this.appService.removeFile(`/public/photos/${uniqueSuffix}_sm.${ext}`);
+      }
 
       throw error;
     }
@@ -117,6 +121,7 @@ export class ItikafSchedulesController {
       // save photos
       if (file) {
         data.photo = await this.photoService.create(file, uniqueSuffix, ext);
+        data.photo_sm = await this.photoService.create(file, `${uniqueSuffix}_sm`, ext, 600);
       }
 
       // disconnect all relation
@@ -144,7 +149,10 @@ export class ItikafSchedulesController {
       return this.itikafSchedulesService.update(id, data);
     } catch (error) {
       // remove photo
-      if (file) this.appService.removeFile(`/public/photos/${uniqueSuffix}.${ext}`)
+      if (file) {
+        this.appService.removeFile(`/public/photos/${uniqueSuffix}.${ext}`)
+        this.appService.removeFile(`/public/photos/${uniqueSuffix}_sm.${ext}`)
+      }
 
       throw error;
     }

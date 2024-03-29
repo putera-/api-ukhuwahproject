@@ -110,6 +110,7 @@ model Itikaf {
   hijri_year           String           @unique() @db.VarChar(4)
   description          String           @db.Text
   photo                String?          @db.VarChar(255)
+  photo_sm             String?          @db.VarChar(255)
   masjid               String?          @db.VarChar(100)
   address              String?          @db.Text
   contact_person_name  String?          @db.VarChar(100)
@@ -130,6 +131,7 @@ model ItikafSchedule {
   day_index            Int                 @db.TinyInt
   description          String              @db.Text
   photo                String?             @db.VarChar(255)
+  photo_sm             String?             @db.VarChar(255)
   deleted              Boolean             @default(false)
   participants         ItikafParticipant[]
   imam_tarawih         Asaatidz?           @relation(name: "imam_tarawih", fields: [imam_tarawih_id], references: [id])

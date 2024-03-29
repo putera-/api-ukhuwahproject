@@ -65,6 +65,7 @@ export class ItikafsService {
         });
         if (current_data.photo != updatedItikaf.photo) {
             this.appService.removeFile('/public' + current_data.photo);
+            this.appService.removeFile('/public' + current_data.photo_sm);
         }
 
         return updatedItikaf;

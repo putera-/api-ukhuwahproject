@@ -33,6 +33,7 @@ export class ItikafsController {
 
       if (file) {
         data.photo = await this.photoService.create(file, uniqueSuffix, ext);
+        data.photo_sm = await this.photoService.create(file, `${uniqueSuffix}_sm`, ext, 600);
       }
 
       data.createdBy = {
@@ -44,6 +45,7 @@ export class ItikafsController {
     } catch (error) {
       // remove photo
       if (file) this.appService.removeFile(`/public/photos/${uniqueSuffix}.${ext}`)
+      if (file) this.appService.removeFile(`/public/photos/${uniqueSuffix}_sm.${ext}`)
 
       throw error;
     }
@@ -80,6 +82,7 @@ export class ItikafsController {
       const data: Prisma.ItikafUpdateInput = { ...updateItikafDto };
       if (file) {
         data.photo = await this.photoService.create(file, uniqueSuffix, ext);
+        data.photo_sm = await this.photoService.create(file, `${uniqueSuffix}_sm`, ext, 600);
       }
 
 
@@ -87,6 +90,7 @@ export class ItikafsController {
     } catch (error) {
       // remove photo
       if (file) this.appService.removeFile(`/public/photos/${uniqueSuffix}.${ext}`)
+      if (file) this.appService.removeFile(`/public/photos/${uniqueSuffix}_sm.${ext}`)
 
       throw error;
     }

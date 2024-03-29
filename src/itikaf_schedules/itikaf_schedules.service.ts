@@ -134,6 +134,7 @@ export class ItikafSchedulesService {
 
     if (current_data.photo != updatedData.photo) {
       this.appService.removeFile('/public' + current_data.photo);
+      this.appService.removeFile('/public' + current_data.photo_sm);
     }
 
     return updatedData;

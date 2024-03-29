@@ -7,6 +7,7 @@ export interface Itikaf {
     hijri_year: string
     description: string
     photo?: string
+    photo_sm?: string
     contact_person_name?: string
     contact_person_phone?: string
     masjid?: string

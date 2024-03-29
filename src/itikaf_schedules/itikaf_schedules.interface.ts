@@ -11,6 +11,7 @@ export interface ItikafSchedule {
     day_index: number
     description: string
     photo?: string
+    photo_sm?: string
     deleted: boolean
     createdAt: Date
     updatedAt: Date
