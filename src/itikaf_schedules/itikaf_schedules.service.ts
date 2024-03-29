@@ -15,13 +15,14 @@ export class ItikafSchedulesService {
     private appService: AppService
   ) { }
 
-  async create(data: Prisma.ItikafScheduleCreateInput, photos: Prisma.PhotoCreateInput[]): Promise<ItikafSchedule> {
+  async create(data: Prisma.ItikafScheduleCreateInput): Promise<ItikafSchedule> {
     const currentDataDate = await this.prisma.itikafSchedule.findFirst({
       where: { date: data.date, deleted: false }
     });
 
+    let itikafData = undefined;
     if (!currentDataDate) {
-      return this.prisma.itikafSchedule.create({
+      itikafData = await this.prisma.itikafSchedule.create({
         data: {
           ...data
         },
@@ -32,7 +33,7 @@ export class ItikafSchedulesService {
         }
       });
     } else {
-      const updatedData = await this.prisma.itikafSchedule.update({
+      itikafData = await this.prisma.itikafSchedule.update({
         where: { id: currentDataDate.id },
         data,
         include: {
@@ -42,10 +43,12 @@ export class ItikafSchedulesService {
         }
       });
 
-      // FIXME REMOVE SINGLE OLD PHOTO
-      // this.removePhotos(currentDataDate.photos);
+      // remove unnecessary photo
+      if (currentDataDate.photo != itikafData.photo) {
+        this.appService.removeFile('/public' + currentDataDate.photo);
+      }
 
-      return updatedData;
+      return itikafData;
     }
   }
 
@@ -108,34 +111,8 @@ export class ItikafSchedulesService {
     return schedule;
   }
 
-  async update(id: string, data: Record<string, any>, new_photos: Prisma.PhotoCreateInput[]): Promise<ItikafSchedule> {
+  async update(id: string, data: Record<string, any>): Promise<ItikafSchedule> {
     const current_data = await this.findOne(id);
-
-    // if no photo from req data
-    const keptPhotos: Record<string, any> = data.photos ? data.photos : [];
-    // collect data photos to update
-    const photosUpdate = keptPhotos.map(p => ({
-      where: { id: p.id },
-      data: { index: parseInt(p.index) }
-    }));
-
-    const keepedIds = keptPhotos.map(p => p.id);
-    const keepedIndexes = keptPhotos.map(p => p.index);
-
-    // get taken index
-    const indexes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-    // get available index
-    const availableIndexes = indexes.filter(i => !keepedIndexes.includes(i));
-
-    // update new photo indexes
-    new_photos = new_photos.map(p => {
-      p.index = availableIndexes[0];
-      availableIndexes.shift();
-      return p;
-    });
-
-    // remove photos from req.data
-    if (data.photos) delete data.photos;
 
     const updatedData = await this.prisma.itikafSchedule.update({
       where: { id, deleted: false },
@@ -147,11 +124,9 @@ export class ItikafSchedulesService {
       }
     });
 
-    // FIXME REMOVE SINGLE PHOTO
-    // collect unused photo
-    // const photo_to_delete = current_data.photos.filter(p => !keepedIds.includes(p.id));
-    // deleted unused photo files
-    // this.removePhotos(photo_to_delete);
+    if (current_data.photo != updatedData.photo) {
+      this.appService.removeFile('/public' + current_data.photo);
+    }
 
     return updatedData;
   }

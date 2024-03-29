@@ -60,17 +60,12 @@ export class ItikafsService {
     async update(hijri_year: string, data: Prisma.ItikafUpdateInput) {
         const current_data: Itikaf = await this.findOne(hijri_year);
 
-        console.log('current_data');
-        console.log(current_data);
-
         const updatedItikaf = await this.prisma.itikaf.update({
             where: { hijri_year },
             data,
             include: { createdBy: true }
         });
         if (current_data.photo != updatedItikaf.photo) {
-            console.log('hapus photo lama')
-            console.log(current_data.photo);
             this.appService.removeFile('/public' + current_data.photo);
         }
 

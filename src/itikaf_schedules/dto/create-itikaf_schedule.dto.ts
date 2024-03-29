@@ -6,7 +6,7 @@ export class CreateItikafScheduleDto {
     itikafId: string
 
     @IsDateString()
-    date: Date
+    date: string
 
     @Type(() => Number)
     @IsInt()

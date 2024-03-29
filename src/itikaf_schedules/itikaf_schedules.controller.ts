@@ -1,11 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ValidationPipe, UploadedFiles, HttpCode, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ValidationPipe, UploadedFiles, HttpCode, Req, UploadedFile } from '@nestjs/common';
 import { ItikafSchedulesService } from './itikaf_schedules.service';
 import { CreateItikafScheduleDto } from './dto/create-itikaf_schedule.dto';
 import { UpdateItikafScheduleDto } from './dto/update-itikaf_schedule.dto';
 import { Public } from 'src/auth/auth.metadata';
 import { Roles } from 'src/roles/roles.decorator';
 import { Role } from 'src/roles/role.enums';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { ItikafSchedule } from './itikaf_schedules.interface';
 import { PhotosService } from 'src/photos/photos.service';
 import { Prisma } from '@prisma/client';
@@ -25,16 +25,23 @@ export class ItikafSchedulesController {
 
   @Roles(Role.Admin, Role.Staff)
   @Post()
-  @UseInterceptors(FilesInterceptor('photos', 10)) // key=photo. max = 10
-  async create(@Body(new ValidationPipe) createItikafScheduleDto: CreateItikafScheduleDto, @UploadedFiles() files: Array<Express.Multer.File>) {
+  @UseInterceptors(FileInterceptor('photo'))
+  async create(@Body(new ValidationPipe) createItikafScheduleDto: CreateItikafScheduleDto, @UploadedFile() file: Express.Multer.File) {
+    const ext = file ? file.originalname.split('.').pop() : '';
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
 
     try {
-      // save photos
-      let photos = [];
-      if (files) photos = await this.photoService.createMany(files, uniqueSuffix);
-
       const data: Record<string, any> | Prisma.ItikafScheduleCreateInput = { ...createItikafScheduleDto };
+
+
+      if (file) {
+        data.photo = await this.photoService.create(file, uniqueSuffix, ext);
+      }
+
+      // save photos
+      // let photos = [];
+      // if (files) photos = await this.photoService.createMany(files, uniqueSuffix);
+
 
       // connect itikaf id
       data.itikaf = {
@@ -62,10 +69,10 @@ export class ItikafSchedulesController {
         delete data.ustadz_kajian_id
       }
 
-      return this.itikafSchedulesService.create(data as Prisma.ItikafScheduleCreateInput, photos);
+      return this.itikafSchedulesService.create(data as Prisma.ItikafScheduleCreateInput);
     } catch (error) {
       // remove photo
-      if (files) this.photoService.removeMany(files, uniqueSuffix);
+      if (file) this.photoService.removeFile(`/public/photos/${uniqueSuffix}.${ext}`)
 
       throw error;
     }
@@ -102,16 +109,18 @@ export class ItikafSchedulesController {
 
   @Roles(Role.Admin, Role.Staff)
   @Patch(':id')
-  @UseInterceptors(FilesInterceptor('new_photos', 10)) // key=new_photos. max = 10
-  async update(@Param('id') id: string, @Body(new ValidationPipe()) dataUpdate: UpdateItikafScheduleDto, @UploadedFiles() files: Array<Express.Multer.File>): Promise<ItikafSchedule> {
+  @UseInterceptors(FileInterceptor('photo'))
+  async update(@Param('id') id: string, @Body(new ValidationPipe()) dataUpdate: UpdateItikafScheduleDto, @UploadedFile() file: Express.Multer.File): Promise<ItikafSchedule> {
+    const ext = file ? file.originalname.split('.').pop() : '';
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     try {
       const { imam_tarawih_id, imam_qiyamul_lail_id, ustadz_kajian_id, ...dataCleanUpdate } = dataUpdate;
-      const data: Record<string, any> = dataCleanUpdate;
+      const data: Prisma.ItikafScheduleUpdateInput = dataCleanUpdate;
 
       // save photos
-      let new_photos = [];
-      if (files) new_photos = await this.photoService.createMany(files, uniqueSuffix);
+      if (file) {
+        data.photo = await this.photoService.create(file, uniqueSuffix, ext);
+      }
 
       // connect imam tarawih
       if (dataUpdate.imam_tarawih_id) {
@@ -128,10 +137,10 @@ export class ItikafSchedulesController {
         data.ustadz_kajian = { connect: { id: ustadz_kajian_id } };
       }
 
-      return this.itikafSchedulesService.update(id, data as Prisma.ItikafScheduleUpdateInput, new_photos);
+      return this.itikafSchedulesService.update(id, data);
     } catch (error) {
       // remove photo
-      if (files) this.photoService.removeMany(files, uniqueSuffix);
+      if (file) this.photoService.removeFile(`/public/photos/${uniqueSuffix}.${ext}`)
 
       throw error;
     }
