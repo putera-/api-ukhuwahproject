@@ -2,9 +2,14 @@ import fs from 'fs/promises';
 import path from 'path';
 import sharp from 'sharp';
 import { Injectable } from '@nestjs/common';
+import { AppService } from 'src/app.service';
 
 @Injectable()
 export class PhotosService {
+  constructor(
+    private readonly appService: AppService
+  ) { }
+
   async create(file: Express.Multer.File, uniqueSuffix: string, ext: string) {
     const fileBuffer = file.buffer;
 
@@ -83,16 +88,8 @@ export class PhotosService {
       const file = files[i];
       const ext = file.originalname.split('.').pop();
 
-      this.removeFile(`/public/photos/${uniqueSuffix}${i}_lg.${ext}`);
-      this.removeFile(`/public/photos/${uniqueSuffix}${i}_md.${ext}`);
+      this.appService.removeFile(`/public/photos/${uniqueSuffix}${i}_lg.${ext}`);
+      this.appService.removeFile(`/public/photos/${uniqueSuffix}${i}_md.${ext}`);
     }
   }
-
-  async removeFile(file) {
-    try {
-      await fs.rm('.' + file);
-    } catch (error) {
-      throw (error);
-    }
-  };
 }

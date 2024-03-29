@@ -9,12 +9,14 @@ import { Roles } from 'src/roles/roles.decorator';
 import { Role } from 'src/roles/role.enums';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Itikaf } from './itikafs.interface';
+import { AppService } from 'src/app.service';
 
 @Controller('itikafs')
 export class ItikafsController {
   constructor(
     private readonly itikafsService: ItikafsService,
-    private photoService: PhotosService
+    private photoService: PhotosService,
+    private appService: AppService
   ) { }
 
   @Roles(Role.Admin, Role.Staff)
@@ -39,7 +41,7 @@ export class ItikafsController {
 
     } catch (error) {
       // remove photo
-      if (file) this.photoService.removeFile(`/public/photos/${uniqueSuffix}.${ext}`)
+      if (file) this.appService.removeFile(`/public/photos/${uniqueSuffix}.${ext}`)
 
       throw error;
     }
@@ -82,7 +84,7 @@ export class ItikafsController {
       return this.itikafsService.update(hijri_year, data as Prisma.ItikafUpdateInput);
     } catch (error) {
       // remove photo
-      if (file) this.photoService.removeFile(`/public/photos/${uniqueSuffix}.${ext}`)
+      if (file) this.appService.removeFile(`/public/photos/${uniqueSuffix}.${ext}`)
 
       throw error;
     }

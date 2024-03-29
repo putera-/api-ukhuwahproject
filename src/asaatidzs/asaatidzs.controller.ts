@@ -2,19 +2,19 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, Upl
 import { AsaatidzsService } from './asaatidzs.service';
 import { CreateAsaatidzDto } from './dto/create-asaatidz.dto';
 import { UpdateAsaatidzDto } from './dto/update-asaatidz.dto';
-import { Role } from 'src/roles/role.enums';
-import { Roles } from 'src/roles/roles.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PhotosService } from 'src/photos/photos.service';
 import path from 'path';
 import { Prisma } from '@prisma/client';
 import { Public } from 'src/auth/auth.metadata';
+import { AppService } from 'src/app.service';
 
 @Controller('asaatidzs')
 export class AsaatidzsController {
   constructor(
     private readonly asaatidzsService: AsaatidzsService,
-    private readonly photoService: PhotosService
+    private readonly photoService: PhotosService,
+    private readonly appService: AppService
   ) { }
 
   @Post()
@@ -49,8 +49,8 @@ export class AsaatidzsController {
     } catch (error) {
       // remove avatar
       if (file) {
-        this.photoService.removeFile(`/public/avatar/${uniqueSuffix}_lg.${ext}`)
-        this.photoService.removeFile(`/public/avatar/${uniqueSuffix}_md.${ext}`)
+        this.appService.removeFile(`/public/avatar/${uniqueSuffix}_lg.${ext}`)
+        this.appService.removeFile(`/public/avatar/${uniqueSuffix}_md.${ext}`)
       }
 
       throw error;
@@ -109,8 +109,8 @@ export class AsaatidzsController {
     } catch (error) {
       // remove avatar
       if (file) {
-        this.photoService.removeFile(`/public/avatar/${uniqueSuffix}_lg.${ext}`)
-        this.photoService.removeFile(`/public/avatar/${uniqueSuffix}_md.${ext}`)
+        this.appService.removeFile(`/public/avatar/${uniqueSuffix}_lg.${ext}`)
+        this.appService.removeFile(`/public/avatar/${uniqueSuffix}_md.${ext}`)
       }
       throw error;
     }

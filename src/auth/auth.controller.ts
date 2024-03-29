@@ -9,13 +9,15 @@ import path from 'path';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { Prisma } from '@prisma/client';
 import { ChangePasswordDto } from 'src/users/dto/change-password.dto';
+import { AppService } from 'src/app.service';
 
 @Controller('auth')
 export class AuthController {
     constructor(
         private authService: AuthService,
         private usersService: UsersService,
-        private photoService: PhotosService
+        private photoService: PhotosService,
+        private appService: AppService
     ) { }
 
     @Public()
@@ -121,8 +123,8 @@ export class AuthController {
         } catch (error) {
             // remove avatar
             if (file) {
-                this.photoService.removeFile(`/public/avatar/${uniqueSuffix}_lg.${ext}`)
-                this.photoService.removeFile(`/public/avatar/${uniqueSuffix}_md.${ext}`)
+                this.appService.removeFile(`/public/avatar/${uniqueSuffix}_lg.${ext}`)
+                this.appService.removeFile(`/public/avatar/${uniqueSuffix}_md.${ext}`)
             }
             throw error;
         }

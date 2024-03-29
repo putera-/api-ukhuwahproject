@@ -14,13 +14,15 @@ import { ItikafParticipantsService } from 'src/itikaf_participants/itikaf_partic
 import { Vehicle } from 'src/itikaf_participants/itikaf_participants.interface';
 import { UpdateItikafParticipantDto } from 'src/itikaf_participants/dto/update-itikaf_participant.dto';
 import { AttendanceItikafParticipantDto } from './dto/attendance.dto';
+import { AppService } from 'src/app.service';
 
 @Controller('itikaf-schedules')
 export class ItikafSchedulesController {
   constructor(
     private readonly itikafSchedulesService: ItikafSchedulesService,
     private readonly itikafParticipantsService: ItikafParticipantsService,
-    private photoService: PhotosService
+    private photoService: PhotosService,
+    private appService: AppService
   ) { }
 
   @Roles(Role.Admin, Role.Staff)
@@ -72,7 +74,7 @@ export class ItikafSchedulesController {
       return this.itikafSchedulesService.create(data as Prisma.ItikafScheduleCreateInput);
     } catch (error) {
       // remove photo
-      if (file) this.photoService.removeFile(`/public/photos/${uniqueSuffix}.${ext}`)
+      if (file) this.appService.removeFile(`/public/photos/${uniqueSuffix}.${ext}`)
 
       throw error;
     }
@@ -140,7 +142,7 @@ export class ItikafSchedulesController {
       return this.itikafSchedulesService.update(id, data);
     } catch (error) {
       // remove photo
-      if (file) this.photoService.removeFile(`/public/photos/${uniqueSuffix}.${ext}`)
+      if (file) this.appService.removeFile(`/public/photos/${uniqueSuffix}.${ext}`)
 
       throw error;
     }
