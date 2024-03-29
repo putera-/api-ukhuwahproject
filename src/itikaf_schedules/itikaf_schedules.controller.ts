@@ -95,7 +95,7 @@ export class ItikafSchedulesController {
   }
 
   @Public()
-  @Get(':id')
+  @Get('detail/:id')
   findOne(@Param('id') id: string) {
     try {
       return this.itikafSchedulesService.findOne(id);
