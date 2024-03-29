@@ -119,6 +119,11 @@ export class ItikafSchedulesController {
         data.photo = await this.photoService.create(file, uniqueSuffix, ext);
       }
 
+      // disconnect all relation
+      data.imam_tarawih = { disconnect: true };
+      data.imam_qiyamul_lail = { disconnect: true };
+      data.ustadz_kajian = { disconnect: true };
+
       // connect imam tarawih
       if (dataUpdate.imam_tarawih_id) {
         data.imam_tarawih = { connect: { id: imam_tarawih_id } };
@@ -133,6 +138,8 @@ export class ItikafSchedulesController {
       if (dataUpdate.ustadz_kajian_id) {
         data.ustadz_kajian = { connect: { id: ustadz_kajian_id } };
       }
+
+      console.log(data);
 
       return this.itikafSchedulesService.update(id, data);
     } catch (error) {
