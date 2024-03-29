@@ -24,7 +24,21 @@ export class ItikafParticipantsController {
   @Public()
   @Get(':scheduleId')
   findAll(@Param('scheduleId') scheduleId: string) {
-    return this.itikafParticipantsService.findAll(scheduleId);
+    try {
+      return this.itikafParticipantsService.findAll(scheduleId);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Get('me/:id')
+  findMySchedule(@Req() req, @Param('id') scheduleId: string) {
+    try {
+      const user = req.user;
+      return this.itikafParticipantsService.findMySchedule(user.id, scheduleId);
+    } catch (error) {
+      throw error;
+    }
   }
 
   // @Get(':id')

@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateItikafParticipantDto } from './dto/create-itikaf_participant.dto';
-import { UpdateItikafParticipantDto } from './dto/update-itikaf_participant.dto';
 import { PrismaService } from 'src/prisma.service';
 import { ItikafParticipant, Vehicle } from './itikaf_participants.interface';
 import { Prisma } from '@prisma/client';
@@ -62,6 +60,15 @@ export class ItikafParticipantsService {
   //     where: { id }
   //   });
   // }
+
+  async findMySchedule(userId: string, scheduleId: string): Promise<ItikafParticipant> {
+    return await this.prisma.itikafParticipant.findFirst({
+      where: { userId, scheduleId },
+      include: {
+        vehicle: true
+      }
+    });
+  }
 
   async update(update: Prisma.ItikafParticipantUpdateInput, scheduleId: string, userId: string): Promise<ItikafParticipant> {
     const userParticipantData = await this.prisma.itikafParticipant.findFirst({
