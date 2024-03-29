@@ -6,6 +6,7 @@ export interface Client {
     address?: string
     phone?: string
     logo?: string
+    logo_sm?: string
     youtube?: string
     instagram?: string
     facebook?: string

@@ -10,10 +10,9 @@ export class PhotosService {
     private readonly appService: AppService
   ) { }
 
-  async create(file: Express.Multer.File, uniqueSuffix: string, ext: string) {
+  async create(file: Express.Multer.File, uniqueSuffix: string, ext: string, size = 1200) {
     const fileBuffer = file.buffer;
 
-    const size = 1200;
     const filename = `${uniqueSuffix}.${ext}`;
     const filepath = path.join('./public/photos/' + filename);
 

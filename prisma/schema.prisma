@@ -21,6 +21,7 @@ model Client {
   address   String?  @db.Text
   phone     String?  @db.VarChar(20)
   logo      String?  @db.VarChar(100)
+  logo_sm   String?  @db.VarChar(100)
   youtube   String?  @db.VarChar(100)
   instagram String?  @db.VarChar(100)
   facebook  String?  @db.VarChar(100)
