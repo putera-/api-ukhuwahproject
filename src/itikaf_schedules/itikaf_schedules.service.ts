@@ -17,18 +17,15 @@ export class ItikafSchedulesService {
 
   async create(data: Prisma.ItikafScheduleCreateInput, photos: Prisma.PhotoCreateInput[]): Promise<ItikafSchedule> {
     const currentDataDate = await this.prisma.itikafSchedule.findFirst({
-      where: { date: data.date, deleted: false },
-      include: { photos: true }
+      where: { date: data.date, deleted: false }
     });
 
     if (!currentDataDate) {
       return this.prisma.itikafSchedule.create({
         data: {
-          ...data,
-          photos: { create: photos }
+          ...data
         },
         include: {
-          photos: true,
           imam_tarawih: true,
           imam_qiyamul_lail: true,
           ustadz_kajian: true
@@ -37,22 +34,16 @@ export class ItikafSchedulesService {
     } else {
       const updatedData = await this.prisma.itikafSchedule.update({
         where: { id: currentDataDate.id },
-        data: {
-          ...data,
-          photos: {
-            deleteMany: {},
-            create: photos
-          }
-        },
+        data,
         include: {
-          photos: true,
           imam_tarawih: true,
           imam_qiyamul_lail: true,
           ustadz_kajian: true
         }
       });
 
-      this.removePhotos(currentDataDate.photos);
+      // FIXME REMOVE SINGLE OLD PHOTO
+      // this.removePhotos(currentDataDate.photos);
 
       return updatedData;
     }
@@ -63,7 +54,6 @@ export class ItikafSchedulesService {
       where: { deleted: false },
       orderBy: { day_index: 'asc' },
       include: {
-        photos: true,
         imam_tarawih: true,
         imam_qiyamul_lail: true,
         ustadz_kajian: true,
@@ -92,7 +82,6 @@ export class ItikafSchedulesService {
     const schedule = await this.prisma.itikafSchedule.findUnique({
       where: { id, deleted: false },
       include: {
-        photos: true,
         imam_tarawih: true,
         imam_qiyamul_lail: true,
         ustadz_kajian: true,
@@ -150,30 +139,19 @@ export class ItikafSchedulesService {
 
     const updatedData = await this.prisma.itikafSchedule.update({
       where: { id, deleted: false },
-      data: {
-        ...data,
-        photos: {
-          update: photosUpdate,
-          deleteMany: {
-            id: {
-              notIn: keepedIds
-            }
-          },
-          create: new_photos
-        }
-      },
+      data,
       include: {
-        photos: true,
         imam_tarawih: true,
         imam_qiyamul_lail: true,
         ustadz_kajian: true
       }
     });
 
+    // FIXME REMOVE SINGLE PHOTO
     // collect unused photo
-    const photo_to_delete = current_data.photos.filter(p => !keepedIds.includes(p.id));
+    // const photo_to_delete = current_data.photos.filter(p => !keepedIds.includes(p.id));
     // deleted unused photo files
-    this.removePhotos(photo_to_delete);
+    // this.removePhotos(photo_to_delete);
 
     return updatedData;
   }
@@ -184,7 +162,7 @@ export class ItikafSchedulesService {
     await this.prisma.itikafSchedule.update({
       where: { id },
       data: { deleted: true }
-    })
+    });
     return;
   }
 

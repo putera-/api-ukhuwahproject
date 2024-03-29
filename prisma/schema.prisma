@@ -95,16 +95,12 @@ enum ArticleStatus {
 }
 
 model Photo {
-  id               String          @id @default(uuid())
-  path             String          @db.VarChar(255)
-  path_md          String          @db.VarChar(255)
-  index            Int             @default(0) @db.Int
-  article          Article?        @relation(fields: [articleId], references: [id], onDelete: Cascade)
-  articleId        String?
-  Itikaf           Itikaf?         @relation(fields: [itikafId], references: [id], onDelete: Cascade)
-  itikafId         String?
-  ItikafSchedule   ItikafSchedule? @relation(fields: [itikafScheduleId], references: [id], onDelete: Cascade)
-  itikafScheduleId String?
+  id        String   @id @default(uuid())
+  path      String   @db.VarChar(255)
+  path_md   String   @db.VarChar(255)
+  index     Int      @default(0) @db.Int
+  article   Article? @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  articleId String?
 }
 
 model Itikaf {
@@ -112,7 +108,7 @@ model Itikaf {
   year                 String           @db.VarChar(4)
   hijri_year           String           @unique() @db.VarChar(4)
   description          String           @db.Text
-  photos               Photo[]
+  photo                String?          @db.VarChar(255)
   contact_person_name  String?          @db.VarChar(100)
   contact_person_phone String?          @db.VarChar(20)
   createdBy            User             @relation(fields: [userId], references: [id])
@@ -130,7 +126,7 @@ model ItikafSchedule {
   date                 String              @db.VarChar(10)
   day_index            Int                 @db.TinyInt
   description          String              @db.Text
-  photos               Photo[]
+  photo                String?             @db.VarChar(255)
   deleted              Boolean             @default(false)
   participants         ItikafParticipant[]
   imam_tarawih         Asaatidz?           @relation(name: "imam_tarawih", fields: [imam_tarawih_id], references: [id])

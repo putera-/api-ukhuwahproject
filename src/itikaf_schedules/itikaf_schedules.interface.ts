@@ -10,7 +10,7 @@ export interface ItikafSchedule {
     date: string
     day_index: number
     description: string
-    photos?: Photo[]
+    photo?: string
     deleted: boolean
     createdAt: Date
     updatedAt: Date

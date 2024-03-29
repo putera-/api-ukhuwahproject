@@ -17,16 +17,9 @@ export class ItikafsService {
         : Promise<Itikaf> {
         return this.prisma.itikaf.upsert({
             where: { hijri_year: data.hijri_year },
-            create: {
-                ...data,
-                photos: { create: photos }
-            },
-            update: {
-                ...data,
-                photos: { create: photos }
-            },
+            create: data,
+            update: data,
             include: {
-                photos: true,
                 createdBy: true
             }
 
@@ -34,15 +27,13 @@ export class ItikafsService {
     }
 
     async findAll(): Promise<Itikaf[]> {
-        return this.prisma.itikaf.findMany({
-            include: { photos: true }
-        });
+        return this.prisma.itikaf.findMany();
     }
 
     async findOne(hijri_year: string): Promise<Itikaf> {
         const itikaf = await this.prisma.itikaf.findUnique({
             where: { hijri_year },
-            include: { photos: true, createdBy: true }
+            include: { createdBy: true }
         });
 
         if (!itikaf) throw new NotFoundException();
@@ -54,55 +45,42 @@ export class ItikafsService {
         const current_data = await this.findOne(hijri_year);
 
         // if no photo from req data
-        const keptPhotos: Record<string, any> = data.photos ? data.photos : [];
+        // const keptPhotos: Record<string, any> = data.photos ? data.photos : [];
         // collect data photos to update
-        const photosUpdate = keptPhotos.map(p => ({
-            where: { id: p.id },
-            data: { index: parseInt(p.index) }
-        }));
+        // const photosUpdate = keptPhotos.map(p => ({
+        //     where: { id: p.id },
+        //     data: { index: parseInt(p.index) }
+        // }));
 
-        const keepedIds = keptPhotos.map(p => p.id);
-        const keepedIndexes = keptPhotos.map(p => p.index);
+        // const keepedIds = keptPhotos.map(p => p.id);
+        // const keepedIndexes = keptPhotos.map(p => p.index);
 
-        // get taken index
-        const indexes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-        // get available index
-        const availableIndexes = indexes.filter(i => !keepedIndexes.includes(i));
+        // // get taken index
+        // const indexes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+        // // get available index
+        // const availableIndexes = indexes.filter(i => !keepedIndexes.includes(i));
 
-        // update new photo indexes
-        new_photos = new_photos.map(p => {
-            p.index = availableIndexes[0];
-            availableIndexes.shift();
-            return p;
-        });
+        // // update new photo indexes
+        // new_photos = new_photos.map(p => {
+        //     p.index = availableIndexes[0];
+        //     availableIndexes.shift();
+        //     return p;
+        // });
 
-        // remove photos from req.data
-        if (data.photos) delete data.photos;
+        // // remove photos from req.data
+        // if (data.photos) delete data.photos;
 
         const updatedItikaf = await this.prisma.itikaf.update({
             where: { hijri_year },
-            data: {
-                ...data,
-                photos: {
-                    update: photosUpdate,
-                    deleteMany: {
-                        id: {
-                            notIn: keepedIds
-                        }
-                    },
-                    create: new_photos
-                }
-            },
-            include: {
-                createdBy: true,
-                photos: true
-            }
+            data,
+            include: { createdBy: true }
         });
 
-        // collect unused photo
-        const photo_to_delete = current_data.photos.filter(p => !keepedIds.includes(p.id));
-        // deleted unused photo files
-        this.removePhotos(photo_to_delete);
+        // FIXME remove single photo
+        // // collect unused photo
+        // const photo_to_delete = current_data.photos.filter(p => !keepedIds.includes(p.id));
+        // // deleted unused photo files
+        // this.removePhotos(photo_to_delete);
 
         return updatedItikaf;
     }
@@ -125,6 +103,6 @@ export class ItikafsService {
         await this.prisma.itikaf.update({
             where: { hijri_year },
             data: { active }
-        })
+        });
     }
 }

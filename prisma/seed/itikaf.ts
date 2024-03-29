@@ -27,32 +27,7 @@ export async function itikafSeed(prisma: PrismaClient) {
             year: '2024',
             hijri_year: '1445',
             description: faker.lorem.paragraphs(),
-            photos: {
-                createMany: {
-                    data: [
-                        {
-                            path: faker.image.urlPicsumPhotos(),
-                            path_md: faker.image.urlPicsumPhotos()
-                        },
-                        {
-                            path: faker.image.urlPicsumPhotos(),
-                            path_md: faker.image.urlPicsumPhotos()
-                        },
-                        {
-                            path: faker.image.urlPicsumPhotos(),
-                            path_md: faker.image.urlPicsumPhotos()
-                        },
-                        {
-                            path: faker.image.urlPicsumPhotos(),
-                            path_md: faker.image.urlPicsumPhotos()
-                        },
-                        {
-                            path: faker.image.urlPicsumPhotos(),
-                            path_md: faker.image.urlPicsumPhotos()
-                        },
-                    ]
-                }
-            },
+            photo: faker.image.urlPicsumPhotos(),
             createdBy: {
                 connect: { id: admin.id }
             }
@@ -77,12 +52,7 @@ export async function itikafSeed(prisma: PrismaClient) {
                 date: '2024-04-' + day,
                 day_index: i + 1,
                 description: faker.lorem.paragraphs(),
-                photos: {
-                    create: {
-                        path: faker.image.urlLoremFlickr(),
-                        path_md: faker.image.urlLoremFlickr()
-                    }
-                },
+                photo: faker.image.urlLoremFlickr(),
                 imam_tarawih: {
                     connect: { id: asaatidzs[random].id }
                 },
