@@ -28,4 +28,15 @@ export class AppController {
       throw new NotFoundException('File not found');
     }
   }
+
+  @Public()
+  @Get('dummy/:file')
+  async getDummyPhoto(@Param('file') file: string, @Res() res) {
+    try {
+      await fs.access(`./public/dummy/${file}`);
+      res.sendFile(file, { root: './public/dummy' })
+    } catch (error) {
+      throw new NotFoundException('File not found');
+    }
+  }
 }

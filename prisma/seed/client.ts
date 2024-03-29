@@ -9,7 +9,7 @@ export async function clientSeed(prisma: PrismaClient, id: string) {
         slogan: 'Bersama Di Jalan Dakwah',
         address: 'Jl Moh Kafi 1, Ciganjur, Jagakarsa, DKI Jakarta, 12630. Indonesia',
         phone: '+62 811-1111-1111',
-        logo: faker.image.urlPicsumPhotos(),
+        logo: '/dummy/uplogo.png',
         youtube: 'https://youtube.com',
         instagram: 'https://instagram.com',
         facebook: 'https://facebook.com',
