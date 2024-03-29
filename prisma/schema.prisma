@@ -109,6 +109,8 @@ model Itikaf {
   hijri_year           String           @unique() @db.VarChar(4)
   description          String           @db.Text
   photo                String?          @db.VarChar(255)
+  masjid               String?          @db.VarChar(100)
+  address              String?          @db.Text
   contact_person_name  String?          @db.VarChar(100)
   contact_person_phone String?          @db.VarChar(20)
   createdBy            User             @relation(fields: [userId], references: [id])

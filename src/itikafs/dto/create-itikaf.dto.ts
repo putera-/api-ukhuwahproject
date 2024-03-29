@@ -12,4 +12,12 @@ export class CreateItikafDto {
     @IsPhoneNumber()
     @IsOptional()
     contact_person_phone?: string
+
+    @IsString()
+    @IsOptional()
+    masjid?: string
+
+    @IsString()
+    @IsOptional()
+    address?: string
 }

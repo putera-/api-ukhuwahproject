@@ -9,6 +9,8 @@ export interface Itikaf {
     photo?: string
     contact_person_name?: string
     contact_person_phone?: string
+    masjid?: string
+    address?: string
     createdBy?: User
     userId: string
     active: boolean
