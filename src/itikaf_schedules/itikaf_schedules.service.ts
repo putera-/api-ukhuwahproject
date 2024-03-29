@@ -86,7 +86,7 @@ export class ItikafSchedulesService {
   }
 
   async findOne(id: string): Promise<ItikafSchedule> {
-    const schedule = await this.prisma.itikafSchedule.findUnique({
+    const schedule: ItikafSchedule = await this.prisma.itikafSchedule.findUnique({
       where: { id, deleted: false },
       include: {
         imam_tarawih: true,
@@ -111,6 +111,10 @@ export class ItikafSchedulesService {
     });
 
     if (!schedule) throw new NotFoundException();
+
+    schedule.total_member = schedule.participants.reduce((acc, p) => acc + p.total_member, 0);
+    schedule.total_man = schedule.participants.reduce((acc, p) => acc + p.man, 0);
+    schedule.total_woman = schedule.participants.reduce((acc, p) => acc + p.woman, 0);
 
     return schedule;
   }
