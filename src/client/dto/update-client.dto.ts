@@ -26,22 +26,22 @@ export class UpdateClientDto {
     phone: string
 
     @IsString()
-    @MaxLength(255)
+    @MaxLength(100)
     @IsOptional()
     youtube: string
 
     @IsString()
-    @MaxLength(255)
+    @MaxLength(100)
     @IsOptional()
     instagram: string
 
     @IsString()
-    @MaxLength(255)
+    @MaxLength(100)
     @IsOptional()
     facebook: string
 
     @IsString()
-    @MaxLength(255)
+    @MaxLength(100)
     @IsOptional()
     twitter: string
 }
