@@ -18,7 +18,7 @@ async function bootstrap() {
 
   // CORS
   app.enableCors({
-    origin: ['https://ukhuwahproject.com', 'http://localhost:3000', 'http://localhost:3001'],
+    origin: ['https://stag.ukhuwahproject.com', 'https://ukhuwahproject.com', 'http://localhost:3000', 'http://localhost:3001'],
     credentials: true
   });
 

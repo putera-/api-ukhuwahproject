@@ -21,4 +21,4 @@ COPY . .
 # EXPOSE ${PORT}
 
 # Command to run your application
-CMD npx prisma generate && npm run migrate:deploy && npm run start
+CMD npx prisma generate reset && npm run migrate:deploy && npm run start
