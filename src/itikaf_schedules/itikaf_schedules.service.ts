@@ -104,7 +104,8 @@ export class ItikafSchedulesService {
                 avatar_md: true,
                 role: true
               }
-            }
+            },
+            vehicle: true
           }
         }
       }
