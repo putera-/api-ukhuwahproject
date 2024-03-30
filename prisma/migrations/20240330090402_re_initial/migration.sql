@@ -7,6 +7,7 @@ CREATE TABLE `Client` (
     `address` TEXT NULL,
     `phone` VARCHAR(20) NULL,
     `logo` VARCHAR(100) NULL,
+    `logo_sm` VARCHAR(100) NULL,
     `youtube` VARCHAR(100) NULL,
     `instagram` VARCHAR(100) NULL,
     `facebook` VARCHAR(100) NULL,
@@ -81,8 +82,6 @@ CREATE TABLE `Photo` (
     `path_md` VARCHAR(255) NOT NULL,
     `index` INTEGER NOT NULL DEFAULT 0,
     `articleId` VARCHAR(191) NULL,
-    `itikafId` VARCHAR(191) NULL,
-    `itikafScheduleId` VARCHAR(191) NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -93,6 +92,10 @@ CREATE TABLE `Itikaf` (
     `year` VARCHAR(4) NOT NULL,
     `hijri_year` VARCHAR(4) NOT NULL,
     `description` TEXT NOT NULL,
+    `photo` VARCHAR(255) NULL,
+    `photo_sm` VARCHAR(255) NULL,
+    `masjid` VARCHAR(100) NULL,
+    `address` TEXT NULL,
     `contact_person_name` VARCHAR(100) NULL,
     `contact_person_phone` VARCHAR(20) NULL,
     `userId` VARCHAR(191) NOT NULL,
@@ -111,6 +114,8 @@ CREATE TABLE `ItikafSchedule` (
     `date` VARCHAR(10) NOT NULL,
     `day_index` TINYINT NOT NULL,
     `description` TEXT NOT NULL,
+    `photo` VARCHAR(255) NULL,
+    `photo_sm` VARCHAR(255) NULL,
     `deleted` BOOLEAN NOT NULL DEFAULT false,
     `imam_tarawih_id` VARCHAR(191) NULL,
     `imam_qiyamul_lail_id` VARCHAR(191) NULL,
@@ -132,6 +137,7 @@ CREATE TABLE `ItikafParticipant` (
     `vehicleId` VARCHAR(191) NULL,
     `participate` BOOLEAN NOT NULL DEFAULT true,
     `unparticipate_reason` TEXT NULL,
+    `coupon_taken` BOOLEAN NOT NULL DEFAULT false,
     `attendance_check` BOOLEAN NOT NULL DEFAULT false,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -173,12 +179,6 @@ ALTER TABLE `Article` ADD CONSTRAINT `Article_authorId_fkey` FOREIGN KEY (`autho
 
 -- AddForeignKey
 ALTER TABLE `Photo` ADD CONSTRAINT `Photo_articleId_fkey` FOREIGN KEY (`articleId`) REFERENCES `Article`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Photo` ADD CONSTRAINT `Photo_itikafId_fkey` FOREIGN KEY (`itikafId`) REFERENCES `Itikaf`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `Photo` ADD CONSTRAINT `Photo_itikafScheduleId_fkey` FOREIGN KEY (`itikafScheduleId`) REFERENCES `ItikafSchedule`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Itikaf` ADD CONSTRAINT `Itikaf_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
