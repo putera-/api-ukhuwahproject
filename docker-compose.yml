@@ -39,12 +39,10 @@ services:
 
 # volumes
 volumes:
-  nest-up-api-log:
-    name: nest-up-api-log
-  nest-up-api-uploads:
-    name: nest-up-api-uploads
-  mysql_uda_portfolio:
-    name: mysql_uda_portfolio
+  nest-up-api-public:
+    name: nest-up-api-public
+  mysql_up:
+    name: mysql_up
 
 # networks
 networks:
