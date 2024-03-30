@@ -44,4 +44,19 @@ export class UpdateClientDto {
     @MaxLength(100)
     @IsOptional()
     twitter: string
+
+    @IsString()
+    @MaxLength(100)
+    @IsOptional()
+    bank_name: string
+
+    @IsString()
+    @MaxLength(100)
+    @IsOptional()
+    bank_holder_name: string
+
+    @IsString()
+    @MaxLength(30)
+    @IsOptional()
+    bank_account_no: string
 }
