@@ -14,20 +14,23 @@ datasource db {
 }
 
 model Client {
-  id        String   @id @default(uuid())
-  name      String   @db.VarChar(100)
-  nick      String   @db.VarChar(20)
-  slogan    String?  @db.VarChar(255)
-  address   String?  @db.Text
-  phone     String?  @db.VarChar(20)
-  logo      String?  @db.VarChar(100)
-  logo_sm   String?  @db.VarChar(100)
-  youtube   String?  @db.VarChar(100)
-  instagram String?  @db.VarChar(100)
-  facebook  String?  @db.VarChar(100)
-  twitter   String?  @db.VarChar(100)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  id               String   @id @default(uuid())
+  name             String   @db.VarChar(100)
+  nick             String   @db.VarChar(20)
+  slogan           String?  @db.VarChar(255)
+  address          String?  @db.Text
+  phone            String?  @db.VarChar(20)
+  logo             String?  @db.VarChar(100)
+  logo_sm          String?  @db.VarChar(100)
+  youtube          String?  @db.VarChar(100)
+  instagram        String?  @db.VarChar(100)
+  facebook         String?  @db.VarChar(100)
+  twitter          String?  @db.VarChar(100)
+  bank_name        String?  @db.VarChar(100)
+  bank_holder_name String?  @db.VarChar(100)
+  bank_account_no  String?  @db.VarChar(30)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now()) @updatedAt
 }
 
 model Slide {
@@ -67,7 +70,7 @@ model Auth {
   user      User?    @relation(fields: [userId], references: [id])
   userId    String
   token     String   @db.VarChar(300)
-  expiredAt DateTime @db.Timestamp()
+  expiredAt DateTime @default(now())
   path      String   @db.VarChar(255)
   method    String   @db.VarChar(10)
   deleted   Boolean  @default(false)
