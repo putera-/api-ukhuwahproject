@@ -2,45 +2,52 @@ version: '3.8'
 # services / containers
 services:
   # express app
-  nest-ecourse-rehab-hati:
+  nest-up-api:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: nest-ecourse-rehab-hati
-    image: nest-ecourse-rehab-hati:1.0.0
+    container_name: nest-up-api
+    image: nest-up-api:1.0.0
     restart: always
     ports:
-      - 5001:5001
+      - 5000:5000
     environment:
-      PORT: 5001
+      PORT: 5000
+      JWT_SECRET: UKHUWAHPROJECTINDONESIA
       # for prisma
-      DATABASE_URL: mysql://root:my-secret-pw@mysql-ecourse-rehab-hati:3306/ecourse
+      DATABASE_URL: mysql://root:my-secret-pw@localhost:3306/ukhuwah_project
+    volumes:
+      - nest-up-api-public:/app/public
     networks:
-      - ecourse-rehab-hati
+      - app-up-website
     depends_on:
-      - mysql-ecourse-rehab-hati
+      - mysql_up
 
   # mysql database
-  mysql-ecourse-rehab-hati:
-    container_name: mysql-ecourse-rehab-hati
+  mysql_up:
+    container_name: mysql_up
     image: mysql:8.3.0
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: my-secret-pw
-      MYSQL_DATABASE: ecourse
+      MYSQL_DATABASE: ukhuwah_project
     volumes:
-      - db-ecourse-rehab-hati-v:/var/lib/mysql
+      - mysql_up:/var/lib/mysql
     networks:
-      - ecourse-rehab-hati
+      - app-up-website
 
 # volumes
 volumes:
-  db-ecourse-rehab-hati-v:
-    name: db-ecourse-rehab-hati-v
+  nest-up-api-log:
+    name: nest-up-api-log
+  nest-up-api-uploads:
+    name: nest-up-api-uploads
+  mysql_uda_portfolio:
+    name: mysql_uda_portfolio
 
 # networks
 networks:
-  ecourse-rehab-hati:
-    name: ecourse-rehab-hati
+  app-up-website:
+    name: app-up-website
     driver: bridge
