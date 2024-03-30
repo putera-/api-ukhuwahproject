@@ -10,6 +10,7 @@ export async function clientSeed(prisma: PrismaClient, id: string) {
         address: 'Jl Moh Kafi 1, Ciganjur, Jagakarsa, DKI Jakarta, 12630. Indonesia',
         phone: '+62 811-1111-1111',
         logo: '/dummy/uplogo.png',
+        logo_sm: '/dummy/uplogo.png',
         youtube: 'https://youtube.com',
         instagram: 'https://instagram.com',
         facebook: 'https://facebook.com',

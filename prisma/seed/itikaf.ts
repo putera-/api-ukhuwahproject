@@ -28,6 +28,7 @@ export async function itikafSeed(prisma: PrismaClient) {
             hijri_year: '1445',
             description: faker.lorem.paragraphs(),
             photo: faker.image.urlPicsumPhotos(),
+            photo_sm: faker.image.urlPicsumPhotos(),
             createdBy: {
                 connect: { id: admin.id }
             }
@@ -53,6 +54,7 @@ export async function itikafSeed(prisma: PrismaClient) {
                 day_index: i + 1,
                 description: faker.lorem.paragraphs(),
                 photo: faker.image.urlLoremFlickr(),
+                photo_sm: faker.image.urlLoremFlickr(),
                 imam_tarawih: {
                     connect: { id: asaatidzs[random].id }
                 },
