@@ -15,7 +15,7 @@ services:
       PORT: 5011
       JWT_SECRET: UKHUWAHPROJECTINDONESIA
       # for prisma
-      DATABASE_URL: mysql://root:my-secret-pw@localhost:3306/ukhuwah_project
+      DATABASE_URL: mysql://root:my-secret-pw@mysql_up:3306/ukhuwah_project
     volumes:
       - nest-up-api-public:/app/public
     networks:
