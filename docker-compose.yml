@@ -7,13 +7,13 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: nest-up-api
-    image: nest-up-api:1.0.5
+    image: nest-up-api:1.0.8
     restart: always
     ports:
       - 5011:5011
     environment:
       PORT: 5011
-      JWT_SECRET: UKHUWAHPROJECTINDONESIA
+      JWTSECRET: UKHUWAHPROJECTINDONESIA
       # for prisma
       DATABASE_URL: mysql://root:my-secret-pw@mysql_up:3306/ukhuwah_project
     volumes:
