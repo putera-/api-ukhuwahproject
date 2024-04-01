@@ -2,12 +2,12 @@ version: '3.8'
 # services / containers
 services:
   # express app
-  ukhuwahproject_api:
+  api_ukhuwahproject:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: ukhuwahproject_api
-    image: ukhuwahproject_api:1.1.4
+    container_name: api_ukhuwahproject
+    image: api_ukhuwahproject:1.1.4
     restart: always
     ports:
       - 5011:5011
