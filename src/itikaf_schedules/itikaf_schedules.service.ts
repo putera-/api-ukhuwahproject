@@ -106,6 +106,9 @@ export class ItikafSchedulesService {
               }
             },
             vehicle: true
+          },
+          orderBy: {
+            user: { name: 'asc' }
           }
         }
       }

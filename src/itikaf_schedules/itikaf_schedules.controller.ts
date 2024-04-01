@@ -144,8 +144,6 @@ export class ItikafSchedulesController {
         data.ustadz_kajian = { connect: { id: ustadz_kajian_id } };
       }
 
-      console.log(data);
-
       return this.itikafSchedulesService.update(id, data);
     } catch (error) {
       // remove photo
