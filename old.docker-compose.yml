@@ -2,12 +2,12 @@ version: '3.8'
 # services / containers
 services:
   # express app
-  ukhuwahproject_api:
+  nest-up-api:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: ukhuwahproject_api
-    image: ukhuwahproject_api:1.1.4
+    container_name: nest-up-api
+    image: nest-up-api:1.1.4
     restart: always
     ports:
       - 5011:5011
@@ -19,7 +19,7 @@ services:
     volumes:
       - ukhuwahproject_api_public:/app/public
     networks:
-      - ukhuwahproject_api_network
+      - app-up-website
     depends_on:
       - ukhuwahproject_mysql
 
@@ -35,7 +35,7 @@ services:
     volumes:
       - ukhuwahproject_mysql:/var/lib/mysql
     networks:
-      - ukhuwahproject_api_network
+      - app-up-website
 
 # volumes
 volumes:
@@ -46,6 +46,6 @@ volumes:
 
 # networks
 networks:
-  ukhuwahproject_api_network:
-    name: ukhuwahproject_api_network
+  app-up-website:
+    name: app-up-website
     driver: bridge
