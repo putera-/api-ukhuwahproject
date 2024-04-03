@@ -9,6 +9,7 @@ import { Role } from 'src/roles/role.enums';
 import { Public } from 'src/auth/auth.metadata';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { PhotosService } from 'src/photos/photos.service';
+import { Pagination } from 'src/app.interface';
 
 @Controller('articles')
 export class ArticlesController {
@@ -19,7 +20,7 @@ export class ArticlesController {
 
     @Roles(Role.Admin, Role.Staff)
     @Get()
-    async findAll(@Query('search') search: string, @Query('page') page: string, @Query('limit') limit: string) {
+    async findAll(@Query('search') search: string, @Query('page') page: string, @Query('limit') limit: string): Promise<Pagination<Article[]>> {
         try {
             return this.articleService.findAll(search, page, limit);
         } catch (error) {
@@ -29,9 +30,9 @@ export class ArticlesController {
 
     @Public()
     @Get('published')
-    async findAllPublish(): Promise<Article[]> {
+    async findAllPublish(@Query('search') search: string, @Query('page') page: string, @Query('limit') limit: string): Promise<Pagination<Article[]>> {
         try {
-            return this.articleService.findAllPublished();
+            return this.articleService.findAllPublished(search, page, limit);
         } catch (error) {
             throw error;
         }

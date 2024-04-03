@@ -5,6 +5,7 @@ import { PrismaService } from 'src/prisma.service';
 import { AppService } from 'src/app.service';
 import { Prisma } from '@prisma/client';
 import { contains } from 'class-validator';
+import { Pagination } from 'src/app.interface';
 
 @Injectable()
 export class ArticlesService {
@@ -26,7 +27,7 @@ export class ArticlesService {
         });
     }
 
-    async findAll(search = '', page = '1', limit = '10') {
+    async findAll(search = '', page = '1', limit = '10'): Promise<Pagination<Article[]>> {
         const skip = (Number(page) - 1) * Number(limit);
 
         const [total, data] = await Promise.all([
@@ -67,23 +68,46 @@ export class ArticlesService {
         }
     }
 
-    async findAllPublished(): Promise<Article[]> {
-        return this.prisma.article.findMany({
-            where: {
-                deleted: false,
-                status: "PUBLISH",
-                publishedAt: {
-                    lt: new Date()
+    async findAllPublished(search = '', page = '1', limit = '10'): Promise<Pagination<Article[]>> {
+        const skip = (Number(page) - 1) * Number(limit);
+
+        const [total, data] = await Promise.all([
+            this.prisma.article.count({
+                where: {
+                    deleted: false,
+                    status: "PUBLISH",
+                    title: {
+                        contains: search
+                    }
                 }
-            },
-            orderBy: {
-                publishedAt: 'desc'
-            },
-            include: {
-                author: true,
-                photos: true
-            }
-        });
+            }),
+            this.prisma.article.findMany({
+                where: {
+                    deleted: false,
+                    status: "PUBLISH",
+                    publishedAt: {
+                        lt: new Date()
+                    }
+                },
+                orderBy: {
+                    publishedAt: 'desc'
+                },
+                include: {
+                    author: true,
+                    photos: true
+                },
+                skip,
+                take: Number(limit)
+            })
+        ]);
+
+        return {
+            data,
+            total,
+            page: Number(page),
+            limit: Number(limit),
+            maxPage: Math.ceil(total / Number(limit))
+        }
     }
 
     async findAllDraft(): Promise<Article[]> {
