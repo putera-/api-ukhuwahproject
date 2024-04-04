@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import { Prisma, PrismaClient } from '@prisma/client';
 
 import * as bcrypt from 'bcrypt';
@@ -42,7 +43,31 @@ export async function userSeed(prisma: PrismaClient) {
             update: admin,
             create: admin,
         });
+
+        console.log('Seed: User Admin');
     }
 
-    console.log('Seed: User Admin');
+
+    // MEMBER
+    {
+        for (let i = 0; i < 20; i++) {
+            const member: Prisma.UserCreateInput = {
+                email: `member${i}@gmail.com`,
+                name: faker.person.fullName(),
+                phone: '+62 812-1111-1111',
+                password,
+                role: 'MEMBER',
+                avatar: faker.image.avatar(),
+                avatar_md: faker.image.avatar()
+            };
+
+            await prisma.user.create({
+                data: member
+            });
+
+
+        }
+
+        console.log('Seed: User MEMBER');
+    }
 }
