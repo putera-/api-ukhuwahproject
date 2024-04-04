@@ -9,7 +9,7 @@ export async function articleSeed(prisma: PrismaClient) {
         where: {
             role: 'MEMBER'
         }
-    })
+    });
 
     for (let i = 0; i < 20; i++) {
         const admin: Prisma.UserCreateInput = {
@@ -26,9 +26,8 @@ export async function articleSeed(prisma: PrismaClient) {
             data: admin
         });
 
-        for (let h = 0; h < Math.floor(Math.random() * 10); h++) {
-
-
+        // create article
+        for (let h = 0; h < Math.floor(Math.random() * 20); h++) {
             const article = await prisma.article.create({
                 data: {
                     title: faker.lorem.words({ max: 10, min: 4 }),
@@ -61,6 +60,7 @@ export async function articleSeed(prisma: PrismaClient) {
             })
 
 
+            // like of article
             for (let j = 0; j < Math.floor(Math.random() * 30); j++) {
                 const like: Prisma.LikeCreateInput = {
                     User: { connect: { id: members[Math.floor(Math.random() * 20)].id } },
@@ -69,8 +69,8 @@ export async function articleSeed(prisma: PrismaClient) {
                 await prisma.like.create({ data: like })
             }
 
-            // const comments: Prisma.ArticleCommentCreateInput[] = [];
-            for (let j = 0; j < Math.floor(Math.random() * 10); j++) {
+            // create comments
+            for (let j = 0; j < Math.floor(Math.random() * 30); j++) {
                 const comment = await prisma.comment.create({
                     data: {
                         comment: faker.lorem.sentence(),
@@ -99,6 +99,7 @@ export async function articleSeed(prisma: PrismaClient) {
                         }
                     })
 
+                    // comment likes
                     for (let m = 0; m < Math.floor(Math.random() * 30); m++) {
                         const like: Prisma.LikeCreateInput = {
                             User: { connect: { id: members[Math.floor(Math.random() * 20)].id } },

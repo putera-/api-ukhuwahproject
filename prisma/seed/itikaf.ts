@@ -21,6 +21,16 @@ export async function itikafSeed(prisma: PrismaClient) {
         create: adminData,
     });
 
+    // GET ASAATIDZ
+    const asaatidzs = await prisma.asaatidz.findMany();
+
+    // GET MEMBERS
+    const members = await prisma.user.findMany({
+        where: {
+            role: 'MEMBER'
+        }
+    });
+
     // ITIKAF
     const itikaf = await prisma.itikaf.create({
         data: {
@@ -35,8 +45,57 @@ export async function itikafSeed(prisma: PrismaClient) {
         }
     });
 
-    // GET ASAATIDZ
-    const asaatidzs = await prisma.asaatidz.findMany();
+
+    // create itikaf likes
+    for (let j = 0; j < Math.floor(Math.random() * 30); j++) {
+        const like: Prisma.LikeCreateInput = {
+            User: { connect: { id: members[Math.floor(Math.random() * 20)].id } },
+            Itikaf: { connect: { id: itikaf.id } }
+        }
+        await prisma.like.create({ data: like })
+    }
+
+    // create comments of itikaf
+    // create comments
+    for (let j = 0; j < Math.floor(Math.random() * 30); j++) {
+        const comment = await prisma.comment.create({
+            data: {
+                comment: faker.lorem.sentence(),
+                Itikaf: { connect: { id: itikaf.id } },
+                commenter: { connect: { id: members[Math.floor(Math.random() * 20)].id } },
+            }
+        });
+
+        // like of comments
+        for (let k = 0; k < Math.floor(Math.random() * 30); k++) {
+            const like: Prisma.LikeCreateInput = {
+                User: { connect: { id: members[Math.floor(Math.random() * 20)].id } },
+                Comment: { connect: { id: comment.id } }
+            }
+            await prisma.like.create({ data: like })
+        }
+
+
+        // comment reply
+        for (let l = 0; l < Math.floor(Math.random() * 10); l++) {
+            const reply = await prisma.commentReply.create({
+                data: {
+                    comment: faker.lorem.sentence(),
+                    Comment: { connect: { id: comment.id } },
+                    commenter: { connect: { id: members[Math.floor(Math.random() * 20)].id } },
+                }
+            })
+
+            // comment likes
+            for (let m = 0; m < Math.floor(Math.random() * 30); m++) {
+                const like: Prisma.LikeCreateInput = {
+                    User: { connect: { id: members[Math.floor(Math.random() * 20)].id } },
+                    CommentReply: { connect: { id: reply.id } }
+                }
+                await prisma.like.create({ data: like })
+            }
+        }
+    }
 
 
     // SCHEDULE
@@ -47,7 +106,7 @@ export async function itikafSeed(prisma: PrismaClient) {
         const random2 = Math.floor(Math.random() * 10);
 
 
-        await prisma.itikafSchedule.create({
+        const schedule = await prisma.itikafSchedule.create({
             data: {
                 itikaf: { connect: { id: itikaf.id } },
                 date: '2024-04-' + day,
@@ -65,7 +124,59 @@ export async function itikafSeed(prisma: PrismaClient) {
                     connect: { id: asaatidzs[random2].id }
                 },
             }
-        })
+        });
+
+        // create schedule likes
+        for (let j = 0; j < Math.floor(Math.random() * 30); j++) {
+            const like: Prisma.LikeCreateInput = {
+                User: { connect: { id: members[Math.floor(Math.random() * 20)].id } },
+                ItikafSchedule: { connect: { id: schedule.id } }
+            }
+            await prisma.like.create({ data: like })
+        }
+
+        // create comments of schedule
+        // create comments
+        for (let j = 0; j < Math.floor(Math.random() * 30); j++) {
+            const comment = await prisma.comment.create({
+                data: {
+                    comment: faker.lorem.sentence(),
+                    ItikafSchedule: { connect: { id: schedule.id } },
+                    commenter: { connect: { id: members[Math.floor(Math.random() * 20)].id } },
+                }
+            });
+
+            // like of comments
+            for (let k = 0; k < Math.floor(Math.random() * 30); k++) {
+                const like: Prisma.LikeCreateInput = {
+                    User: { connect: { id: members[Math.floor(Math.random() * 20)].id } },
+                    Comment: { connect: { id: comment.id } }
+                }
+                await prisma.like.create({ data: like })
+            }
+
+
+            // comment reply
+            for (let l = 0; l < Math.floor(Math.random() * 10); l++) {
+                const reply = await prisma.commentReply.create({
+                    data: {
+                        comment: faker.lorem.sentence(),
+                        Comment: { connect: { id: comment.id } },
+                        commenter: { connect: { id: members[Math.floor(Math.random() * 20)].id } },
+                    }
+                })
+
+                // comment likes
+                for (let m = 0; m < Math.floor(Math.random() * 30); m++) {
+                    const like: Prisma.LikeCreateInput = {
+                        User: { connect: { id: members[Math.floor(Math.random() * 20)].id } },
+                        CommentReply: { connect: { id: reply.id } }
+                    }
+                    await prisma.like.create({ data: like })
+                }
+            }
+
+        }
     }
     console.log('Seed: Itikaf');
 }
