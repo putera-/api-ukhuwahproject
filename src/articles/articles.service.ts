@@ -93,8 +93,40 @@ export class ArticlesService {
                     publishedAt: 'desc'
                 },
                 include: {
-                    author: true,
-                    photos: true
+                    author: {
+                        select: {
+                            id: true,
+                            name: true,
+                            avatar: true,
+                            avatar_md: true
+                        }
+                    },
+                    photos: true,
+                    comments: {
+                        include: {
+                            commenter: true,
+                            replies: {
+                                include: {
+                                    commenter: true,
+                                    _count: { select: { likes: true } }
+                                },
+                                take: 2
+                            },
+                            _count: {
+                                select: {
+                                    likes: true,
+                                    replies: true
+                                }
+                            }
+                        },
+                        take: 3
+                    },
+                    _count: {
+                        select: {
+                            likes: true,
+                            comments: true
+                        }
+                    }
                 },
                 skip,
                 take: Number(limit)
@@ -135,8 +167,41 @@ export class ArticlesService {
                 publishedAt: { lt: new Date() }
             },
             include: {
-                author: true,
-                photos: true
+                author: {
+                    select: {
+                        id: true,
+                        name: true,
+                        avatar: true,
+                        avatar_md: true
+                    }
+                },
+                photos: true,
+                _count: {
+                    select: {
+                        likes: true,
+                        comments: true
+                    }
+                },
+                comments: {
+                    include: {
+                        commenter: true,
+                        replies: {
+                            include: {
+                                commenter: true,
+                                _count: {
+                                    select: { likes: true }
+                                }
+                            }
+                        },
+                        _count: {
+                            select: {
+                                replies: true,
+                                likes: true
+                            }
+                        }
+                    }
+                }
+
             }
         });
         if (!article) throw new NotFoundException();
