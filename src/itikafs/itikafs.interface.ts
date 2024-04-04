@@ -1,7 +1,8 @@
+import { Comment } from "src/comments/comments.interface"
 import { ItikafSchedule } from "src/itikaf_schedules/itikaf_schedules.interface"
 import { Like } from "src/likes/likes.interface"
-import { Photo } from "src/photos/photos.interface"
 import { User } from "src/users/users.interface"
+
 export interface Itikaf {
     id: string
     year: string

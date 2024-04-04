@@ -9,12 +9,12 @@ export interface Comment {
     commenter?: User
     userId: string
     comment: string
-    createdAt: Date
-    updatedAt: Date
+    createdAt?: Date
+    updatedAt?: Date
     like?: Like[]
     replies?: CommentReply[]
     Article?: Article
-    articleId: string
+    articleId?: string
     Itikaf?: Itikaf
     itikafId?: string
     ItikafSchedule?: ItikafSchedule
@@ -26,8 +26,8 @@ export interface CommentReply {
     commenter?: User
     userId: string
     comment: string
-    createdAt: Date
-    updatedAt: Date
+    createdAt?: Date
+    updatedAt?: Date
     like?: Like[]
     Comment?: Comment
     commentId: string

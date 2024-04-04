@@ -49,7 +49,48 @@ export class ItikafsService {
     async findOne(hijri_year: string): Promise<Itikaf> {
         return this.prisma.itikaf.findUnique({
             where: { hijri_year },
-            include: { createdBy: true }
+            include: {
+                createdBy: {
+                    select: {
+                        id: true,
+                        name: true,
+                        avatar: true,
+                        avatar_md: true
+                    }
+                },
+                comments: {
+                    include: {
+                        commenter: {
+                            select: {
+                                id: true,
+                                name: true,
+                                avatar: true,
+                                avatar_md: true
+                            }
+                        },
+                        replies: {
+                            include: {
+                                commenter: true,
+                                _count: { select: { likes: true } }
+                            },
+                            take: 2
+                        },
+                        _count: {
+                            select: {
+                                likes: true,
+                                replies: true
+                            }
+                        }
+                    },
+                    take: 3
+                },
+                _count: {
+                    select: {
+                        likes: true,
+                        comments: true
+                    }
+                }
+            }
         });
     }
 

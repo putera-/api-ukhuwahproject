@@ -104,7 +104,14 @@ export class ArticlesService {
                     photos: true,
                     comments: {
                         include: {
-                            commenter: true,
+                            commenter: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                    avatar: true,
+                                    avatar_md: true
+                                }
+                            },
                             replies: {
                                 include: {
                                     commenter: true,

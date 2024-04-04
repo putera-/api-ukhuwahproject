@@ -68,6 +68,38 @@ export class ItikafSchedulesService {
           where: {
             participate: true
           }
+        },
+        comments: {
+          include: {
+            commenter: {
+              select: {
+                id: true,
+                name: true,
+                avatar: true,
+                avatar_md: true
+              }
+            },
+            replies: {
+              include: {
+                commenter: true,
+                _count: { select: { likes: true } }
+              },
+              take: 2
+            },
+            _count: {
+              select: {
+                likes: true,
+                replies: true
+              }
+            }
+          },
+          take: 3
+        },
+        _count: {
+          select: {
+            likes: true,
+            comments: true
+          }
         }
       },
     });
