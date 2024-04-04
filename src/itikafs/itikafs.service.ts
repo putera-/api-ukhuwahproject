@@ -46,7 +46,7 @@ export class ItikafsService {
         return this.prisma.itikaf.findMany();
     }
 
-    async findOne(hijri_year: string): Promise<Itikaf> {
+    async findOne(hijri_year: string, userId: string = ''): Promise<Itikaf> {
         return this.prisma.itikaf.findUnique({
             where: { hijri_year },
             include: {
@@ -80,6 +80,9 @@ export class ItikafsService {
                                 likes: true,
                                 replies: true
                             }
+                        },
+                        likes: {
+                            where: { userId }
                         }
                     },
                     take: 3
@@ -89,6 +92,9 @@ export class ItikafsService {
                         likes: true,
                         comments: true
                     }
+                },
+                likes: {
+                    where: { userId }
                 }
             }
         });

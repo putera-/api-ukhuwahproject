@@ -63,9 +63,11 @@ export class ItikafsController {
 
   @Public()
   @Get(':hijri_year')
-  findOne(@Param('hijri_year') hijri_year: string) {
+  findOne(@Param('hijri_year') hijri_year: string, @Req() req) {
     try {
-      return this.itikafsService.findOne(hijri_year);
+      const userId: string | undefined = req.user ? req.user.id : undefined;
+
+      return this.itikafsService.findOne(hijri_year, userId);
     } catch (error) {
       throw error;
     }

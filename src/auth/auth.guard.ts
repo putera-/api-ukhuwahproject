@@ -25,34 +25,39 @@ export class AuthGuard implements CanActivate {
             context.getHandler(),
             context.getClass(),
         ]);
-        if (isPublic) return true;
 
         const request = context.switchToHttp().getRequest();
         const token = this.extractTokenFromHeader(request);
+
+        let isTokenBlackListed = false;
+
+        if (token) {
+            // for non auth & auth controller
+            isTokenBlackListed = this.authService.isTokenBlacklisted(token);
+
+            if (!isTokenBlackListed) {
+                // token masih berlaku
+                await this.setUser(request, token)
+            }
+        }
+
+        if (isPublic) return true;
+
         if (!token) {
             throw new UnauthorizedException();
         }
 
         // check is token in black listed
-        const isTokenBlackListed = this.authService.isTokenBlacklisted(token);
         if (isTokenBlackListed) {
             throw new UnauthorizedException();
         }
 
         try {
-            const { sub, ...user } = await this.jwtService.verifyAsync(
-                token,
-                {
-                    secret: jwtConstants.secret
-                }
-            );
-            // 💡 We're assigning the payload to the request object here
-            // so that we can access it in our route handlers
-            user.id = sub
-            request['user'] = user;
+            const user = await this.setUser(request, token)
 
             await this.authService.createAuth(
-                sub,
+                // sub,
+                user.id,
                 token,
                 dayjs(user.exp * 1000).toDate(),
                 request.path,
@@ -67,5 +72,20 @@ export class AuthGuard implements CanActivate {
     private extractTokenFromHeader(request: Request): string | undefined {
         const [type, token] = request.headers.authorization?.split(' ') ?? [];
         return type === 'Bearer' ? token : undefined;
+    }
+
+    private async setUser(request: any, token: string): Promise<Record<string, any>> {
+        const { sub, ...user } = await this.jwtService.verifyAsync(
+            token,
+            {
+                secret: jwtConstants.secret
+            }
+        );
+        // 💡 We're assigning the payload to the request object here
+        // so that we can access it in our route handlers
+        user.id = sub
+        request['user'] = user;
+
+        return user;
     }
 }
