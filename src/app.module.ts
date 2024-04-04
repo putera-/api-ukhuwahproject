@@ -17,6 +17,8 @@ import { ItikafSchedulesModule } from './itikaf_schedules/itikaf_schedules.modul
 import { ItikafParticipantsModule } from './itikaf_participants/itikaf_participants.module';
 import { AsaatidzsModule } from './asaatidzs/asaatidzs.module';
 import { SlidesModule } from './slides/slides.module';
+import { CommentsModule } from './comments/comments.module';
+import { LikesModule } from './likes/likes.module';
 
 @Module({
   imports: [
@@ -33,6 +35,8 @@ import { SlidesModule } from './slides/slides.module';
     ItikafParticipantsModule,
     AsaatidzsModule,
     SlidesModule,
+    CommentsModule,
+    LikesModule,
   ],
   controllers: [AppController],
   providers: [

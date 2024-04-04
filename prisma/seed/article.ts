@@ -71,7 +71,7 @@ export async function articleSeed(prisma: PrismaClient) {
 
             // const comments: Prisma.ArticleCommentCreateInput[] = [];
             for (let j = 0; j < Math.floor(Math.random() * 10); j++) {
-                const comment = await prisma.articleComment.create({
+                const comment = await prisma.comment.create({
                     data: {
                         comment: faker.lorem.sentence(),
                         Article: { connect: { id: article.id } },
@@ -79,20 +79,22 @@ export async function articleSeed(prisma: PrismaClient) {
                     }
                 });
 
+                // like of comments
                 for (let k = 0; k < Math.floor(Math.random() * 30); k++) {
                     const like: Prisma.LikeCreateInput = {
                         User: { connect: { id: members[Math.floor(Math.random() * 20)].id } },
-                        ArticleComment: { connect: { id: comment.id } }
+                        Comment: { connect: { id: comment.id } }
                     }
                     await prisma.like.create({ data: like })
                 }
 
 
+                // comment reply
                 for (let l = 0; l < Math.floor(Math.random() * 10); l++) {
-                    const reply = await prisma.articleCommentReply.create({
+                    const reply = await prisma.commentReply.create({
                         data: {
                             comment: faker.lorem.sentence(),
-                            ArticleComment: { connect: { id: comment.id } },
+                            Comment: { connect: { id: comment.id } },
                             commenter: { connect: { id: members[Math.floor(Math.random() * 20)].id } },
                         }
                     })
@@ -100,7 +102,7 @@ export async function articleSeed(prisma: PrismaClient) {
                     for (let m = 0; m < Math.floor(Math.random() * 30); m++) {
                         const like: Prisma.LikeCreateInput = {
                             User: { connect: { id: members[Math.floor(Math.random() * 20)].id } },
-                            ArticleCommentReply: { connect: { id: reply.id } }
+                            CommentReply: { connect: { id: reply.id } }
                         }
                         await prisma.like.create({ data: like })
                     }

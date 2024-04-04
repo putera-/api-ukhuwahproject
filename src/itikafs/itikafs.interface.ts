@@ -1,4 +1,5 @@
 import { ItikafSchedule } from "src/itikaf_schedules/itikaf_schedules.interface"
+import { Like } from "src/likes/likes.interface"
 import { Photo } from "src/photos/photos.interface"
 import { User } from "src/users/users.interface"
 export interface Itikaf {
@@ -18,4 +19,6 @@ export interface Itikaf {
     createdAt: Date
     updatedAt: Date
     schedules?: ItikafSchedule[]
+    likes?: Like[]
+    comments?: Comment[]
 }

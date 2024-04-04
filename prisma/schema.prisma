@@ -40,25 +40,25 @@ model Slide {
 }
 
 model User {
-  id                    String                @id @default(uuid())
-  name                  String                @db.VarChar(100)
-  email                 String                @unique @db.VarChar(100)
-  phone                 String                @db.VarChar(20)
-  password              String                @db.VarChar(100)
-  auth                  Auth[]
-  articles              Article[]
-  role                  UserRole              @default(MEMBER)
-  avatar                String?               @db.VarChar(255)
-  avatar_md             String?               @db.VarChar(255)
-  active                Boolean               @default(true)
-  createdAt             DateTime              @default(now())
-  updatedAt             DateTime              @default(now()) @updatedAt
-  Itikaf                Itikaf[]
-  ItikafParticipant     ItikafParticipant[]
-  Vehicle               Vehicle[]
-  Likes                 Like[]
-  ArticleComments       ArticleComment[]
-  ArticleCommentReplies ArticleCommentReply[]
+  id                String              @id @default(uuid())
+  name              String              @db.VarChar(100)
+  email             String              @unique @db.VarChar(100)
+  phone             String              @db.VarChar(20)
+  password          String              @db.VarChar(100)
+  auth              Auth[]
+  articles          Article[]
+  role              UserRole            @default(MEMBER)
+  avatar            String?             @db.VarChar(255)
+  avatar_md         String?             @db.VarChar(255)
+  active            Boolean             @default(true)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @default(now()) @updatedAt
+  Itikaf            Itikaf[]
+  ItikafParticipant ItikafParticipant[]
+  Vehicle           Vehicle[]
+  Likes             Like[]
+  Comments          Comment[]
+  CommentReplies    CommentReply[]
 }
 
 enum UserRole {
@@ -81,34 +81,36 @@ model Auth {
 }
 
 model Like {
-  id                    String               @id @default(uuid())
-  User                  User                 @relation(fields: [userId], references: [id])
-  userId                String
-  Article               Article?             @relation(fields: [articleId], references: [id])
-  articleId             String?
-  ArticleComment        ArticleComment?      @relation(fields: [articleCommentId], references: [id])
-  articleCommentId      String?
-  ItikafSchedule        ItikafSchedule?      @relation(fields: [itikafScheduleId], references: [id])
-  itikafScheduleId      String?
-  ArticleCommentReply   ArticleCommentReply? @relation(fields: [articleCommentReplyId], references: [id])
-  articleCommentReplyId String?
-  createdAt             DateTime             @default(now())
+  id               String          @id @default(uuid())
+  User             User            @relation(fields: [userId], references: [id])
+  userId           String
+  Article          Article?        @relation(fields: [articleId], references: [id])
+  articleId        String?
+  Comment          Comment?        @relation(fields: [commentId], references: [id])
+  commentId        String?
+  ItikafSchedule   ItikafSchedule? @relation(fields: [itikafScheduleId], references: [id])
+  itikafScheduleId String?
+  CommentReply     CommentReply?   @relation(fields: [commentReplyId], references: [id])
+  commentReplyId   String?
+  Itikaf           Itikaf?         @relation(fields: [itikafId], references: [id])
+  itikafId         String?
+  createdAt        DateTime        @default(now())
 }
 
 model Article {
-  id          String           @id @default(uuid())
-  title       String           @db.VarChar(100)
-  content     String           @db.Text
-  author      User             @relation(fields: [authorId], references: [id])
+  id          String        @id @default(uuid())
+  title       String        @db.VarChar(100)
+  content     String        @db.Text
+  author      User          @relation(fields: [authorId], references: [id])
   authorId    String
   photos      Photo[]
-  status      ArticleStatus    @default(DRAFT)
-  deleted     Boolean          @default(false)
-  publishedAt DateTime         @default(now())
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @default(now()) @updatedAt
+  status      ArticleStatus @default(DRAFT)
+  deleted     Boolean       @default(false)
+  publishedAt DateTime      @default(now())
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now()) @updatedAt
   likes       Like[]
-  comments    ArticleComment[]
+  comments    Comment[]
 
   @@index([title])
 }
@@ -118,29 +120,35 @@ enum ArticleStatus {
   PUBLISH
 }
 
-model ArticleComment {
-  id        String                @id @default(uuid())
-  commenter User                  @relation(fields: [userId], references: [id])
-  userId    String
-  Article   Article               @relation(fields: [articleId], references: [id])
-  articleId String
-  comment   String                @db.Text
-  createdAt DateTime              @default(now())
-  updatedAt DateTime              @default(now()) @updatedAt
-  likes     Like[]
-  replies   ArticleCommentReply[]
+model Comment {
+  id               String          @id @default(uuid())
+  commenter        User            @relation(fields: [userId], references: [id])
+  userId           String
+  comment          String          @db.Text
+  deleted          Boolean         @default(false)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @default(now()) @updatedAt
+  likes            Like[]
+  replies          CommentReply[]
+  Article          Article?        @relation(fields: [articleId], references: [id])
+  articleId        String?
+  Itikaf           Itikaf?         @relation(fields: [itikafId], references: [id])
+  itikafId         String?
+  ItikafSchedule   ItikafSchedule? @relation(fields: [itikafScheduleId], references: [id])
+  itikafScheduleId String?
 }
 
-model ArticleCommentReply {
-  id               String         @id @default(uuid())
-  commenter        User           @relation(fields: [userId], references: [id])
-  userId           String
-  comment          String         @db.Text
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @default(now()) @updatedAt
-  likes            Like[]
-  ArticleComment   ArticleComment @relation(fields: [articleCommentId], references: [id])
-  articleCommentId String
+model CommentReply {
+  id        String   @id @default(uuid())
+  commenter User     @relation(fields: [userId], references: [id])
+  userId    String
+  comment   String   @db.Text
+  deleted   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  likes     Like[]
+  Comment   Comment  @relation(fields: [commentId], references: [id])
+  commentId String
 }
 
 model Photo {
@@ -169,6 +177,8 @@ model Itikaf {
   createdAt            DateTime         @default(now())
   updatedAt            DateTime         @default(now()) @updatedAt
   schedules            ItikafSchedule[]
+  likes                Like[]
+  comments             Comment[]
 }
 
 model ItikafSchedule {
@@ -191,6 +201,7 @@ model ItikafSchedule {
   createdAt            DateTime            @default(now())
   updatedAt            DateTime            @default(now()) @updatedAt
   likes                Like[]
+  comments             Comment[]
 }
 
 // TODO relation with asatidz, imama magribh, imam isya, tausiyah, imam qiyamul lail

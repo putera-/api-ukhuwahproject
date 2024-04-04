@@ -1,4 +1,5 @@
-import { Like } from "src/app.interface"
+import { Comment } from "src/comments/comments.interface"
+import { Like } from "src/likes/likes.interface"
 import { Photo } from "src/photos/photos.interface"
 import { User } from "src/users/users.interface"
 
@@ -15,29 +16,5 @@ export interface Article {
     createdAt: Date
     updatedAt: Date
     likes?: Like[]
-    comments?: ArticleComment[]
-}
-
-export interface ArticleComment {
-    id: string
-    commenter?: User
-    userId: string
-    Article?: Article
-    articleId: string
-    comment: string
-    createdAt: Date
-    updatedAt: Date
-    like?: Like[]
-}
-
-export interface ArticleCommentReply {
-    id: string
-    commenter?: User
-    userId: string
-    comment: string
-    createdAt: Date
-    updatedAt: Date
-    like?: Like[]
-    ArticleComment?: ArticleComment
-    articleCommentId: string
+    comments?: Comment[]
 }
