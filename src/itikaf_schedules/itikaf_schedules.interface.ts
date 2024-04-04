@@ -2,6 +2,7 @@ import { Photo } from "src/photos/photos.interface"
 import { Itikaf } from "src/itikafs/itikafs.interface"
 import { ItikafParticipant } from "src/itikaf_participants/itikaf_participants.interface"
 import { Asaatidz } from "src/asaatidzs/asaatidzs.interface"
+import { Like } from "src/app.interface"
 
 export interface ItikafSchedule {
     id: string
@@ -26,4 +27,5 @@ export interface ItikafSchedule {
     total_man?: number
     total_woman?: number
     auth_participant?: boolean
+    likes?: Like[]
 }

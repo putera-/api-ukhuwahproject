@@ -4,12 +4,12 @@ import { Article } from "src/articles/articles.interface"
 export interface User {
     id: string
     name: string
-    email: string
-    phone: string
+    email?: string
+    phone?: string
     password?: string
     auth?: Auth[]
     articles?: Article[]
-    role: 'SUPERUSER' | 'ADMIN' | 'STAFF' | 'MEMBER'
+    role?: 'SUPERUSER' | 'ADMIN' | 'STAFF' | 'MEMBER'
     avatar?: string
     avatar_md?: string
     active?: boolean
