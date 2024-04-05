@@ -52,7 +52,7 @@ export class ItikafSchedulesService {
     }
   }
 
-  async findAll(hijri_year: string, authUserId?: string): Promise<ItikafSchedule[]> {
+  async findAll(hijri_year: string, userId: string = ''): Promise<ItikafSchedule[]> {
     const itikaf = await this.prisma.itikaf.findFirst({ where: { hijri_year } });
 
     if (!itikaf) return [];
@@ -61,6 +61,9 @@ export class ItikafSchedulesService {
       where: { itikafId: itikaf.id, deleted: false },
       orderBy: { day_index: 'asc' },
       include: {
+        likes: {
+          where: { userId }
+        },
         imam_tarawih: true,
         imam_qiyamul_lail: true,
         ustadz_kajian: true,
@@ -71,6 +74,9 @@ export class ItikafSchedulesService {
         },
         comments: {
           include: {
+            likes: {
+              where: { userId }
+            },
             commenter: {
               select: {
                 id: true,
@@ -81,6 +87,9 @@ export class ItikafSchedulesService {
             },
             replies: {
               include: {
+                likes: {
+                  where: { userId }
+                },
                 commenter: true,
                 _count: { select: { likes: true } }
               },
@@ -109,8 +118,8 @@ export class ItikafSchedulesService {
       schedule.total_man = schedule.participants.reduce((acc, p) => acc + p.man, 0);
       schedule.total_woman = schedule.participants.reduce((acc, p) => acc + p.woman, 0);
 
-      if (authUserId) {
-        schedule.auth_participant = schedule.participants.some(p => p.userId == authUserId);
+      if (userId) {
+        schedule.auth_participant = schedule.participants.some(p => p.userId == userId);
       }
     }
 

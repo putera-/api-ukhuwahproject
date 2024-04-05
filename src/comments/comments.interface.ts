@@ -19,6 +19,10 @@ export interface Comment {
     itikafId?: string
     ItikafSchedule?: ItikafSchedule
     itikafScheduleId?: string
+    _count?: {
+        likes?: number
+        comments?: number
+    }
 }
 
 export interface CommentReply {
@@ -31,4 +35,8 @@ export interface CommentReply {
     like?: Like[]
     Comment?: Comment
     commentId: string
+    _count?: {
+        likes?: number
+        comments?: number
+    }
 }

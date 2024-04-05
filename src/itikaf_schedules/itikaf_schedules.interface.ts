@@ -29,4 +29,8 @@ export interface ItikafSchedule {
     auth_participant?: boolean
     likes?: Like[]
     comments?: Comment[]
+    _count?: {
+        likes?: number
+        comments?: number
+    }
 }
