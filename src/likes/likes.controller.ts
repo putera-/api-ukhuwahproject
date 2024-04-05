@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Req, HttpCode } from
 import { LikesService } from './likes.service';
 import { CreateLikeDto } from './dto/create-like.dto';
 import { UpdateLikeDto } from './dto/update-like.dto';
+import { Like } from './likes.interface';
 
 @Controller('likes')
 export class LikesController {
@@ -35,8 +36,7 @@ export class LikesController {
   // LIKE
 
   @Post('/itikaf/:id')
-  @HttpCode(204)
-  async likeItikaf(@Req() req, @Param('id') id: string): Promise<void> {
+  async likeItikaf(@Req() req, @Param('id') id: string): Promise<Like> {
     try {
       return this.likesService.likeItikaf(id, req.user.id);
     } catch (error) {
@@ -45,8 +45,7 @@ export class LikesController {
   }
 
   @Post('/itikaf-schedule/:id')
-  @HttpCode(204)
-  async likeItikafSchedule(@Req() req, @Param('id') id: string): Promise<void> {
+  async likeItikafSchedule(@Req() req, @Param('id') id: string): Promise<Like> {
     try {
       return this.likesService.likeItikafSchedule(id, req.user.id);
     } catch (error) {
@@ -55,8 +54,7 @@ export class LikesController {
   }
 
   @Post('/article/:id')
-  @HttpCode(204)
-  async likeArticle(@Req() req, @Param('id') id: string): Promise<void> {
+  async likeArticle(@Req() req, @Param('id') id: string): Promise<Like> {
     try {
       return this.likesService.likeArticle(id, req.user.id);
     } catch (error) {
@@ -65,8 +63,7 @@ export class LikesController {
   }
 
   @Post('/comment/:id')
-  @HttpCode(204)
-  async likeComment(@Req() req, @Param('id') id: string): Promise<void> {
+  async likeComment(@Req() req, @Param('id') id: string): Promise<Like> {
     try {
       return this.likesService.likeComment(id, req.user.id);
     } catch (error) {
@@ -75,8 +72,7 @@ export class LikesController {
   }
 
   @Post('/comment-reply/:id')
-  @HttpCode(204)
-  async likeCommentReply(@Req() req, @Param('id') id: string): Promise<void> {
+  async likeCommentReply(@Req() req, @Param('id') id: string): Promise<Like> {
     try {
       return this.likesService.likeCommentReply(id, req.user.id);
     } catch (error) {
@@ -84,13 +80,13 @@ export class LikesController {
     }
   }
 
-  // UNLIKE
+  // DISLIKE
 
   @Delete('/itikaf/:id')
   @HttpCode(204)
-  async unLikeItikaf(@Req() req, @Param('id') id: string): Promise<void> {
+  async disLikeItikaf(@Req() req, @Param('id') id: string): Promise<void> {
     try {
-      return this.likesService.unLikeItikaf(id, req.user.id);
+      return this.likesService.disLikeItikaf(id, req.user.id);
     } catch (error) {
       throw error;
     }
@@ -98,9 +94,9 @@ export class LikesController {
 
   @Delete('/itikaf-schedule/:id')
   @HttpCode(204)
-  async unLikeItikafSchedule(@Req() req, @Param('id') id: string): Promise<void> {
+  async disLikeItikafSchedule(@Req() req, @Param('id') id: string): Promise<void> {
     try {
-      return this.likesService.unLikeItikafSchedule(id, req.user.id);
+      return this.likesService.disLikeItikafSchedule(id, req.user.id);
     } catch (error) {
       throw error;
     }
@@ -108,9 +104,9 @@ export class LikesController {
 
   @Delete('/article/:id')
   @HttpCode(204)
-  async unLikeArticle(@Req() req, @Param('id') id: string): Promise<void> {
+  async disLikeArticle(@Req() req, @Param('id') id: string): Promise<void> {
     try {
-      return this.likesService.unLikeArticle(id, req.user.id);
+      return this.likesService.disLikeArticle(id, req.user.id);
     } catch (error) {
       throw error;
     }
@@ -118,9 +114,9 @@ export class LikesController {
 
   @Delete('/comment/:id')
   @HttpCode(204)
-  async unLikeComment(@Req() req, @Param('id') id: string): Promise<void> {
+  async disLikeComment(@Req() req, @Param('id') id: string): Promise<void> {
     try {
-      return this.likesService.unLikeComment(id, req.user.id);
+      return this.likesService.disLikeComment(id, req.user.id);
     } catch (error) {
       throw error;
     }
@@ -128,9 +124,9 @@ export class LikesController {
 
   @Delete('/comment-reply/:id')
   @HttpCode(204)
-  async unLikeCommentReply(@Req() req, @Param('id') id: string): Promise<void> {
+  async disLikeCommentReply(@Req() req, @Param('id') id: string): Promise<void> {
     try {
-      return this.likesService.unLikeCommentReply(id, req.user.id);
+      return this.likesService.disLikeCommentReply(id, req.user.id);
     } catch (error) {
       throw error;
     }

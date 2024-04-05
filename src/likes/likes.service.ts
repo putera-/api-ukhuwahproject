@@ -3,6 +3,7 @@ import { CreateLikeDto } from './dto/create-like.dto';
 import { UpdateLikeDto } from './dto/update-like.dto';
 import { PrismaService } from 'src/prisma.service';
 import { Prisma } from '@prisma/client';
+import { Like } from './likes.interface';
 
 @Injectable()
 export class LikesService {
@@ -32,27 +33,25 @@ export class LikesService {
   // LIKE
 
   // like itikaf
-  async likeItikaf(itikafId: string, userId: string): Promise<void> {
+  async likeItikaf(itikafId: string, userId: string): Promise<Like> {
     const find = await this.prisma.like.findFirst({
       where: { itikafId, userId }
     });
-    if (find) return;
+    if (find) return find;
 
-    await this.prisma.like.create({
+    return this.prisma.like.create({
       data: { itikafId, userId }
     });
-
-    return;
   }
 
   // like itikaf schedule
-  async likeItikafSchedule(itikafScheduleId: string, userId: string): Promise<void> {
+  async likeItikafSchedule(itikafScheduleId: string, userId: string): Promise<Like> {
     const find = await this.prisma.like.findFirst({
       where: { itikafScheduleId, userId }
     });
-    if (find) return;
+    if (find) return find;
 
-    await this.prisma.like.create({
+    return this.prisma.like.create({
       data: { itikafScheduleId, userId }
     });
 
@@ -60,13 +59,13 @@ export class LikesService {
   }
 
   // like article
-  async likeArticle(articleId: string, userId: string): Promise<void> {
+  async likeArticle(articleId: string, userId: string): Promise<Like> {
     const find = await this.prisma.like.findFirst({
       where: { articleId, userId }
     });
-    if (find) return;
+    if (find) return find;
 
-    await this.prisma.like.create({
+    return this.prisma.like.create({
       data: { articleId, userId }
     });
 
@@ -74,13 +73,13 @@ export class LikesService {
   }
 
   // like comment
-  async likeComment(commentId: string, userId: string): Promise<void> {
+  async likeComment(commentId: string, userId: string): Promise<Like> {
     const find = await this.prisma.like.findFirst({
       where: { commentId, userId }
     });
-    if (find) return;
+    if (find) return find;
 
-    await this.prisma.like.create({
+    return this.prisma.like.create({
       data: { commentId, userId }
     });
 
@@ -88,23 +87,23 @@ export class LikesService {
   }
 
   // like comment reply
-  async likeCommentReply(commentReplyId: string, userId: string): Promise<void> {
+  async likeCommentReply(commentReplyId: string, userId: string): Promise<Like> {
     const find = await this.prisma.like.findFirst({
       where: { commentReplyId, userId }
     });
-    if (find) return;
+    if (find) return find;
 
-    await this.prisma.like.create({
+    return this.prisma.like.create({
       data: { commentReplyId, userId }
     });
 
     return;
   }
 
-  // UNLIKE
+  // DISLIKE
 
-  // unLike itikaf
-  async unLikeItikaf(itikafId: string, userId: string): Promise<void> {
+  // disLike itikaf
+  async disLikeItikaf(itikafId: string, userId: string): Promise<void> {
     try {
       await this.prisma.like.deleteMany({
         where: { itikafId, userId }
@@ -114,8 +113,8 @@ export class LikesService {
     }
   }
 
-  // unLike itikaf schedule
-  async unLikeItikafSchedule(itikafScheduleId: string, userId: string): Promise<void> {
+  // disLike itikaf schedule
+  async disLikeItikafSchedule(itikafScheduleId: string, userId: string): Promise<void> {
     try {
       await this.prisma.like.deleteMany({
         where: { itikafScheduleId, userId }
@@ -125,8 +124,8 @@ export class LikesService {
     }
   }
 
-  // unLike itikaf schedule
-  async unLikeArticle(articleId: string, userId: string): Promise<void> {
+  // disLike itikaf schedule
+  async disLikeArticle(articleId: string, userId: string): Promise<void> {
     try {
       await this.prisma.like.deleteMany({
         where: { articleId, userId }
@@ -136,8 +135,8 @@ export class LikesService {
     }
   }
 
-  // unLike itikaf schedule
-  async unLikeComment(commentId: string, userId: string): Promise<void> {
+  // disLike itikaf schedule
+  async disLikeComment(commentId: string, userId: string): Promise<void> {
     try {
       await this.prisma.like.deleteMany({
         where: { commentId, userId }
@@ -147,8 +146,8 @@ export class LikesService {
     }
   }
 
-  // unLike itikaf schedule
-  async unLikeCommentReply(commentReplyId: string, userId: string): Promise<void> {
+  // disLike itikaf schedule
+  async disLikeCommentReply(commentReplyId: string, userId: string): Promise<void> {
     try {
       await this.prisma.like.deleteMany({
         where: { commentReplyId, userId }
