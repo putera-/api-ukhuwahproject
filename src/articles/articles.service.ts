@@ -103,6 +103,9 @@ export class ArticlesService {
                     },
                     photos: true,
                     comments: {
+                        orderBy: {
+                            createdAt: 'desc'
+                        },
                         include: {
                             commenter: {
                                 select: {

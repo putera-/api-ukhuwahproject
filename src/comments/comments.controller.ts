@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
@@ -22,10 +22,33 @@ export class CommentsController {
   // }
 
   @Public()
-  @Get('/:articleId/:page')
-  find(@Param('articleId') articleId: string, @Param('page') page: string = '1'): Promise<Comment[]> {
+  @Get('article/:articleId/:page')
+  loadByArticle(@Param('articleId') articleId: string, @Param('page') page: string = '1', @Req() req): Promise<Comment[]> {
     try {
-      return this.commentsService.find(articleId, page);
+      const userId: string | undefined = req.user ? req.user.id : undefined;
+      return this.commentsService.loadByArticle(articleId, page, userId);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Public()
+  @Get('itikaf/:itikafId/:page')
+  loadByItikaf(@Param('itikafId') itikafId: string, @Param('page') page: string = '1', @Req() req): Promise<Comment[]> {
+    try {
+      const userId: string | undefined = req.user ? req.user.id : undefined;
+      return this.commentsService.loadByItikaf(itikafId, page, userId);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Public()
+  @Get('itikaf-schedule/:scheduleId/:page')
+  loadByItikafSchedule(@Param('scheduleId') scheduleId: string, @Param('page') page: string = '1', @Req() req): Promise<Comment[]> {
+    try {
+      const userId: string | undefined = req.user ? req.user.id : undefined;
+      return this.commentsService.loadByItikafSchedule(scheduleId, page, userId);
     } catch (error) {
       throw error;
     }

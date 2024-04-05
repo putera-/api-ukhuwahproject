@@ -19,14 +19,139 @@ export class CommentsService {
     //     return `This action returns all comments`;
     //   }
 
-    async find(articleId: string, page: string = '1'): Promise<Comment[]> {
+    async loadByArticle(articleId: string, page: string = '1', userId: string = ''): Promise<Comment[]> {
         const skip = (Number(page) - 1) * 10;
 
-        return [];
+        return this.prisma.comment.findMany({
+            where: {
+                articleId,
+                deleted: false,
+            },
+            orderBy: {
+                createdAt: 'desc'
+            },
+            include: {
+                likes: {
+                    where: { userId }
+                },
+                commenter: {
+                    select: {
+                        id: true,
+                        name: true,
+                        avatar: true,
+                        avatar_md: true
+                    }
+                },
+                replies: {
+                    include: {
+                        likes: {
+                            where: { userId }
+                        },
+                        commenter: true,
+                        _count: { select: { likes: true } }
+                    },
+                    take: 1
+                },
+                _count: {
+                    select: {
+                        likes: true,
+                        replies: true
+                    }
+                }
+            },
+            skip,
+            take: 10
+        })
+    }
 
-        // return this.prisma.comment.findMany({
-        //     where: { articleId }
-        // });
+    async loadByItikaf(itikafId: string, page: string = '1', userId: string = ''): Promise<Comment[]> {
+        const skip = (Number(page) - 1) * 10;
+
+        return this.prisma.comment.findMany({
+            where: {
+                itikafId,
+                deleted: false,
+            },
+            orderBy: {
+                createdAt: 'desc'
+            },
+            include: {
+                commenter: {
+                    select: {
+                        id: true,
+                        name: true,
+                        avatar: true,
+                        avatar_md: true
+                    }
+                },
+                replies: {
+                    include: {
+                        likes: {
+                            where: { userId }
+                        },
+                        commenter: true,
+                        _count: { select: { likes: true } }
+                    },
+                    take: 1
+                },
+                _count: {
+                    select: {
+                        likes: true,
+                        replies: true
+                    }
+                },
+                likes: {
+                    where: { userId }
+                }
+            },
+            skip,
+            take: 10
+        })
+    }
+
+    async loadByItikafSchedule(itikafScheduleId: string, page: string = '1', userId: string = ''): Promise<Comment[]> {
+        const skip = (Number(page) - 1) * 10;
+
+        return this.prisma.comment.findMany({
+            where: {
+                itikafScheduleId,
+                deleted: false,
+            },
+            orderBy: {
+                createdAt: 'desc'
+            },
+            include: {
+                commenter: {
+                    select: {
+                        id: true,
+                        name: true,
+                        avatar: true,
+                        avatar_md: true
+                    }
+                },
+                replies: {
+                    include: {
+                        likes: {
+                            where: { userId }
+                        },
+                        commenter: true,
+                        _count: { select: { likes: true } }
+                    },
+                    take: 1
+                },
+                _count: {
+                    select: {
+                        likes: true,
+                        replies: true
+                    }
+                },
+                likes: {
+                    where: { userId }
+                }
+            },
+            skip,
+            take: 10
+        })
     }
 
     //   update(id: number, updateCommentDto: UpdateCommentDto) {

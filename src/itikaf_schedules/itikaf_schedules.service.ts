@@ -73,6 +73,9 @@ export class ItikafSchedulesService {
           }
         },
         comments: {
+          orderBy: {
+            createdAt: 'desc'
+          },
           include: {
             likes: {
               where: { userId }
@@ -93,7 +96,7 @@ export class ItikafSchedulesService {
                 commenter: true,
                 _count: { select: { likes: true } }
               },
-              take: 2
+              take: 1
             },
             _count: {
               select: {
@@ -102,7 +105,7 @@ export class ItikafSchedulesService {
               }
             }
           },
-          take: 3
+          take: 2
         },
         _count: {
           select: {
