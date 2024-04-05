@@ -103,9 +103,8 @@ export class ArticlesService {
                     },
                     photos: true,
                     comments: {
-                        orderBy: {
-                            createdAt: 'desc'
-                        },
+                        where: { deleted: false },
+                        orderBy: { createdAt: 'desc' },
                         include: {
                             commenter: {
                                 select: {
@@ -116,10 +115,19 @@ export class ArticlesService {
                                 }
                             },
                             replies: {
+                                where: { deleted: false },
                                 include: {
-                                    commenter: true,
+                                    commenter: {
+                                        select: {
+                                            id: true,
+                                            name: true,
+                                            avatar: true,
+                                            avatar_md: true
+                                        }
+                                    },
                                     _count: { select: { likes: true } }
                                 },
+                                orderBy: { createdAt: 'desc' },
                                 take: 2
                             },
                             _count: {

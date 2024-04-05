@@ -59,6 +59,7 @@ export class ItikafsService {
                     }
                 },
                 comments: {
+                    where: { deleted: false },
                     orderBy: {
                         createdAt: 'desc'
                     },
@@ -72,13 +73,22 @@ export class ItikafsService {
                             }
                         },
                         replies: {
+                            where: { deleted: false },
                             include: {
                                 likes: {
                                     where: { userId }
                                 },
-                                commenter: true,
+                                commenter: {
+                                    select: {
+                                        id: true,
+                                        name: true,
+                                        avatar: true,
+                                        avatar_md: true
+                                    }
+                                },
                                 _count: { select: { likes: true } }
                             },
+                            orderBy: { createdAt: 'desc' },
                             take: 1
                         },
                         _count: {

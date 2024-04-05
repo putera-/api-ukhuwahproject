@@ -54,6 +54,17 @@ export class CommentsController {
     }
   }
 
+  @Public()
+  @Get('reply/:commentId/:page')
+  loadReply(@Param('commentId') commentId: string, @Param('page') page: string = '1', @Req() req): Promise<Comment[]> {
+    try {
+      const userId: string | undefined = req.user ? req.user.id : undefined;
+      return this.commentsService.loadReply(commentId, page, userId);
+    } catch (error) {
+      throw error;
+    }
+  }
+
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
   //   return this.commentsService.update(+id, updateCommentDto);

@@ -20,7 +20,7 @@ export class CommentsService {
     //   }
 
     async loadByArticle(articleId: string, page: string = '1', userId: string = ''): Promise<Comment[]> {
-        const skip = (Number(page) - 1) * 10;
+        const skip = (Number(page) - 1) * 5;
 
         return this.prisma.comment.findMany({
             where: {
@@ -47,7 +47,14 @@ export class CommentsService {
                         likes: {
                             where: { userId }
                         },
-                        commenter: true,
+                        commenter: {
+                            select: {
+                                id: true,
+                                name: true,
+                                avatar: true,
+                                avatar_md: true
+                            }
+                        },
                         _count: { select: { likes: true } }
                     },
                     take: 1
@@ -60,12 +67,12 @@ export class CommentsService {
                 }
             },
             skip,
-            take: 10
+            take: 5
         })
     }
 
     async loadByItikaf(itikafId: string, page: string = '1', userId: string = ''): Promise<Comment[]> {
-        const skip = (Number(page) - 1) * 10;
+        const skip = (Number(page) - 1) * 5;
 
         return this.prisma.comment.findMany({
             where: {
@@ -89,7 +96,14 @@ export class CommentsService {
                         likes: {
                             where: { userId }
                         },
-                        commenter: true,
+                        commenter: {
+                            select: {
+                                id: true,
+                                name: true,
+                                avatar: true,
+                                avatar_md: true
+                            }
+                        },
                         _count: { select: { likes: true } }
                     },
                     take: 1
@@ -105,12 +119,12 @@ export class CommentsService {
                 }
             },
             skip,
-            take: 10
+            take: 5
         })
     }
 
     async loadByItikafSchedule(itikafScheduleId: string, page: string = '1', userId: string = ''): Promise<Comment[]> {
-        const skip = (Number(page) - 1) * 10;
+        const skip = (Number(page) - 1) * 5;
 
         return this.prisma.comment.findMany({
             where: {
@@ -134,7 +148,14 @@ export class CommentsService {
                         likes: {
                             where: { userId }
                         },
-                        commenter: true,
+                        commenter: {
+                            select: {
+                                id: true,
+                                name: true,
+                                avatar: true,
+                                avatar_md: true
+                            }
+                        },
                         _count: { select: { likes: true } }
                     },
                     take: 1
@@ -150,7 +171,34 @@ export class CommentsService {
                 }
             },
             skip,
-            take: 10
+            take: 5
+        })
+    }
+    async loadReply(commentId: string, page: string = '1', userId: string = ''): Promise<Comment[]> {
+        const skip = (Number(page) - 1) * 5;
+
+        return this.prisma.commentReply.findMany({
+            where: {
+                commentId,
+                deleted: false,
+            },
+            orderBy: { createdAt: 'desc' },
+            include: {
+                likes: {
+                    where: { userId }
+                },
+                commenter: {
+                    select: {
+                        id: true,
+                        name: true,
+                        avatar: true,
+                        avatar_md: true
+                    }
+                },
+                _count: { select: { likes: true } }
+            },
+            skip,
+            take: 5
         })
     }
 
