@@ -269,17 +269,25 @@ export class CommentsService {
     //     return `This action updates a #${id} comment`;
     //   }
 
-    async removeComment(id: string): Promise<void> {
+    async removeComment(id: string, userId?: string): Promise<void> {
+        const where = { id };
+        // must delete his own comment. exept admin can remove all
+        if (userId) where['userId'] = userId;
+
         await this.prisma.comment.update({
-            where: { id },
+            where,
             data: { deleted: true }
         });
         return;
     }
 
-    async removeCommentReply(id: string): Promise<void> {
+    async removeCommentReply(id: string, userId?: string): Promise<void> {
+        const where = { id };
+        // must delete his own comment. exept admin can remove all
+        if (userId) where['userId'] = userId;
+
         await this.prisma.commentReply.update({
-            where: { id },
+            where,
             data: { deleted: true }
         });
         return;

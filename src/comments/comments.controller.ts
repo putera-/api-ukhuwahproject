@@ -137,9 +137,14 @@ export class CommentsController {
 
   @Delete(':id')
   @HttpCode(204)
-  removeComment(@Param('id') id: string) {
+  removeComment(@Param('id') id: string, @Req() req) {
     try {
-      return this.commentsService.removeComment(id);
+      if (req.user.role == 'MEMBER') {
+        return this.commentsService.removeComment(id, req.user.id);
+      } else {
+        return this.commentsService.removeComment(id);
+      }
+
     } catch (error) {
       throw error;
     }
@@ -147,9 +152,13 @@ export class CommentsController {
 
   @Delete('reply/:id')
   @HttpCode(204)
-  removeCommentReply(@Param('id') id: string) {
+  removeCommentReply(@Param('id') id: string, @Req() req) {
     try {
-      return this.commentsService.removeCommentReply(id);
+      if (req.user.role == 'MEMBER') {
+        return this.commentsService.removeCommentReply(id, req.user.id);
+      } else {
+        return this.commentsService.removeCommentReply(id);
+      }
     } catch (error) {
       throw error;
     }
