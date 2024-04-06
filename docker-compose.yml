@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: api_ukhuwahproject
-    image: api_ukhuwahproject:1.1.4
+    image: api_ukhuwahproject:1.1.5
     restart: always
     ports:
       - 5011:5011
