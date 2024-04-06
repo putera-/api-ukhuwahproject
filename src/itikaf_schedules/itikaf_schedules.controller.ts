@@ -79,6 +79,7 @@ export class ItikafSchedulesController {
     }
   }
 
+  @Public()
   @Get(':year')
   findAll(@Param('year') year: string, @Req() req) {
     try {
