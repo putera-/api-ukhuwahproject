@@ -37,7 +37,10 @@ export class AuthGuard implements CanActivate {
 
             if (!isTokenBlackListed) {
                 // token masih berlaku
-                await this.setUser(request, token)
+                try {
+                    await this.setUser(request, token)
+                } catch (error) {
+                }
             }
         }
 
