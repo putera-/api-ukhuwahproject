@@ -1,18 +1,83 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, ValidationPipe, HttpCode } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { Public } from 'src/auth/auth.metadata';
 import { Comment } from './comments.interface';
+import { CommentReply, Prisma } from '@prisma/client';
+import { CreateCommentReplyDto } from './dto/create-comment-reply.dto';
 
 @Controller('comments')
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) { }
 
-  // @Post()
-  // create(@Body() createCommentDto: CreateCommentDto) {
-  //   return this.commentsService.create(createCommentDto);
-  // }
+  @Post('article/:articleId')
+  async createByArticle(@Req() req, @Param('articleId') articleId: string, @Body(new ValidationPipe) createCommentDto: CreateCommentDto): Promise<Comment> {
+    try {
+      const userId = req.user.id;
+
+      const data: Prisma.CommentCreateInput = {
+        comment: createCommentDto.comment,
+        commenter: { connect: { id: userId } },
+        Article: { connect: { id: articleId } }
+      };
+
+      return this.commentsService.create(data);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Post('itikaf/:itikafId')
+  async createByItikaf(@Req() req, @Param('itikafId') itikafId: string, @Body(new ValidationPipe) createCommentDto: CreateCommentDto): Promise<Comment> {
+    try {
+      const userId = req.user.id;
+
+      const data: Prisma.CommentCreateInput = {
+        comment: createCommentDto.comment,
+        commenter: { connect: { id: userId } },
+        Itikaf: { connect: { id: itikafId } }
+      };
+
+      return this.commentsService.create(data);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Post('itikaf-schedule/:scheduleId')
+  async createByItikafSchedule(@Req() req, @Param('scheduleId') scheduleId: string, @Body(new ValidationPipe) createCommentDto: CreateCommentDto): Promise<Comment> {
+    try {
+      const userId = req.user.id;
+
+      const data: Prisma.CommentCreateInput = {
+        comment: createCommentDto.comment,
+        commenter: { connect: { id: userId } },
+        ItikafSchedule: { connect: { id: scheduleId } }
+      };
+
+      return this.commentsService.create(data);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Post('reply/:commentId')
+  async replyComment(@Req() req, @Param('commentId') commentId: string, @Body(new ValidationPipe) createCommentReplyDto: CreateCommentReplyDto): Promise<CommentReply> {
+    try {
+      const userId = req.user.id;
+
+      const data: Prisma.CommentReplyCreateInput = {
+        comment: createCommentReplyDto.comment,
+        commenter: { connect: { id: userId } },
+        Comment: { connect: { id: commentId } }
+      };
+
+      return this.commentsService.createCommentReply(data);
+    } catch (error) {
+      throw error;
+    }
+  }
 
 
 
@@ -70,8 +135,23 @@ export class CommentsController {
   //   return this.commentsService.update(+id, updateCommentDto);
   // }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.commentsService.remove(+id);
-  // }
+  @Delete(':id')
+  @HttpCode(204)
+  removeComment(@Param('id') id: string) {
+    try {
+      return this.commentsService.removeComment(id);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Delete('reply/:id')
+  @HttpCode(204)
+  removeCommentReply(@Param('id') id: string) {
+    try {
+      return this.commentsService.removeCommentReply(id);
+    } catch (error) {
+      throw error;
+    }
+  }
 }

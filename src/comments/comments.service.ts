@@ -3,6 +3,7 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { PrismaService } from 'src/prisma.service';
 import { Comment } from './comments.interface';
+import { CommentReply, Prisma } from '@prisma/client';
 
 @Injectable()
 export class CommentsService {
@@ -11,9 +12,71 @@ export class CommentsService {
     ) { }
 
 
-    //   create(createCommentDto: CreateCommentDto) {
-    //     return 'This action adds a new comment';
-    //   }
+    async create(data: Prisma.CommentCreateInput): Promise<Comment> {
+        const userId = data.commenter.connect.id;
+
+        return this.prisma.comment.create({
+            data,
+            include: {
+                likes: {
+                    where: { userId }
+                },
+                commenter: {
+                    select: {
+                        id: true,
+                        name: true,
+                        avatar: true,
+                        avatar_md: true
+                    }
+                },
+                replies: {
+                    include: {
+                        likes: {
+                            where: { userId }
+                        },
+                        commenter: {
+                            select: {
+                                id: true,
+                                name: true,
+                                avatar: true,
+                                avatar_md: true
+                            }
+                        },
+                        _count: { select: { likes: true } }
+                    },
+                    take: 1
+                },
+                _count: {
+                    select: {
+                        likes: true,
+                        replies: true
+                    }
+                }
+            }
+        });
+    }
+
+    async createCommentReply(data: Prisma.CommentReplyCreateInput): Promise<CommentReply> {
+        const userId = data.commenter.connect.id;
+
+        return this.prisma.commentReply.create({
+            data,
+            include: {
+                likes: {
+                    where: { userId }
+                },
+                commenter: {
+                    select: {
+                        id: true,
+                        name: true,
+                        avatar: true,
+                        avatar_md: true
+                    }
+                },
+                _count: { select: { likes: true } }
+            }
+        });
+    }
 
     //   findAll() {
     //     return `This action returns all comments`;
@@ -206,7 +269,19 @@ export class CommentsService {
     //     return `This action updates a #${id} comment`;
     //   }
 
-    //   remove(id: number) {
-    //     return `This action removes a #${id} comment`;
-    //   }
+    async removeComment(id: string): Promise<void> {
+        await this.prisma.comment.update({
+            where: { id },
+            data: { deleted: true }
+        });
+        return;
+    }
+
+    async removeCommentReply(id: string): Promise<void> {
+        await this.prisma.commentReply.update({
+            where: { id },
+            data: { deleted: true }
+        });
+        return;
+    }
 }
