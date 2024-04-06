@@ -94,7 +94,7 @@ export class ItikafsService {
                         _count: {
                             select: {
                                 likes: true,
-                                replies: true
+                                replies: { where: { deleted: false } }
                             }
                         },
                         likes: {
@@ -106,7 +106,7 @@ export class ItikafsService {
                 _count: {
                     select: {
                         likes: true,
-                        comments: true
+                        comments: { where: { deleted: false } }
                     }
                 },
                 likes: {

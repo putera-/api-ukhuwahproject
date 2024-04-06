@@ -109,7 +109,7 @@ export class ItikafSchedulesService {
             _count: {
               select: {
                 likes: true,
-                replies: true
+                replies: { where: { deleted: false } }
               }
             }
           },
@@ -118,7 +118,7 @@ export class ItikafSchedulesService {
         _count: {
           select: {
             likes: true,
-            comments: true
+            comments: { where: { deleted: false } }
           }
         }
       },

@@ -49,7 +49,7 @@ export class CommentsService {
                 _count: {
                     select: {
                         likes: true,
-                        replies: true
+                        replies: { where: { deleted: false } }
                     }
                 }
             }
@@ -106,6 +106,7 @@ export class CommentsService {
                     }
                 },
                 replies: {
+                    where: { deleted: false },
                     include: {
                         likes: {
                             where: { userId }
@@ -125,7 +126,7 @@ export class CommentsService {
                 _count: {
                     select: {
                         likes: true,
-                        replies: true
+                        replies: { where: { deleted: false } }
                     }
                 }
             },
@@ -155,6 +156,7 @@ export class CommentsService {
                     }
                 },
                 replies: {
+                    where: { deleted: false },
                     include: {
                         likes: {
                             where: { userId }
@@ -174,7 +176,7 @@ export class CommentsService {
                 _count: {
                     select: {
                         likes: true,
-                        replies: true
+                        replies: { where: { deleted: false } }
                     }
                 },
                 likes: {
@@ -207,6 +209,7 @@ export class CommentsService {
                     }
                 },
                 replies: {
+                    where: { deleted: false },
                     include: {
                         likes: {
                             where: { userId }
@@ -226,7 +229,7 @@ export class CommentsService {
                 _count: {
                     select: {
                         likes: true,
-                        replies: true
+                        replies: { where: { deleted: false } }
                     }
                 },
                 likes: {
