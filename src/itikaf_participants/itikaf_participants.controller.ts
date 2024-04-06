@@ -31,6 +31,7 @@ export class ItikafParticipantsController {
     }
   }
 
+  // TODO REMOVE THIS
   @Get('me/:id')
   findMySchedule(@Req() req, @Param('id') scheduleId: string) {
     try {
