@@ -100,9 +100,10 @@ model Like {
 model Article {
   id          String        @id @default(uuid())
   title       String        @db.VarChar(100)
-  content     String        @db.Text
+  content     String?       @db.Text
   author      User          @relation(fields: [authorId], references: [id])
   authorId    String
+  youtubeId   String?       @db.VarChar(100)
   photos      Photo[]
   status      ArticleStatus @default(DRAFT)
   deleted     Boolean       @default(false)

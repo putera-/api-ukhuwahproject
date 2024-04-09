@@ -68,7 +68,7 @@ export class ArticlesService {
         }
     }
 
-    async findAllPublished(search = '', page = '1', limit = '10'): Promise<Pagination<Article[]>> {
+    async findAllPublished(search = '', page = '1', limit = '10', userId: string = ''): Promise<Pagination<Article[]>> {
         const skip = (Number(page) - 1) * Number(limit);
 
         const [total, data] = await Promise.all([
@@ -93,6 +93,9 @@ export class ArticlesService {
                     publishedAt: 'desc'
                 },
                 include: {
+                    likes: {
+                        where: { userId }
+                    },
                     author: {
                         select: {
                             id: true,
@@ -102,43 +105,43 @@ export class ArticlesService {
                         }
                     },
                     photos: true,
-                    comments: {
-                        where: { deleted: false },
-                        orderBy: { createdAt: 'desc' },
-                        include: {
-                            commenter: {
-                                select: {
-                                    id: true,
-                                    name: true,
-                                    avatar: true,
-                                    avatar_md: true
-                                }
-                            },
-                            replies: {
-                                where: { deleted: false },
-                                include: {
-                                    commenter: {
-                                        select: {
-                                            id: true,
-                                            name: true,
-                                            avatar: true,
-                                            avatar_md: true
-                                        }
-                                    },
-                                    _count: { select: { likes: true } }
-                                },
-                                orderBy: { createdAt: 'desc' },
-                                take: 2
-                            },
-                            _count: {
-                                select: {
-                                    likes: true,
-                                    replies: { where: { deleted: false } }
-                                }
-                            }
-                        },
-                        take: 3
-                    },
+                    // comments: {
+                    //     where: { deleted: false },
+                    //     orderBy: { createdAt: 'desc' },
+                    //     include: {
+                    //         commenter: {
+                    //             select: {
+                    //                 id: true,
+                    //                 name: true,
+                    //                 avatar: true,
+                    //                 avatar_md: true
+                    //             }
+                    //         },
+                    //         replies: {
+                    //             where: { deleted: false },
+                    //             include: {
+                    //                 commenter: {
+                    //                     select: {
+                    //                         id: true,
+                    //                         name: true,
+                    //                         avatar: true,
+                    //                         avatar_md: true
+                    //                     }
+                    //                 },
+                    //                 _count: { select: { likes: true } }
+                    //             },
+                    //             orderBy: { createdAt: 'desc' },
+                    //             take: 2
+                    //         },
+                    //         _count: {
+                    //             select: {
+                    //                 likes: true,
+                    //                 replies: { where: { deleted: false } }
+                    //             }
+                    //         }
+                    //     },
+                    //     take: 3
+                    // },
                     _count: {
                         select: {
                             likes: true,
@@ -176,7 +179,7 @@ export class ArticlesService {
         });
     }
 
-    async findOne(id: string): Promise<Article> {
+    async findOne(id: string, userId: string = ''): Promise<Article> {
         const article = await this.prisma.article.findUnique({
             where: {
                 id,
@@ -185,6 +188,9 @@ export class ArticlesService {
                 publishedAt: { lt: new Date() }
             },
             include: {
+                likes: {
+                    where: { userId }
+                },
                 author: {
                     select: {
                         id: true,
@@ -194,32 +200,55 @@ export class ArticlesService {
                     }
                 },
                 photos: true,
-                _count: {
-                    select: {
-                        likes: true,
-                        comments: true
-                    }
-                },
                 comments: {
+                    where: { deleted: false },
+                    orderBy: { createdAt: 'desc' },
                     include: {
-                        commenter: true,
-                        replies: {
-                            include: {
-                                commenter: true,
-                                _count: {
-                                    select: { likes: true }
-                                }
+                        likes: {
+                            where: { userId }
+                        },
+                        commenter: {
+                            select: {
+                                id: true,
+                                name: true,
+                                avatar: true,
+                                avatar_md: true
                             }
+                        },
+                        replies: {
+                            where: { deleted: false },
+                            include: {
+                                likes: {
+                                    where: { userId }
+                                },
+                                commenter: {
+                                    select: {
+                                        id: true,
+                                        name: true,
+                                        avatar: true,
+                                        avatar_md: true
+                                    }
+                                },
+                                _count: { select: { likes: true } }
+                            },
+                            orderBy: { createdAt: 'desc' },
+                            take: 1
                         },
                         _count: {
                             select: {
-                                replies: true,
-                                likes: true
+                                likes: true,
+                                replies: { where: { deleted: false } }
                             }
                         }
+                    },
+                    take: 2
+                },
+                _count: {
+                    select: {
+                        likes: true,
+                        comments: { where: { deleted: false } }
                     }
                 }
-
             }
         });
         if (!article) throw new NotFoundException();

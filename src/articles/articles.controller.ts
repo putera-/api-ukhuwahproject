@@ -30,9 +30,11 @@ export class ArticlesController {
 
     @Public()
     @Get('published')
-    async findAllPublish(@Query('search') search: string, @Query('page') page: string, @Query('limit') limit: string): Promise<Pagination<Article[]>> {
+    async findAllPublish(@Req() req, @Query('search') search: string, @Query('page') page: string, @Query('limit') limit: string): Promise<Pagination<Article[]>> {
         try {
-            return this.articleService.findAllPublished(search, page, limit);
+            const userId: string | undefined = req.user ? req.user.id : undefined;
+
+            return this.articleService.findAllPublished(search, page, limit, userId);
         } catch (error) {
             throw error;
         }
@@ -77,9 +79,11 @@ export class ArticlesController {
 
     @Public()
     @Get(':id')
-    findOne(@Param('id') id: string) {
+    findOne(@Param('id') id: string, @Req() req) {
         try {
-            return this.articleService.findOne(id);
+            const userId: string | undefined = req.user ? req.user.id : undefined;
+
+            return this.articleService.findOne(id, userId);
         } catch (error) {
             throw error;
         }
