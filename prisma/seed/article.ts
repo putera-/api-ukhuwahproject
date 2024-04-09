@@ -53,24 +53,29 @@ export async function articleSeed(prisma: PrismaClient) {
             }
 
             if ((Math.floor(Math.random() * 10)) % 2 == 0) {
+                let index = 0;
                 data.photos = {
                     createMany: {
                         data: [
                             {
                                 path: faker.image.urlPicsumPhotos({ width: 1920, height: 1080 }),
-                                path_md: faker.image.urlPicsumPhotos({ width: 1280, height: 720 })
+                                path_md: faker.image.urlPicsumPhotos({ width: 1280, height: 720 }),
+                                index: index++
                             },
                             {
                                 path: faker.image.urlPicsumPhotos({ width: 1920, height: 1080 }),
-                                path_md: faker.image.urlPicsumPhotos({ width: 1280, height: 720 })
+                                path_md: faker.image.urlPicsumPhotos({ width: 1280, height: 720 }),
+                                index: index++
                             },
                             {
                                 path: faker.image.urlPicsumPhotos({ width: 1920, height: 1080 }),
-                                path_md: faker.image.urlPicsumPhotos({ width: 1280, height: 720 })
+                                path_md: faker.image.urlPicsumPhotos({ width: 1280, height: 720 }),
+                                index: index++
                             },
                             {
                                 path: faker.image.urlPicsumPhotos({ width: 1920, height: 1080 }),
-                                path_md: faker.image.urlPicsumPhotos({ width: 1280, height: 720 })
+                                path_md: faker.image.urlPicsumPhotos({ width: 1280, height: 720 }),
+                                index: index++
                             },
                         ]
                     }

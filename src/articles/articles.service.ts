@@ -47,11 +47,26 @@ export class ArticlesService {
                     }
                 },
                 orderBy: {
-                    publishedAt: 'desc'
+                    createdAt: 'desc'
                 },
                 include: {
-                    author: true,
-                    photos: true
+                    author: {
+                        select: {
+                            id: true,
+                            name: true,
+                            avatar: true,
+                            avatar_md: true
+                        }
+                    },
+                    photos: {
+                        orderBy: { index: 'asc' }
+                    },
+                    _count: {
+                        select: {
+                            likes: true,
+                            comments: { where: { deleted: false } }
+                        }
+                    }
                 },
                 skip,
                 take: Number(limit)
@@ -104,7 +119,9 @@ export class ArticlesService {
                             avatar_md: true
                         }
                     },
-                    photos: true,
+                    photos: {
+                        orderBy: { index: 'asc' }
+                    },
                     // comments: {
                     //     where: { deleted: false },
                     //     orderBy: { createdAt: 'desc' },
@@ -174,12 +191,92 @@ export class ArticlesService {
             },
             include: {
                 author: true,
-                photos: true
+                photos: {
+                    orderBy: { index: 'asc' }
+                }
             }
         });
     }
 
     async findOne(id: string, userId: string = ''): Promise<Article> {
+        const article = await this.prisma.article.findUnique({
+            where: {
+                id,
+                deleted: false,
+                publishedAt: { lt: new Date() }
+            },
+            include: {
+                likes: {
+                    where: { userId }
+                },
+                author: {
+                    select: {
+                        id: true,
+                        name: true,
+                        avatar: true,
+                        avatar_md: true
+                    }
+                },
+                photos: {
+                    orderBy: { index: 'asc' }
+                },
+                // comments: {
+                //     where: { deleted: false },
+                //     orderBy: { createdAt: 'desc' },
+                //     include: {
+                //         likes: {
+                //             where: { userId }
+                //         },
+                //         commenter: {
+                //             select: {
+                //                 id: true,
+                //                 name: true,
+                //                 avatar: true,
+                //                 avatar_md: true
+                //             }
+                //         },
+                //         replies: {
+                //             where: { deleted: false },
+                //             include: {
+                //                 likes: {
+                //                     where: { userId }
+                //                 },
+                //                 commenter: {
+                //                     select: {
+                //                         id: true,
+                //                         name: true,
+                //                         avatar: true,
+                //                         avatar_md: true
+                //                     }
+                //                 },
+                //                 _count: { select: { likes: true } }
+                //             },
+                //             orderBy: { createdAt: 'desc' },
+                //             take: 1
+                //         },
+                //         _count: {
+                //             select: {
+                //                 likes: true,
+                //                 replies: { where: { deleted: false } }
+                //             }
+                //         }
+                //     },
+                //     take: 2
+                // },
+                _count: {
+                    select: {
+                        likes: true,
+                        comments: { where: { deleted: false } }
+                    }
+                }
+            }
+        });
+        if (!article) throw new NotFoundException();
+
+        return article;
+    }
+
+    async findPublished(id: string, userId: string = ''): Promise<Article> {
         const article = await this.prisma.article.findUnique({
             where: {
                 id,
@@ -199,7 +296,9 @@ export class ArticlesService {
                         avatar_md: true
                     }
                 },
-                photos: true,
+                photos: {
+                    orderBy: { index: 'asc' }
+                },
                 comments: {
                     where: { deleted: false },
                     orderBy: { createdAt: 'desc' },
@@ -265,7 +364,9 @@ export class ArticlesService {
             },
             include: {
                 author: true,
-                photos: true
+                photos: {
+                    orderBy: { index: 'asc' }
+                },
             }
         });
         if (!article) throw new NotFoundException();
@@ -289,7 +390,7 @@ export class ArticlesService {
         }));
 
         const keepedIds = keptPhotos.map(p => p.id);
-        const keepedIndexes = keptPhotos.map(p => p.index);
+        const keepedIndexes = keptPhotos.map(p => parseInt(p.index));
 
         // get taken index
         const indexes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -322,7 +423,9 @@ export class ArticlesService {
             },
             include: {
                 author: true,
-                photos: true
+                photos: {
+                    orderBy: { index: 'asc' }
+                }
             }
         });
 

@@ -77,13 +77,25 @@ export class ArticlesController {
         }
     }
 
-    @Public()
+    @Roles(Role.Admin, Role.Staff)
     @Get(':id')
     findOne(@Param('id') id: string, @Req() req) {
         try {
             const userId: string | undefined = req.user ? req.user.id : undefined;
 
             return this.articleService.findOne(id, userId);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    @Public()
+    @Get('published/:id')
+    findPublished(@Param('id') id: string, @Req() req) {
+        try {
+            const userId: string | undefined = req.user ? req.user.id : undefined;
+
+            return this.articleService.findPublished(id, userId);
         } catch (error) {
             throw error;
         }

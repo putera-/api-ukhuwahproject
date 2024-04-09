@@ -6,8 +6,11 @@ export class CreateArticleDto {
     title: string;
 
     @IsString()
-    @MinLength(1)
     content: string;
+
+    @IsString()
+    @IsOptional()
+    youtubeId: string;
 
     @IsString()
     @IsOptional()

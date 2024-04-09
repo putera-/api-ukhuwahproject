@@ -9,5 +9,6 @@ interface updatePhotoDto {
 
 export class UpdateArticleDto extends PartialType(CreateArticleDto) {
     @IsArray()
+    @IsOptional()
     photos: updatePhotoDto[]
 }
