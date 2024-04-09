@@ -437,6 +437,20 @@ export class ArticlesService {
         return updatedArticle;
     }
 
+    async publishNow(id: string): Promise<void> {
+        const article = await this.prisma.article.findUnique({ where: { id } });
+        if (!article) throw new NotFoundException();
+
+        await this.prisma.article.update({
+            where: { id },
+            data: {
+                publishedAt: new Date(),
+                status: 'PUBLISH'
+            }
+        });
+        return;
+    }
+
     async remove(id: string): Promise<void> {
         const article = await this.prisma.article.findUnique({ where: { id } });
         if (!article) throw new NotFoundException();

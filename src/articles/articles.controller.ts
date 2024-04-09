@@ -133,6 +133,17 @@ export class ArticlesController {
     }
 
     @Roles(Role.Admin, Role.Staff)
+    @Patch('publish/:id')
+    @HttpCode(204)
+    async publish(@Param('id') id: string): Promise<void> {
+        try {
+            return this.articleService.publishNow(id);
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    @Roles(Role.Admin, Role.Staff)
     @Delete(':id')
     @HttpCode(204)
     remove(@Param('id') id: string) {
