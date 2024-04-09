@@ -203,7 +203,6 @@ export class ArticlesService {
             where: {
                 id,
                 deleted: false,
-                publishedAt: { lt: new Date() }
             },
             include: {
                 likes: {
