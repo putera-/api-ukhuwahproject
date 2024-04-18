@@ -25,15 +25,15 @@ export class UserStaffController {
   }
 
   // get staff by admin
-  @Roles(Role.Admin)
-  @Get()
-  findAll() {
-    try {
-      return this.usersService.findAll('STAFF');
-    } catch (error) {
-      throw error;
-    }
-  }
+  // @Roles(Role.Admin)
+  // @Get()
+  // findAll() {
+  //   try {
+  //     return this.usersService.findAll(['STAFF', 'MEMBER']);
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 
   @Roles(Role.Admin)
   @Get(':id')

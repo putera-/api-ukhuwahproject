@@ -29,7 +29,7 @@ export class UserAdminController {
   @Get()
   findAll() {
     try {
-      return this.usersService.findAll('ADMIN');
+      return this.usersService.findAll(['ADMIN', 'STAFF', 'MEMBER']);
     } catch (error) {
       throw error;
     }

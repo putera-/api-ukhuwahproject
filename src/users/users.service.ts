@@ -14,7 +14,8 @@ const select = {
   avatar: true,
   avatar_md: true,
   createdAt: true,
-  updatedAt: true
+  updatedAt: true,
+  active: true
 }
 
 @Injectable()
@@ -34,9 +35,13 @@ export class UsersService {
     return user;
   }
 
-  async findAll(role: UserRole): Promise<User[]> {
+  async findAll(roles: UserRole[]): Promise<User[]> {
     return this.prisma.user.findMany({
-      where: { active: true },
+      where: {
+        role: {
+          in: roles
+        },
+      },
       select: { ...select }
     });
   }
@@ -143,5 +148,51 @@ export class UsersService {
       where: { id: user.id },
       data: { password: data.password },
     });
+  }
+
+  async activate(id: string): Promise<void> {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
+    if (!user) throw new NotFoundException();
+
+    await this.prisma.user.update({
+      where: { id },
+      data: {
+        active: true
+      }
+    });
+
+    return;
+  }
+
+  async deactivate(id: string): Promise<void> {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
+    if (!user) throw new NotFoundException();
+
+    await this.prisma.user.update({
+      where: { id },
+      data: {
+        active: false
+      }
+    });
+
+    return;
+  }
+
+  async setRole(id: string, role: UserRole): Promise<void> {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
+    if (!user) throw new NotFoundException();
+
+    await this.prisma.user.update({
+      where: { id },
+      data: { role }
+    });
+
+    return;
   }
 }

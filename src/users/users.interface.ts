@@ -1,5 +1,6 @@
 import { Auth } from "src/auth/auth.interface"
 import { Article } from "src/articles/articles.interface"
+import { UserRole } from "@prisma/client"
 
 export interface User {
     id: string
@@ -9,7 +10,7 @@ export interface User {
     password?: string
     auth?: Auth[]
     articles?: Article[]
-    role?: 'SUPERUSER' | 'ADMIN' | 'STAFF' | 'MEMBER'
+    role?: UserRole
     avatar?: string
     avatar_md?: string
     active?: boolean

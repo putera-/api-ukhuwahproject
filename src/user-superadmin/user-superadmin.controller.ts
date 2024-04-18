@@ -49,7 +49,7 @@ export class UserSuperadminController {
   @Get()
   findAll() {
     try {
-      return this.usersService.findAll('SUPERUSER');
+      return this.usersService.findAll(['SUPERUSER', 'ADMIN', 'STAFF', 'MEMBER']);
     } catch (error) {
       throw error;
     }

@@ -28,7 +28,7 @@ export class ItikafSchedulesController {
   @Roles(Role.Admin, Role.Staff)
   @Post()
   @UseInterceptors(FileInterceptor('photo'))
-  async create(@Body(new ValidationPipe) createItikafScheduleDto: CreateItikafScheduleDto, @UploadedFile() file: Express.Multer.File) {
+  async create(@Body(new ValidationPipe) createItikafScheduleDto: CreateItikafScheduleDto, @UploadedFile() file: Express.Multer.File): Promise<ItikafSchedule> {
     const ext = file ? file.originalname.split('.').pop() : '';
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
 
