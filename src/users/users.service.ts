@@ -42,6 +42,7 @@ export class UsersService {
           in: roles
         },
       },
+      orderBy: { name: 'asc' },
       select: { ...select }
     });
   }
