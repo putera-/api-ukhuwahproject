@@ -103,15 +103,17 @@ export class PaymentsController {
         try {
             if (!data.order_id) return;
             const status = data.transaction_status;
-            const transaction_time = data.transaction_time;
 
             const transaction: Transaction = await this.paymentsService.getCampaignTransaction(data.order_id);
             if (!transaction) throw new NotFoundException();
 
             // update transaction & donation status
-            const dataUpdate = {
-                status,
-                paidAt: dayjs(transaction_time).toISOString()
+            const dataUpdate: Record<string, any> = {
+                status
+            }
+
+            if (data.settlement_time) {
+                dataUpdate.paidAt = new Date()
             }
 
             await this.paymentsService.updateCampaignTransaction(dataUpdate, transaction.id);
