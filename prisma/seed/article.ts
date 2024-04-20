@@ -26,7 +26,7 @@ export async function articleSeed(prisma: PrismaClient) {
         }
     });
 
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 12; i++) {
         const admin: Prisma.UserCreateInput = {
             email: `admin${i}@gmail.com`,
             name: faker.person.fullName(),
@@ -42,7 +42,7 @@ export async function articleSeed(prisma: PrismaClient) {
         });
 
         // create article
-        for (let h = 0; h < Math.floor(Math.random() * 20); h++) {
+        for (let h = 0; h < Math.floor(Math.random() * 12); h++) {
             const data: Prisma.ArticleCreateInput = {
                 title: faker.lorem.words({ max: 10, min: 4 }),
                 status: 'PUBLISH',

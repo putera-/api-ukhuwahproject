@@ -5,6 +5,7 @@ import { articleSeed } from './seed/article';
 import { itikafSeed } from './seed/itikaf';
 import { slideSeed } from './seed/slide';
 import { asaatidzSeed } from './seed/asaatidz';
+import { campaignSeed } from './seed/campaign';
 const prisma = new PrismaClient();
 
 async function main() {
@@ -15,6 +16,7 @@ async function main() {
     await slideSeed(prisma);
     await asaatidzSeed(prisma);
     await itikafSeed(prisma);
+    await campaignSeed(prisma)
 }
 
 main()

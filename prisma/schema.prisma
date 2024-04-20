@@ -59,6 +59,8 @@ model User {
   Likes             Like[]
   Comments          Comment[]
   CommentReplies    CommentReply[]
+  donations         Donation[]
+  Campaign          Campaign[]
 }
 
 enum UserRole {
@@ -94,6 +96,8 @@ model Like {
   commentReplyId   String?
   Itikaf           Itikaf?         @relation(fields: [itikafId], references: [id])
   itikafId         String?
+  Campaign         Campaign?       @relation(fields: [campaignId], references: [id])
+  campaignId       String?
   createdAt        DateTime        @default(now())
 }
 
@@ -137,6 +141,8 @@ model Comment {
   itikafId         String?
   ItikafSchedule   ItikafSchedule? @relation(fields: [itikafScheduleId], references: [id])
   itikafScheduleId String?
+  Campaign         Campaign?       @relation(fields: [campaignId], references: [id])
+  campaignId       String?
 }
 
 model CommentReply {
@@ -153,12 +159,14 @@ model CommentReply {
 }
 
 model Photo {
-  id        String   @id @default(uuid())
-  path      String   @db.VarChar(255)
-  path_md   String   @db.VarChar(255)
-  index     Int      @default(0) @db.Int
-  article   Article? @relation(fields: [articleId], references: [id], onDelete: Cascade)
-  articleId String?
+  id         String    @id @default(uuid())
+  path       String    @db.VarChar(255)
+  path_md    String    @db.VarChar(255)
+  index      Int       @default(0) @db.Int
+  article    Article?  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  articleId  String?
+  Campaign   Campaign? @relation(fields: [campaignId], references: [id])
+  campaignId String?
 }
 
 model Itikaf {
@@ -254,4 +262,61 @@ model Asaatidz {
   itikaf_schedule_imam_tarawih      ItikafSchedule[] @relation("imam_tarawih")
   itikaf_schedule_imam_qiyamul_lail ItikafSchedule[] @relation("imam_qiyamul_lail")
   itikaf_schedule_ustadz_kajian     ItikafSchedule[] @relation("ustadz_kajian")
+}
+
+model Campaign {
+  id               String     @id @default(uuid())
+  title            String     @db.VarChar(255)
+  description      String     @db.Text
+  target_amount    Int        @db.Int
+  collected_amount Int        @default(0)
+  due_date         String     @db.VarChar(10)
+  photos           Photo[]
+  author           User       @relation(fields: [userId], references: [id])
+  userId           String
+  publishedAt      DateTime   @default(now())
+  active           Boolean    @default(false)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @default(now()) @updatedAt
+  donations        Donation[]
+  likes            Like[]
+  comments         Comment[]
+
+  @@index([title])
+}
+
+model Donation {
+  id           String       @id @default(uuid())
+  Campaign     Campaign     @relation(fields: [campaignId], references: [id])
+  campaignId   String
+  User         User         @relation(fields: [userId], references: [id])
+  userId       String
+  gross_amount Int          @db.Int
+  status       String       @default("pending")
+  paidAt       DateTime?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @default(now()) @updatedAt
+  Transaction  Transaction?
+}
+
+model Transaction {
+  id               String            @id @default(uuid())
+  Donation         Donation          @relation(fields: [donationId], references: [id])
+  donationId       String            @unique
+  gross_amount     Int               @db.Int
+  midtransToken    String            @db.VarChar(50)
+  midtransOrderId  String            @db.VarChar(50)
+  status           String            @default("pending")
+  paidAt           DateTime?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @default(now()) @updatedAt
+  MidtransCallback MidtransCallback?
+}
+
+model MidtransCallback {
+  id            String      @id @default(uuid())
+  transaction   Transaction @relation(fields: [TransactionId], references: [id])
+  TransactionId String      @unique
+  callback_data String      @db.LongText
+  createdAt     DateTime    @default(now())
 }
