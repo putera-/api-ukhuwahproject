@@ -1,51 +1,51 @@
 version: '3.8'
 # services / containers
 services:
-  # express app
-  api_ukhuwahproject:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: api_ukhuwahproject
-    image: api_ukhuwahproject:1.1.7
-    restart: always
-    ports:
-      - 5011:5011
-    environment:
-      PORT: 5011
-      JWTSECRET: UKHUWAHPROJECTINDONESIA
-      # for prisma
-      DATABASE_URL: mysql://root:my-secret-pw@ukhuwahproject_mysql:3306/ukhuwah_project
-    volumes:
-      - ukhuwahproject_api_public:/app/public
-    networks:
-      - ukhuwahproject_api_network
-    depends_on:
-      - ukhuwahproject_mysql
+    # express app
+    api_ukhuwahproject:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: api_ukhuwahproject
+        image: api_ukhuwahproject:1.1.7
+        restart: always
+        ports:
+            - 5011:5011
+        environment:
+            PORT: 5011
+            JWTSECRET: UKHUWAHPROJECTINDONESIA
+            # for prisma
+            DATABASE_URL: mysql://root:my-secret-pw@ukhuwahproject_mysql:3306/ukhuwah_project
+        volumes:
+            - ukhuwahproject_api_public:/app/public
+        networks:
+            - ukhuwahproject_api_network
+        depends_on:
+            - ukhuwahproject_mysql
 
-  # mysql database
-  ukhuwahproject_mysql:
-    container_name: ukhuwahproject_mysql
-    image: mysql:8.3.0
-    command: --default-authentication-plugin=mysql_native_password
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: my-secret-pw
-      MYSQL_DATABASE: ukhuwah_project
-    volumes:
-      - ukhuwahproject_mysql:/var/lib/mysql
-    networks:
-      - ukhuwahproject_api_network
+    # mysql database
+    ukhuwahproject_mysql:
+        container_name: ukhuwahproject_mysql
+        image: mysql:8.3.0
+        command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: my-secret-pw
+            MYSQL_DATABASE: ukhuwah_project
+        volumes:
+            - ukhuwahproject_mysql:/var/lib/mysql
+        networks:
+            - ukhuwahproject_api_network
 
 # volumes
 volumes:
-  ukhuwahproject_api_public:
-    name: ukhuwahproject_api_public
-  ukhuwahproject_mysql:
-    name: ukhuwahproject_mysql
+    ukhuwahproject_api_public:
+        name: ukhuwahproject_api_public
+    ukhuwahproject_mysql:
+        name: ukhuwahproject_mysql
 
 # networks
 networks:
-  ukhuwahproject_api_network:
-    name: ukhuwahproject_api_network
-    driver: bridge
+    ukhuwahproject_api_network:
+        name: ukhuwahproject_api_network
+        driver: bridge

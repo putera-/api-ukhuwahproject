@@ -1,51 +1,52 @@
 version: '3.8'
 # services / containers
 services:
-  # express app
-  stag_api_ukhuwahproject:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: stag_api_ukhuwahproject
-    image: stag_api_ukhuwahproject:1.0.2
-    restart: always
-    ports:
-      - 5015:5011
-    environment:
-      PORT: 5011
-      JWTSECRET: UKHUWAHPROJECTINDONESIA
-      # for prisma
-      DATABASE_URL: mysql://root:my-secret-pw@stag-ukhuwahproject_mysql:3306/ukhuwah_project
-    volumes:
-      - stag-ukhuwahproject_api_public:/app/public
-    networks:
-      - stag-ukhuwahproject_api_network
-    depends_on:
-      - stag-ukhuwahproject_mysql
+    # express app
+    stag_api_ukhuwahproject:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: stag_api_ukhuwahproject
+        image: stag_api_ukhuwahproject:1.1.0
+        restart: always
+        ports:
+            - 5015:5011
+        environment:
+            PRODUCTION: false
+            PORT: 5011
+            JWTSECRET: UKHUWAHPROJECTINDONESIA
+            # for prisma
+            DATABASE_URL: mysql://root:my-secret-pw@stag-ukhuwahproject_mysql:3306/ukhuwah_project
+        volumes:
+            - stag-ukhuwahproject_api_public:/app/public
+        networks:
+            - stag-ukhuwahproject_api_network
+        depends_on:
+            - stag-ukhuwahproject_mysql
 
-  # mysql database
-  stag-ukhuwahproject_mysql:
-    container_name: stag-ukhuwahproject_mysql
-    image: mysql:8.3.0
-    command: --default-authentication-plugin=mysql_native_password
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: my-secret-pw
-      MYSQL_DATABASE: ukhuwah_project
-    volumes:
-      - stag-ukhuwahproject_mysql:/var/lib/mysql
-    networks:
-      - stag-ukhuwahproject_api_network
+    # mysql database
+    stag-ukhuwahproject_mysql:
+        container_name: stag-ukhuwahproject_mysql
+        image: mysql:8.3.0
+        command: --default-authentication-plugin=mysql_native_password
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: my-secret-pw
+            MYSQL_DATABASE: ukhuwah_project
+        volumes:
+            - stag-ukhuwahproject_mysql:/var/lib/mysql
+        networks:
+            - stag-ukhuwahproject_api_network
 
 # volumes
 volumes:
-  stag-ukhuwahproject_api_public:
-    name: stag-ukhuwahproject_api_public
-  stag-ukhuwahproject_mysql:
-    name: stag-ukhuwahproject_mysql
+    stag-ukhuwahproject_api_public:
+        name: stag-ukhuwahproject_api_public
+    stag-ukhuwahproject_mysql:
+        name: stag-ukhuwahproject_mysql
 
 # networks
 networks:
-  stag-ukhuwahproject_api_network:
-    name: stag-ukhuwahproject_api_network
-    driver: bridge
+    stag-ukhuwahproject_api_network:
+        name: stag-ukhuwahproject_api_network
+        driver: bridge
