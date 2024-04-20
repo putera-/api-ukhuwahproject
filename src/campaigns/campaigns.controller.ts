@@ -56,6 +56,15 @@ export class CampaignsController {
         }
     }
 
+    @Get('transaction/:id')
+    findByTransaction(@Param('id') id: string, @Req() req) {
+        try {
+            return this.campaignsService.findByTransaction(id);
+        } catch (error) {
+            throw error;
+        }
+    }
+
     // @Patch(':id')
     // update(@Param('id') id: string, @Body() updateCampaignDto: UpdateCampaignDto) {
     //   return this.campaignsService.update(+id, updateCampaignDto);

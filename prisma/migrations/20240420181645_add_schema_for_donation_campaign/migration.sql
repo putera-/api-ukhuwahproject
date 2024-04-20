@@ -44,8 +44,7 @@ CREATE TABLE `Transaction` (
     `id` VARCHAR(191) NOT NULL,
     `donationId` VARCHAR(191) NOT NULL,
     `gross_amount` INTEGER NOT NULL,
-    `midtransToken` VARCHAR(50) NOT NULL,
-    `midtransOrderId` VARCHAR(50) NOT NULL,
+    `midtransToken` VARCHAR(50) NULL,
     `status` VARCHAR(191) NOT NULL DEFAULT 'pending',
     `paidAt` DATETIME(3) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -58,11 +57,11 @@ CREATE TABLE `Transaction` (
 -- CreateTable
 CREATE TABLE `MidtransCallback` (
     `id` VARCHAR(191) NOT NULL,
-    `TransactionId` VARCHAR(191) NOT NULL,
+    `transactionId` VARCHAR(191) NOT NULL,
     `callback_data` LONGTEXT NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    UNIQUE INDEX `MidtransCallback_TransactionId_key`(`TransactionId`),
+    UNIQUE INDEX `MidtransCallback_transactionId_key`(`transactionId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -88,4 +87,4 @@ ALTER TABLE `Donation` ADD CONSTRAINT `Donation_userId_fkey` FOREIGN KEY (`userI
 ALTER TABLE `Transaction` ADD CONSTRAINT `Transaction_donationId_fkey` FOREIGN KEY (`donationId`) REFERENCES `Donation`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `MidtransCallback` ADD CONSTRAINT `MidtransCallback_TransactionId_fkey` FOREIGN KEY (`TransactionId`) REFERENCES `Transaction`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `MidtransCallback` ADD CONSTRAINT `MidtransCallback_transactionId_fkey` FOREIGN KEY (`transactionId`) REFERENCES `Transaction`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

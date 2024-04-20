@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCampaignDto } from './dto/create-campaign.dto';
 import { UpdateCampaignDto } from './dto/update-campaign.dto';
-import { Campaign } from './campaigns.interface';
+import { Campaign, Transaction } from './campaigns.interface';
 import { Pagination } from 'src/app.interface';
 import { PrismaService } from 'src/prisma.service';
 
@@ -172,8 +172,38 @@ export class CampaignsService {
         }
     }
 
-    findOne(id: number) {
-        return `This action returns a #${id} campaign`;
+    async findOne(id: string): Promise<Campaign> {
+        const campaign = await this.prisma.campaign.findUnique({ where: { id } });
+
+        if (!campaign) throw new NotFoundException();
+        return campaign;
+    }
+
+    async findByTransaction(transactionId: string): Promise<Transaction> {
+        return this.prisma.transaction.findUnique({
+            where: { id: transactionId },
+            include: {
+                Donation: {
+                    include: {
+                        Campaign: {
+                            include: {
+                                photos: true,
+                                donations: {
+                                    where: { status: 'settlement' },
+                                    orderBy: { paidAt: 'desc' },
+                                    take: 5,
+                                    include: {
+                                        User: {
+                                            select: { id: true, name: true }
+                                        }
+                                    }
+                                },
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
 
     async findPublished(id: string, userId: string = ''): Promise<Campaign> {
@@ -267,6 +297,22 @@ export class CampaignsService {
         }
 
         return campaign;
+    }
+
+    async calculateDonation(campaignId: string): Promise<void> {
+        const donations = await this.prisma.donation.aggregate({
+            where: { campaignId },
+            _sum: { gross_amount: true }
+        });
+
+        await this.prisma.campaign.update({
+            where: { id: campaignId },
+            data: {
+                collected_amount: donations._sum.gross_amount
+            }
+        });
+
+        return;
     }
 
     update(id: number, updateCampaignDto: UpdateCampaignDto) {

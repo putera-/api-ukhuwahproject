@@ -20,6 +20,7 @@ import { SlidesModule } from './slides/slides.module';
 import { CommentsModule } from './comments/comments.module';
 import { LikesModule } from './likes/likes.module';
 import { CampaignsModule } from './campaigns/campaigns.module';
+import { PaymentsModule } from './payments/payments.module';
 
 @Module({
     imports: [
@@ -39,6 +40,7 @@ import { CampaignsModule } from './campaigns/campaigns.module';
         CommentsModule,
         LikesModule,
         CampaignsModule,
+        PaymentsModule,
     ],
     controllers: [AppController],
     providers: [

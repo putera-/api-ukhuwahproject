@@ -304,8 +304,7 @@ model Transaction {
     Donation         Donation          @relation(fields: [donationId], references: [id])
     donationId       String            @unique
     gross_amount     Int               @db.Int
-    midtransToken    String            @db.VarChar(50)
-    midtransOrderId  String            @db.VarChar(50)
+    midtransToken    String?           @db.VarChar(50)
     status           String            @default("pending")
     paidAt           DateTime?
     createdAt        DateTime          @default(now())
@@ -315,8 +314,8 @@ model Transaction {
 
 model MidtransCallback {
     id            String      @id @default(uuid())
-    transaction   Transaction @relation(fields: [TransactionId], references: [id])
-    TransactionId String      @unique
+    Transaction   Transaction @relation(fields: [transactionId], references: [id])
+    transactionId String      @unique
     callback_data String      @db.LongText
     createdAt     DateTime    @default(now())
 }

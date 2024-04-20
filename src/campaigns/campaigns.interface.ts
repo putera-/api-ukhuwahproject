@@ -5,8 +5,8 @@ import { User } from "src/users/users.interface"
 
 export interface MidtransCallback {
     id: string
-    transaction?: Transaction
-    TransactionId: string
+    Transaction?: Transaction
+    transactionId: string
     callback_data: string
     createdAt: Date
 }
@@ -16,8 +16,7 @@ export interface Transaction {
     Donation?: Donation
     donationId: string
     gross_amount: number
-    midtransToken: string
-    midtransOrderId: string
+    midtransToken?: string
     status: string
     paidAt?: Date
     createdAt: Date
