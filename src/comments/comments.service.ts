@@ -240,6 +240,60 @@ export class CommentsService {
             take: 5
         })
     }
+
+    async loadByCampaign(campaignId: string, page: string = '1', userId: string = ''): Promise<Comment[]> {
+        const skip = (Number(page) - 1) * 5;
+
+        return this.prisma.comment.findMany({
+            where: {
+                campaignId,
+                deleted: false,
+            },
+            orderBy: {
+                createdAt: 'desc'
+            },
+            include: {
+                commenter: {
+                    select: {
+                        id: true,
+                        name: true,
+                        avatar: true,
+                        avatar_md: true
+                    }
+                },
+                replies: {
+                    where: { deleted: false },
+                    include: {
+                        likes: {
+                            where: { userId }
+                        },
+                        commenter: {
+                            select: {
+                                id: true,
+                                name: true,
+                                avatar: true,
+                                avatar_md: true
+                            }
+                        },
+                        _count: { select: { likes: true } }
+                    },
+                    take: 1
+                },
+                _count: {
+                    select: {
+                        likes: true,
+                        replies: { where: { deleted: false } }
+                    }
+                },
+                likes: {
+                    where: { userId }
+                }
+            },
+            skip,
+            take: 5
+        })
+    }
+
     async loadReply(commentId: string, page: string = '1', userId: string = ''): Promise<Comment[]> {
         const skip = (Number(page) - 1) * 5;
 

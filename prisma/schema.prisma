@@ -5,318 +5,318 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+    provider = "mysql"
+    url      = env("DATABASE_URL")
 }
 
 model Client {
-  id               String   @id @default(uuid())
-  name             String   @db.VarChar(100)
-  nick             String   @db.VarChar(20)
-  slogan           String?  @db.VarChar(255)
-  address          String?  @db.Text
-  phone            String?  @db.VarChar(20)
-  logo             String?  @db.VarChar(100)
-  logo_sm          String?  @db.VarChar(100)
-  youtube          String?  @db.VarChar(100)
-  instagram        String?  @db.VarChar(100)
-  facebook         String?  @db.VarChar(100)
-  twitter          String?  @db.VarChar(100)
-  bank_name        String?  @db.VarChar(100)
-  bank_holder_name String?  @db.VarChar(100)
-  bank_account_no  String?  @db.VarChar(30)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @default(now()) @updatedAt
+    id               String   @id @default(uuid())
+    name             String   @db.VarChar(100)
+    nick             String   @db.VarChar(20)
+    slogan           String?  @db.VarChar(255)
+    address          String?  @db.Text
+    phone            String?  @db.VarChar(20)
+    logo             String?  @db.VarChar(100)
+    logo_sm          String?  @db.VarChar(100)
+    youtube          String?  @db.VarChar(100)
+    instagram        String?  @db.VarChar(100)
+    facebook         String?  @db.VarChar(100)
+    twitter          String?  @db.VarChar(100)
+    bank_name        String?  @db.VarChar(100)
+    bank_holder_name String?  @db.VarChar(100)
+    bank_account_no  String?  @db.VarChar(30)
+    createdAt        DateTime @default(now())
+    updatedAt        DateTime @default(now()) @updatedAt
 }
 
 model Slide {
-  id        String   @id @default(uuid())
-  path      String   @db.VarChar(255)
-  createdAt DateTime @default(now())
+    id        String   @id @default(uuid())
+    path      String   @db.VarChar(255)
+    createdAt DateTime @default(now())
 }
 
 model User {
-  id                String              @id @default(uuid())
-  name              String              @db.VarChar(100)
-  email             String              @unique @db.VarChar(100)
-  phone             String              @db.VarChar(20)
-  password          String              @db.VarChar(100)
-  auth              Auth[]
-  articles          Article[]
-  role              UserRole            @default(MEMBER)
-  avatar            String?             @db.VarChar(255)
-  avatar_md         String?             @db.VarChar(255)
-  active            Boolean             @default(true)
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @default(now()) @updatedAt
-  Itikaf            Itikaf[]
-  ItikafParticipant ItikafParticipant[]
-  Vehicle           Vehicle[]
-  Likes             Like[]
-  Comments          Comment[]
-  CommentReplies    CommentReply[]
-  donations         Donation[]
-  Campaign          Campaign[]
+    id                String              @id @default(uuid())
+    name              String              @db.VarChar(100)
+    email             String              @unique @db.VarChar(100)
+    phone             String              @db.VarChar(20)
+    password          String              @db.VarChar(100)
+    auth              Auth[]
+    articles          Article[]
+    role              UserRole            @default(MEMBER)
+    avatar            String?             @db.VarChar(255)
+    avatar_md         String?             @db.VarChar(255)
+    active            Boolean             @default(true)
+    createdAt         DateTime            @default(now())
+    updatedAt         DateTime            @default(now()) @updatedAt
+    Itikaf            Itikaf[]
+    ItikafParticipant ItikafParticipant[]
+    Vehicle           Vehicle[]
+    Likes             Like[]
+    Comments          Comment[]
+    CommentReplies    CommentReply[]
+    donations         Donation[]
+    Campaign          Campaign[]
 }
 
 enum UserRole {
-  SUPERUSER
-  ADMIN
-  STAFF
-  MEMBER
+    SUPERUSER
+    ADMIN
+    STAFF
+    MEMBER
 }
 
 model Auth {
-  id        String   @id @default(uuid())
-  user      User?    @relation(fields: [userId], references: [id])
-  userId    String
-  token     String   @db.VarChar(300)
-  expiredAt DateTime @default(now())
-  path      String   @db.VarChar(255)
-  method    String   @db.VarChar(10)
-  deleted   Boolean  @default(false)
-  createdAt DateTime @default(now())
+    id        String   @id @default(uuid())
+    user      User?    @relation(fields: [userId], references: [id])
+    userId    String
+    token     String   @db.VarChar(300)
+    expiredAt DateTime @default(now())
+    path      String   @db.VarChar(255)
+    method    String   @db.VarChar(10)
+    deleted   Boolean  @default(false)
+    createdAt DateTime @default(now())
 }
 
 model Like {
-  id               String          @id @default(uuid())
-  User             User            @relation(fields: [userId], references: [id])
-  userId           String
-  Article          Article?        @relation(fields: [articleId], references: [id])
-  articleId        String?
-  Comment          Comment?        @relation(fields: [commentId], references: [id])
-  commentId        String?
-  ItikafSchedule   ItikafSchedule? @relation(fields: [itikafScheduleId], references: [id])
-  itikafScheduleId String?
-  CommentReply     CommentReply?   @relation(fields: [commentReplyId], references: [id])
-  commentReplyId   String?
-  Itikaf           Itikaf?         @relation(fields: [itikafId], references: [id])
-  itikafId         String?
-  Campaign         Campaign?       @relation(fields: [campaignId], references: [id])
-  campaignId       String?
-  createdAt        DateTime        @default(now())
+    id               String          @id @default(uuid())
+    User             User            @relation(fields: [userId], references: [id])
+    userId           String
+    Article          Article?        @relation(fields: [articleId], references: [id])
+    articleId        String?
+    Comment          Comment?        @relation(fields: [commentId], references: [id])
+    commentId        String?
+    ItikafSchedule   ItikafSchedule? @relation(fields: [itikafScheduleId], references: [id])
+    itikafScheduleId String?
+    CommentReply     CommentReply?   @relation(fields: [commentReplyId], references: [id])
+    commentReplyId   String?
+    Itikaf           Itikaf?         @relation(fields: [itikafId], references: [id])
+    itikafId         String?
+    Campaign         Campaign?       @relation(fields: [campaignId], references: [id])
+    campaignId       String?
+    createdAt        DateTime        @default(now())
 }
 
 model Article {
-  id          String        @id @default(uuid())
-  title       String        @db.VarChar(100)
-  content     String?       @db.Text
-  author      User          @relation(fields: [authorId], references: [id])
-  authorId    String
-  youtubeId   String?       @db.VarChar(100)
-  photos      Photo[]
-  status      ArticleStatus @default(DRAFT)
-  deleted     Boolean       @default(false)
-  publishedAt DateTime      @default(now())
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @default(now()) @updatedAt
-  likes       Like[]
-  comments    Comment[]
+    id          String        @id @default(uuid())
+    title       String        @db.VarChar(100)
+    content     String?       @db.Text
+    author      User          @relation(fields: [authorId], references: [id])
+    authorId    String
+    youtubeId   String?       @db.VarChar(100)
+    photos      Photo[]
+    status      ArticleStatus @default(DRAFT)
+    deleted     Boolean       @default(false)
+    publishedAt DateTime      @default(now())
+    createdAt   DateTime      @default(now())
+    updatedAt   DateTime      @default(now()) @updatedAt
+    likes       Like[]
+    comments    Comment[]
 
-  @@index([title])
+    @@index([title])
 }
 
 enum ArticleStatus {
-  DRAFT
-  PUBLISH
+    DRAFT
+    PUBLISH
 }
 
 model Comment {
-  id               String          @id @default(uuid())
-  commenter        User            @relation(fields: [userId], references: [id])
-  userId           String
-  comment          String          @db.Text
-  deleted          Boolean         @default(false)
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @default(now()) @updatedAt
-  likes            Like[]
-  replies          CommentReply[]
-  Article          Article?        @relation(fields: [articleId], references: [id])
-  articleId        String?
-  Itikaf           Itikaf?         @relation(fields: [itikafId], references: [id])
-  itikafId         String?
-  ItikafSchedule   ItikafSchedule? @relation(fields: [itikafScheduleId], references: [id])
-  itikafScheduleId String?
-  Campaign         Campaign?       @relation(fields: [campaignId], references: [id])
-  campaignId       String?
+    id               String          @id @default(uuid())
+    commenter        User            @relation(fields: [userId], references: [id])
+    userId           String
+    comment          String          @db.Text
+    deleted          Boolean         @default(false)
+    createdAt        DateTime        @default(now())
+    updatedAt        DateTime        @default(now()) @updatedAt
+    likes            Like[]
+    replies          CommentReply[]
+    Article          Article?        @relation(fields: [articleId], references: [id])
+    articleId        String?
+    Itikaf           Itikaf?         @relation(fields: [itikafId], references: [id])
+    itikafId         String?
+    ItikafSchedule   ItikafSchedule? @relation(fields: [itikafScheduleId], references: [id])
+    itikafScheduleId String?
+    Campaign         Campaign?       @relation(fields: [campaignId], references: [id])
+    campaignId       String?
 }
 
 model CommentReply {
-  id        String   @id @default(uuid())
-  commenter User     @relation(fields: [userId], references: [id])
-  userId    String
-  comment   String   @db.Text
-  deleted   Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-  likes     Like[]
-  Comment   Comment  @relation(fields: [commentId], references: [id])
-  commentId String
+    id        String   @id @default(uuid())
+    commenter User     @relation(fields: [userId], references: [id])
+    userId    String
+    comment   String   @db.Text
+    deleted   Boolean  @default(false)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now()) @updatedAt
+    likes     Like[]
+    Comment   Comment  @relation(fields: [commentId], references: [id])
+    commentId String
 }
 
 model Photo {
-  id         String    @id @default(uuid())
-  path       String    @db.VarChar(255)
-  path_md    String    @db.VarChar(255)
-  index      Int       @default(0) @db.Int
-  article    Article?  @relation(fields: [articleId], references: [id], onDelete: Cascade)
-  articleId  String?
-  Campaign   Campaign? @relation(fields: [campaignId], references: [id])
-  campaignId String?
+    id         String    @id @default(uuid())
+    path       String    @db.VarChar(255)
+    path_md    String    @db.VarChar(255)
+    index      Int       @default(0) @db.Int
+    article    Article?  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+    articleId  String?
+    Campaign   Campaign? @relation(fields: [campaignId], references: [id])
+    campaignId String?
 }
 
 model Itikaf {
-  id                   String           @id @default(uuid())
-  year                 String           @db.VarChar(4)
-  hijri_year           String           @unique() @db.VarChar(4)
-  description          String           @db.Text
-  photo                String?          @db.VarChar(255)
-  photo_sm             String?          @db.VarChar(255)
-  masjid               String?          @db.VarChar(100)
-  address              String?          @db.Text
-  contact_person_name  String?          @db.VarChar(100)
-  contact_person_phone String?          @db.VarChar(20)
-  createdBy            User             @relation(fields: [userId], references: [id])
-  userId               String
-  active               Boolean          @default(false)
-  createdAt            DateTime         @default(now())
-  updatedAt            DateTime         @default(now()) @updatedAt
-  schedules            ItikafSchedule[]
-  likes                Like[]
-  comments             Comment[]
+    id                   String           @id @default(uuid())
+    year                 String           @db.VarChar(4)
+    hijri_year           String           @unique() @db.VarChar(4)
+    description          String           @db.Text
+    photo                String?          @db.VarChar(255)
+    photo_sm             String?          @db.VarChar(255)
+    masjid               String?          @db.VarChar(100)
+    address              String?          @db.Text
+    contact_person_name  String?          @db.VarChar(100)
+    contact_person_phone String?          @db.VarChar(20)
+    createdBy            User             @relation(fields: [userId], references: [id])
+    userId               String
+    active               Boolean          @default(false)
+    createdAt            DateTime         @default(now())
+    updatedAt            DateTime         @default(now()) @updatedAt
+    schedules            ItikafSchedule[]
+    likes                Like[]
+    comments             Comment[]
 }
 
 model ItikafSchedule {
-  id                   String              @id @default(uuid())
-  itikaf               Itikaf              @relation(fields: [itikafId], references: [id])
-  itikafId             String
-  date                 String              @db.VarChar(10)
-  day_index            Int                 @db.TinyInt
-  description          String              @db.Text
-  photo                String?             @db.VarChar(255)
-  photo_sm             String?             @db.VarChar(255)
-  deleted              Boolean             @default(false)
-  participants         ItikafParticipant[]
-  imam_tarawih         Asaatidz?           @relation(name: "imam_tarawih", fields: [imam_tarawih_id], references: [id])
-  imam_tarawih_id      String?
-  imam_qiyamul_lail    Asaatidz?           @relation(name: "imam_qiyamul_lail", fields: [imam_qiyamul_lail_id], references: [id])
-  imam_qiyamul_lail_id String?
-  ustadz_kajian        Asaatidz?           @relation(name: "ustadz_kajian", fields: [ustadz_kajian_id], references: [id])
-  ustadz_kajian_id     String?
-  createdAt            DateTime            @default(now())
-  updatedAt            DateTime            @default(now()) @updatedAt
-  likes                Like[]
-  comments             Comment[]
+    id                   String              @id @default(uuid())
+    itikaf               Itikaf              @relation(fields: [itikafId], references: [id])
+    itikafId             String
+    date                 String              @db.VarChar(10)
+    day_index            Int                 @db.TinyInt
+    description          String              @db.Text
+    photo                String?             @db.VarChar(255)
+    photo_sm             String?             @db.VarChar(255)
+    deleted              Boolean             @default(false)
+    participants         ItikafParticipant[]
+    imam_tarawih         Asaatidz?           @relation(name: "imam_tarawih", fields: [imam_tarawih_id], references: [id])
+    imam_tarawih_id      String?
+    imam_qiyamul_lail    Asaatidz?           @relation(name: "imam_qiyamul_lail", fields: [imam_qiyamul_lail_id], references: [id])
+    imam_qiyamul_lail_id String?
+    ustadz_kajian        Asaatidz?           @relation(name: "ustadz_kajian", fields: [ustadz_kajian_id], references: [id])
+    ustadz_kajian_id     String?
+    createdAt            DateTime            @default(now())
+    updatedAt            DateTime            @default(now()) @updatedAt
+    likes                Like[]
+    comments             Comment[]
 }
 
 // TODO relation with asatidz, imama magribh, imam isya, tausiyah, imam qiyamul lail
 
 model ItikafParticipant {
-  id                   String         @id @default(uuid())
-  user                 User           @relation(fields: [userId], references: [id])
-  userId               String
-  schedule             ItikafSchedule @relation(fields: [scheduleId], references: [id])
-  scheduleId           String
-  total_member         Int            @db.TinyInt
-  man                  Int            @db.TinyInt
-  woman                Int            @db.TinyInt
-  vehicle              Vehicle?       @relation(fields: [vehicleId], references: [id])
-  vehicleId            String?
-  participate          Boolean        @default(true)
-  unparticipate_reason String?        @db.Text
-  coupon_taken         Boolean        @default(false)
-  attendance_check     Boolean        @default(false)
-  createdAt            DateTime       @default(now())
-  updatedAt            DateTime       @default(now()) @updatedAt
+    id                   String         @id @default(uuid())
+    user                 User           @relation(fields: [userId], references: [id])
+    userId               String
+    schedule             ItikafSchedule @relation(fields: [scheduleId], references: [id])
+    scheduleId           String
+    total_member         Int            @db.TinyInt
+    man                  Int            @db.TinyInt
+    woman                Int            @db.TinyInt
+    vehicle              Vehicle?       @relation(fields: [vehicleId], references: [id])
+    vehicleId            String?
+    participate          Boolean        @default(true)
+    unparticipate_reason String?        @db.Text
+    coupon_taken         Boolean        @default(false)
+    attendance_check     Boolean        @default(false)
+    createdAt            DateTime       @default(now())
+    updatedAt            DateTime       @default(now()) @updatedAt
 }
 
 model Vehicle {
-  id                String              @id @default(uuid())
-  user              User                @relation(fields: [userId], references: [id])
-  userId            String
-  vehicle_type      VehicleType?
-  vehicle_no        String?
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @default(now()) @updatedAt
-  ItikafParticipant ItikafParticipant[]
+    id                String              @id @default(uuid())
+    user              User                @relation(fields: [userId], references: [id])
+    userId            String
+    vehicle_type      VehicleType?
+    vehicle_no        String?
+    createdAt         DateTime            @default(now())
+    updatedAt         DateTime            @default(now()) @updatedAt
+    ItikafParticipant ItikafParticipant[]
 }
 
 enum VehicleType {
-  Motor
-  Mobil
+    Motor
+    Mobil
 }
 
 model Asaatidz {
-  id                                String           @id @default(uuid())
-  name                              String           @db.VarChar(100)
-  profile                           String           @db.Text
-  avatar                            String?          @db.VarChar(255)
-  avatar_md                         String?          @db.VarChar(255)
-  deleted                           Boolean          @default(false)
-  createdAt                         DateTime         @default(now())
-  updatedAt                         DateTime         @default(now()) @updatedAt
-  itikaf_schedule_imam_tarawih      ItikafSchedule[] @relation("imam_tarawih")
-  itikaf_schedule_imam_qiyamul_lail ItikafSchedule[] @relation("imam_qiyamul_lail")
-  itikaf_schedule_ustadz_kajian     ItikafSchedule[] @relation("ustadz_kajian")
+    id                                String           @id @default(uuid())
+    name                              String           @db.VarChar(100)
+    profile                           String           @db.Text
+    avatar                            String?          @db.VarChar(255)
+    avatar_md                         String?          @db.VarChar(255)
+    deleted                           Boolean          @default(false)
+    createdAt                         DateTime         @default(now())
+    updatedAt                         DateTime         @default(now()) @updatedAt
+    itikaf_schedule_imam_tarawih      ItikafSchedule[] @relation("imam_tarawih")
+    itikaf_schedule_imam_qiyamul_lail ItikafSchedule[] @relation("imam_qiyamul_lail")
+    itikaf_schedule_ustadz_kajian     ItikafSchedule[] @relation("ustadz_kajian")
 }
 
 model Campaign {
-  id               String     @id @default(uuid())
-  title            String     @db.VarChar(255)
-  description      String     @db.Text
-  target_amount    Int        @db.Int
-  collected_amount Int        @default(0)
-  due_date         String     @db.VarChar(10)
-  photos           Photo[]
-  author           User       @relation(fields: [userId], references: [id])
-  userId           String
-  publishedAt      DateTime   @default(now())
-  active           Boolean    @default(false)
-  createdAt        DateTime   @default(now())
-  updatedAt        DateTime   @default(now()) @updatedAt
-  donations        Donation[]
-  likes            Like[]
-  comments         Comment[]
+    id               String     @id @default(uuid())
+    title            String     @db.VarChar(255)
+    description      String     @db.Text
+    target_amount    Int        @db.Int
+    collected_amount Int        @default(0)
+    due_date         String     @db.VarChar(10)
+    photos           Photo[]
+    author           User       @relation(fields: [userId], references: [id])
+    userId           String
+    publishedAt      DateTime   @default(now())
+    active           Boolean    @default(false)
+    createdAt        DateTime   @default(now())
+    updatedAt        DateTime   @default(now()) @updatedAt
+    donations        Donation[]
+    likes            Like[]
+    comments         Comment[]
 
-  @@index([title])
+    @@index([title])
 }
 
 model Donation {
-  id           String       @id @default(uuid())
-  Campaign     Campaign     @relation(fields: [campaignId], references: [id])
-  campaignId   String
-  User         User         @relation(fields: [userId], references: [id])
-  userId       String
-  gross_amount Int          @db.Int
-  status       String       @default("pending")
-  paidAt       DateTime?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @default(now()) @updatedAt
-  Transaction  Transaction?
+    id           String       @id @default(uuid())
+    Campaign     Campaign     @relation(fields: [campaignId], references: [id])
+    campaignId   String
+    User         User         @relation(fields: [userId], references: [id])
+    userId       String
+    gross_amount Int          @db.Int
+    status       String       @default("pending")
+    paidAt       DateTime?
+    createdAt    DateTime     @default(now())
+    updatedAt    DateTime     @default(now()) @updatedAt
+    Transaction  Transaction?
 }
 
 model Transaction {
-  id               String            @id @default(uuid())
-  Donation         Donation          @relation(fields: [donationId], references: [id])
-  donationId       String            @unique
-  gross_amount     Int               @db.Int
-  midtransToken    String            @db.VarChar(50)
-  midtransOrderId  String            @db.VarChar(50)
-  status           String            @default("pending")
-  paidAt           DateTime?
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @default(now()) @updatedAt
-  MidtransCallback MidtransCallback?
+    id               String            @id @default(uuid())
+    Donation         Donation          @relation(fields: [donationId], references: [id])
+    donationId       String            @unique
+    gross_amount     Int               @db.Int
+    midtransToken    String            @db.VarChar(50)
+    midtransOrderId  String            @db.VarChar(50)
+    status           String            @default("pending")
+    paidAt           DateTime?
+    createdAt        DateTime          @default(now())
+    updatedAt        DateTime          @default(now()) @updatedAt
+    MidtransCallback MidtransCallback?
 }
 
 model MidtransCallback {
-  id            String      @id @default(uuid())
-  transaction   Transaction @relation(fields: [TransactionId], references: [id])
-  TransactionId String      @unique
-  callback_data String      @db.LongText
-  createdAt     DateTime    @default(now())
+    id            String      @id @default(uuid())
+    transaction   Transaction @relation(fields: [TransactionId], references: [id])
+    TransactionId String      @unique
+    callback_data String      @db.LongText
+    createdAt     DateTime    @default(now())
 }

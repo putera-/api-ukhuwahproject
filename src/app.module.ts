@@ -19,36 +19,38 @@ import { AsaatidzsModule } from './asaatidzs/asaatidzs.module';
 import { SlidesModule } from './slides/slides.module';
 import { CommentsModule } from './comments/comments.module';
 import { LikesModule } from './likes/likes.module';
+import { CampaignsModule } from './campaigns/campaigns.module';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot(),
-    ClientModule,
-    UserSuperadminModule,
-    UserAdminModule,
-    UserStaffModule,
-    UsersModule,
-    AuthModule,
-    ArticlesModule,
-    ItikafsModule,
-    ItikafSchedulesModule,
-    ItikafParticipantsModule,
-    AsaatidzsModule,
-    SlidesModule,
-    CommentsModule,
-    LikesModule,
-  ],
-  controllers: [AppController],
-  providers: [
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard
-    },
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard
-    },
-    AppService,
-  ],
+    imports: [
+        ConfigModule.forRoot(),
+        ClientModule,
+        UserSuperadminModule,
+        UserAdminModule,
+        UserStaffModule,
+        UsersModule,
+        AuthModule,
+        ArticlesModule,
+        ItikafsModule,
+        ItikafSchedulesModule,
+        ItikafParticipantsModule,
+        AsaatidzsModule,
+        SlidesModule,
+        CommentsModule,
+        LikesModule,
+        CampaignsModule,
+    ],
+    controllers: [AppController],
+    providers: [
+        {
+            provide: APP_GUARD,
+            useClass: AuthGuard
+        },
+        {
+            provide: APP_GUARD,
+            useClass: RolesGuard
+        },
+        AppService,
+    ],
 })
 export class AppModule { }

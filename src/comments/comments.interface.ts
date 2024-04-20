@@ -1,4 +1,5 @@
 import { Article } from "src/articles/articles.interface"
+import { Campaign } from "src/campaigns/campaigns.interface"
 import { ItikafSchedule } from "src/itikaf_schedules/itikaf_schedules.interface"
 import { Itikaf } from "src/itikafs/itikafs.interface"
 import { Like } from "src/likes/likes.interface"
@@ -17,6 +18,8 @@ export interface Comment {
     articleId?: string
     Itikaf?: Itikaf
     itikafId?: string
+    Campaign?: Campaign
+    campaignId?: string
     ItikafSchedule?: ItikafSchedule
     itikafScheduleId?: string
     _count?: {
