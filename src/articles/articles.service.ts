@@ -91,6 +91,9 @@ export class ArticlesService {
                 where: {
                     deleted: false,
                     status: "PUBLISH",
+                    publishedAt: {
+                        lt: new Date()
+                    },
                     title: {
                         contains: search
                     }
@@ -102,6 +105,9 @@ export class ArticlesService {
                     status: "PUBLISH",
                     publishedAt: {
                         lt: new Date()
+                    },
+                    title: {
+                        contains: search
                     }
                 },
                 orderBy: {
