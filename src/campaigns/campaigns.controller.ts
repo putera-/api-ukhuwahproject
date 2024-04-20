@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, UseInterceptors, ValidationPipe, UploadedFiles } from '@nestjs/common';
 import { CampaignsService } from './campaigns.service';
 import { CreateCampaignDto } from './dto/create-campaign.dto';
 import { UpdateCampaignDto } from './dto/update-campaign.dto';
@@ -7,15 +7,43 @@ import { Role } from 'src/roles/role.enums';
 import { Campaign } from './campaigns.interface';
 import { Pagination } from 'src/app.interface';
 import { Public } from 'src/auth/auth.metadata';
+import { PhotosService } from 'src/photos/photos.service';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { Prisma } from '@prisma/client';
 
 @Controller('campaigns')
 export class CampaignsController {
-    constructor(private readonly campaignsService: CampaignsService) { }
+    constructor(
+        private readonly campaignsService: CampaignsService,
+        private photoService: PhotosService
+    ) { }
 
-    // @Post()
-    // create(@Body() createCampaignDto: CreateCampaignDto) {
-    //   return this.campaignsService.create(createCampaignDto);
-    // }
+    @Roles(Role.Admin, Role.Staff)
+    @Post()
+    @UseInterceptors(FilesInterceptor('photos', 10)) // key=photo. max = 10
+    async create(@Req() req, @Body(new ValidationPipe()) createCampaignDto: CreateCampaignDto, @UploadedFiles() files: Array<Express.Multer.File>): Promise<Campaign> {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+
+        try {
+            // save photos
+            let photos = [];
+            if (files) photos = await this.photoService.createMany(files, uniqueSuffix);
+
+            const data: Record<string, any> | Prisma.CampaignCreateInput = { ...createCampaignDto };
+
+            // set author
+            data.author = {
+                connect: { id: req.user.id }
+            }
+
+            return this.campaignsService.create(data as Prisma.CampaignCreateInput, photos);
+        } catch (error) {
+            // remove photo
+            if (files) this.photoService.removeMany(files, uniqueSuffix);
+
+            throw error;
+        }
+    }
 
     @Roles(Role.Admin, Role.Staff)
     @Get()

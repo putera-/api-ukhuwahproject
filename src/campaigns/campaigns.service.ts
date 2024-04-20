@@ -4,6 +4,7 @@ import { UpdateCampaignDto } from './dto/update-campaign.dto';
 import { Campaign, Transaction } from './campaigns.interface';
 import { Pagination } from 'src/app.interface';
 import { PrismaService } from 'src/prisma.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class CampaignsService {
@@ -11,9 +12,18 @@ export class CampaignsService {
         private prisma: PrismaService,
     ) { }
 
-    // create(createCampaignDto: CreateCampaignDto) {
-    //   return 'This action adds a new campaign';
-    // }
+    async create(data: Prisma.CampaignCreateInput, photos: Prisma.PhotoCreateInput[]): Promise<Campaign> {
+        return this.prisma.campaign.create({
+            data: {
+                ...data,
+                photos: { create: photos }
+            },
+            include: {
+                author: true,
+                photos: true
+            }
+        });
+    }
 
     async findAll(search = '', page = '1', limit = '10'): Promise<Pagination<Campaign[]>> {
         const skip = (Number(page) - 1) * Number(limit);
