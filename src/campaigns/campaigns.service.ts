@@ -190,7 +190,7 @@ export class CampaignsService {
     }
 
     async findByTransaction(transactionId: string): Promise<Transaction> {
-        return this.prisma.transaction.findUnique({
+        const transaction = await this.prisma.transaction.findUnique({
             where: { id: transactionId },
             include: {
                 Donation: {
@@ -214,6 +214,12 @@ export class CampaignsService {
                 }
             }
         });
+
+        for (const donation of transaction.Donation.Campaign.donations) {
+            donation.User.name = this.formatUserDonateName(donation.User.name);
+        }
+
+        return transaction;
     }
 
     async findPublished(id: string, userId: string = ''): Promise<Campaign> {
@@ -303,7 +309,7 @@ export class CampaignsService {
         if (!campaign) throw new NotFoundException();
 
         for (const donation of campaign.donations) {
-            donation.User.name = donation.User.name.substring(0, 2) + "*".repeat(Math.min(3, donation.User.name.length - 2));
+            donation.User.name = this.formatUserDonateName(donation.User.name);
         }
 
         return campaign;
@@ -331,5 +337,9 @@ export class CampaignsService {
 
     remove(id: number) {
         return `This action removes a #${id} campaign`;
+    }
+
+    formatUserDonateName(name: string): string {
+        return name.substring(0, 2) + "*".repeat(Math.min(3, name.length - 2));
     }
 }
