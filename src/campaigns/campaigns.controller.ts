@@ -93,6 +93,16 @@ export class CampaignsController {
         }
     }
 
+    @Public()
+    @Get('donations/:campaignId')
+    getDonations(@Param('campaignId') campaignId: string, @Query('page') page) {
+        try {
+            return this.campaignsService.getDonations(campaignId, page);
+        } catch (error) {
+            throw error;
+        }
+    }
+
     // @Patch(':id')
     // update(@Param('id') id: string, @Body() updateCampaignDto: UpdateCampaignDto) {
     //   return this.campaignsService.update(+id, updateCampaignDto);

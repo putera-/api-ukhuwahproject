@@ -4,7 +4,7 @@ import { UpdateCampaignDto } from './dto/update-campaign.dto';
 import { Campaign, Transaction } from './campaigns.interface';
 import { Pagination } from 'src/app.interface';
 import { PrismaService } from 'src/prisma.service';
-import { Prisma } from '@prisma/client';
+import { Donation, Prisma } from '@prisma/client';
 
 @Injectable()
 export class CampaignsService {
@@ -329,6 +329,44 @@ export class CampaignsService {
         });
 
         return;
+    }
+
+    async getDonations(campaignId: string, page = '1'): Promise<Pagination<Donation[]>> {
+        const limit = 10;
+        const skip = (Number(page) - 1) * limit;
+
+        const [total, data] = await Promise.all([
+            this.prisma.donation.count({
+                where: { campaignId, status: 'settlement' }
+            }),
+            this.prisma.donation.findMany({
+                where: { campaignId, status: 'settlement' },
+                orderBy: {
+                    paidAt: 'desc'
+                },
+                include: {
+                    User: {
+                        select: { id: true, name: true }
+                    }
+                },
+                skip,
+                take: Number(limit)
+            })
+        ]);
+
+        for (const donation of data) {
+            donation.User.name = this.formatUserDonateName(donation.User.name);
+        }
+
+
+        return {
+            data,
+            total,
+            page: Number(page),
+            limit: Number(limit),
+            maxPage: Math.ceil(total / limit)
+        }
+
     }
 
     update(id: number, updateCampaignDto: UpdateCampaignDto) {
